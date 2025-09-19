@@ -1,0 +1,128 @@
+/* src/components/heroCarousel/index.css */
+
+/* --- ESTRUTURA E POSICIONAMENTO RESTAURADOS AO ORIGINAL --- */
+.hero-carousel-container {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  overflow: hidden; /* Garante que nada escape */
+}
+
+.slick-slide > div {
+  height: 100vh;
+}
+
+.slide-item {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide-background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.slide-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.slide-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 800px;
+  z-index: 3;
+  color: #fff;
+  text-align: center;
+}
+
+/* --- ESTILOS DO CONTEÚDO (COM MELHORIAS) --- */
+.slide-content p {
+  font-size: 1rem; font-weight: 600; letter-spacing: 2px; margin-bottom: 1rem; text-transform: uppercase;
+}
+
+.slide-content h1 {
+  font-size: 3.5rem; font-weight: 700; margin-bottom: 2rem;
+  /* NOVO: Adiciona uma transição suave para a mudança de tamanho da fonte */
+  transition: font-size 0.3s ease;
+}
+
+.cta-button {
+  background-color: transparent; border: 2px solid #fff; color: #fff;
+  padding: 1rem 2.5rem; font-size: 1rem; font-weight: 600;
+  text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #fff; color: #333;
+}
+
+/* --- Estilos do Slick Carousel (setas e pontos) --- */
+.slick-prev, .slick-next { z-index: 4; }
+.slick-prev { left: 25px; }
+.slick-next { right: 25px; }
+.slick-prev:before, .slick-next:before { font-size: 30px; }
+.slick-dots { bottom: 25px; z-index: 4; }
+.slick-dots li button:before { font-size: 12px; color: white; opacity: 0.7; }
+.slick-dots li.slick-active button:before { opacity: 1; }
+
+
+/* --- RESPONSIVIDADE APRIMORADA (SOMENTE DETALHES) --- */
+
+/* AJUSTE PARA TABLETS (1024px ou menos) */
+@media (max-width: 1024px) {
+  .slide-content h1 {
+    font-size: 3rem;
+  }
+}
+
+/* AJUSTE PARA CELULARES (768px ou menos) */
+@media (max-width: 768px) {
+  .slide-content h1 {
+    font-size: 2.5rem;
+  }
+  .slide-content p {
+    font-size: 0.9rem;
+  }
+  .cta-button {
+      padding: 0.8rem 1.8rem;
+      font-size: 0.9rem;
+  }
+  .slick-prev, .slick-next {
+    display: none !important;
+  }
+}
+
+/* AJUSTE FINO PARA CELULARES PEQUENOS (480px ou menos) */
+@media (max-width: 480px) {
+    .slide-content h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .slide-content p {
+        font-size: 0.8rem;
+    }
+    .slick-dots {
+        bottom: 15px;
+    }
+}

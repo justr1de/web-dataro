@@ -1,47 +1,70 @@
-import React from 'react';
-import './index.css'; // Corrigido para corresponder ao nome do arquivo CSS
+// src/components/header/index.jsx
+
+import React, { useState, useEffect } from 'react';
+import './index.css';
 import logo from '../../assets/logo.png';
 
-// O Header agora recebe as duas props necessárias
-function Header({ onContactClick, onNavigate }) {
-  
-  // Função genérica para lidar com a navegação entre páginas
-  const handleNavClick = (event, page) => {
-    event.preventDefault(); // Impede o link de recarregar a página
-    onNavigate(page); // Chama a função que veio do App.jsx para trocar de página
-  };
+const Header = ({ onNavigate, onContactClick }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  // NOVO ESTADO: para controlar o menu mobile (hambúrguer)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Função específica para o popup de contato
-  const handleContactClick = (event) => {
-    event.preventDefault();
-    onContactClick();
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Função para abrir/fechar o menu mobile
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
+  
+  // Função para fechar o menu ao clicar em um link
+  const handleNavClick = (page) => {
+    onNavigate(page);
+    setIsMenuOpen(false); // Fecha o menu
+  };
+  
+  const handleContactClick = () => {
+    onContactClick();
+    setIsMenuOpen(false); // Fecha o menu
+  }
+
+  // Adiciona a classe 'scrolled' para o efeito de encolher
+  const headerClassName = isScrolled ? 'header-container scrolled' : 'header-container';
+  // Adiciona a classe 'open' para mostrar o menu mobile
+  const navClassName = isMenuOpen ? 'nav-menu open' : 'nav-menu';
 
   return (
-    <header className="header-container">
-      {/* Clicar na logo também leva para a página inicial */}
-      <a href="#" onClick={(e) => handleNavClick(e, 'home')} className="header-logo-link">
-        <img src={logo} alt="Logo da Empresa" className="header-logo" />
-      </a>
-      <nav className="header-nav">
-        <ul>
-          {/* Cada link agora chama a função correta */}
-          <li><a href="#" onClick={(e) => handleNavClick(e, 'home')}>Início</a></li>
-          <li><a href="#" onClick={(e) => handleNavClick(e, 'services')}>Serviços</a></li>
-          <li><a href="#" onClick={handleContactClick}>Contato</a></li>
-          {/* O link "Sobre Nós" foi removido temporariamente. Para adicioná-lo,
-              você precisaria criar uma página 'sobre' e adicionar a lógica no App.jsx */}
-        </ul>
-      </nav>
-      <div className="mobile-menu-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
+    <header className={headerClassName}>
+      <div className="header-content">
+        <div className="logo-container">
+          <a href="#" onClick={() => handleNavClick('home')}>
+            <img src={logo} alt="Logo da Empresa" className="logo" />
+          </a>
+        </div>
+        
+        {/* MENU DE NAVEGAÇÃO */}
+        <nav className={navClassName}>
+          <ul>
+            <li><a href="#" onClick={() => handleNavClick('home')}>INÍCIO</a></li>
+            <li><a href="#" onClick={() => handleNavClick('services')}>SERVIÇOS</a></li>
+            <li><a href="#" onClick={handleContactClick}>CONTATO</a></li>
+          </ul>
+        </nav>
+
+        {/* BOTÃO HAMBÚRGUER (só aparece em telas menores) */}
+        <div className="menu-toggle" onClick={toggleMenu}>
+          <div className="bar"></div>
+          <div className="bar"></div>
+          <div className="bar"></div>
+        </div>
       </div>
     </header>
   );
-}
+};
 
 export default Header;

@@ -1,0 +1,127 @@
+/* src/components/advantagesSection/index.css */
+
+.advantages-section {
+  width: 100%;
+  padding: 5rem 2rem;
+  background-color: #f8f9fa;
+}
+
+/* O painel flutuante continua aqui, intacto */
+.advantages-container {
+  /* A regra 'max-width' já garante que o layout não se quebre em telas MUITO GRANDES */
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  padding: 3rem;
+}
+
+.advantages-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.separator-line {
+  border: 0;
+  height: 2px;
+  background-color: #f0f0f0;
+  margin-bottom: 3rem;
+}
+
+.advantages-grid {
+  display: grid;
+  /* Layout padrão para Desktop: 3 colunas */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+}
+
+.advantage-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.advantage-icon {
+  color: #28a745;
+  flex-shrink: 0;
+}
+
+.advantage-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+  margin: 0;
+}
+
+/* --- Media Queries para Responsividade --- */
+
+/* --- AJUSTE PARA TABLETS (1024px ou menos) --- */
+@media (max-width: 1024px) {
+  .advantages-grid {
+    /* A grade passa a ter 2 colunas, como antes */
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* MELHORIA: Diminui um pouco o título em tablets */
+  .advantages-title {
+    font-size: 1.8rem;
+  }
+}
+
+/* --- AJUSTE PARA CELULARES (768px ou menos) --- */
+@media (max-width: 768px) {
+  .advantages-section {
+    padding: 3rem 1rem;
+  }
+
+  .advantages-container {
+    padding: 2rem;
+  }
+
+  .advantages-title {
+    text-align: center;
+    /* MELHORIA: Título ainda menor para caber bem no celular */
+    font-size: 1.6rem;
+  }
+  
+  .advantages-grid {
+    /* A grade vira uma única coluna, como antes */
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .advantage-item {
+    align-items: flex-start;
+  }
+
+  /* MELHORIA: Diminui o texto dos itens para melhor leitura no celular */
+  .advantage-text {
+      font-size: 0.95rem;
+  }
+}
+
+/* --- NOVO: AJUSTE FINO PARA CELULARES PEQUENOS (480px ou menos) --- */
+@media (max-width: 480px) {
+    .advantages-section {
+        /* Espaçamento ainda menor para telas pequenas */
+        padding: 3rem 0.5rem;
+    }
+
+    .advantages-container {
+        padding: 1.5rem;
+    }
+    
+    .advantages-title {
+        font-size: 1.4rem;
+    }
+
+    .advantage-item {
+        gap: 1rem; /* Diminui o espaço entre ícone e texto */
+    }
+}

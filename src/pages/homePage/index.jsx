@@ -1,7 +1,14 @@
+// src/pages/homePage/index.jsx
+
 import React from 'react';
-import FeatureSection from '../../components/featureSection'; // Note o caminho do import
+
+// Importando os componentes necessários para a página
+import HeroCarousel from '../../components/heroCarousel';
+import AdvantagesSection from '../../components/advantagesSection'; // <-- IMPLEMENTADO: Importa a nova seção
+import FeatureSection from '../../components/featureSection';
 
 // --- DADOS PARA A PÁGINA INICIAL ---
+// Seus dados para os slides permanecem exatamente os mesmos
 const saudeSlides = [
   { url: 'https://distrito.me/wp-content/uploads/2023/04/avancos-recentes-da-tecnologia-para-a-area-da-saude-1024x681.webp', alt: 'Médico analisando prontuário eletrônico em um tablet.' },
   { url: 'https://fia.com.br/wp-content/uploads/2022/06/tecnologia-na-saude-principais-avancos-tendencias-aplicad.jpg', alt: 'Paciente em uma consulta por vídeo com um profissional de saúde.' },
@@ -24,8 +31,17 @@ const automacaoSlides = [
 
 function HomePage() {
   return (
+    // Usamos um React.Fragment <> para agrupar todos os elementos
     <>
-    <title>DATA-RO</title>
+      <title>DATA-RO</title>
+
+      {/* Componente do carrossel principal no topo */}
+      <HeroCarousel />
+
+      {/* IMPLEMENTADO: Nova seção de vantagens adicionada aqui */}
+      <AdvantagesSection />
+
+      {/* Suas seções de features que já existiam, continuam aqui, sem alterações */}
       <FeatureSection
         id="saude"
         title="Tecnologia a Serviço da Saúde"

@@ -1,97 +1,138 @@
-/* --- Estilo Base do Container do Header --- */
+/* src/components/header/index.css */
+
 .header-container {
-  /* Posicionamento Fixo */
+  width: 100%;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  z-index: 1000; /* Garante que o header fique sobre outros elementos */
+  z-index: 1000;
+  background-color: transparent; 
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
 
-  /* Layout e Espaçamento */
+.header-container.scrolled {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 2.5rem; /* Usando 'rem' para consistência com a base global */
-  
-  /* Visual */
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra mais sutil */
-  transition: padding 0.3s ease; /* Transição suave para a responsividade */
+  min-height: 120px;
+  transition: min-height 0.4s ease;
 }
 
-/* --- Logo --- */
-.header-logo-link {
-  /* Em telas grandes, a logo fica no centro absoluto */
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.3s ease;
+.header-container.scrolled .header-content {
+  min-height: 85px;
 }
 
-.header-logo {
-  height: 120px; /* Ajuste a altura conforme necessário */
-  display: block;
+.logo {
+  height: 100px;
+  width: auto;
+  transition: height 0.4s ease;
 }
 
-/* --- Navegação Principal (Desktop) --- */
-.header-nav ul {
-  display: flex;
-  list-style: none; /* Já está no reset, mas é bom garantir */
+.header-container.scrolled .logo {
+  height: 70px;
 }
 
-.header-nav li {
-  margin-left: 2rem;
+.nav-menu ul {
+  list-style: none; margin: 0; padding: 0; display: flex; gap: 2rem; align-items: center;
 }
-
-.header-nav a {
-  font-weight: 800;
-  color: #343a40; /* Usando a cor de texto principal definida no index.css */
-  text-decoration: none; /* Garantido pelo reset */
-  transition: color 0.2s ease;
-}
-
-.header-nav a:hover {
-  color: #007bff; /* Usando a cor de link principal definida no index.css */
-  text-decoration: none; /* Remove o sublinhado do hover global */
-  opacity: 1; /* Remove a opacidade do hover global */
-}
-
-/* --- Ícone do Menu Mobile --- */
-.mobile-menu-icon {
-  display: none; /* Escondido por padrão em telas grandes */
+.nav-menu a {
+  text-decoration: none;
+  color: #333; /* Cor inicial branca */
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
   cursor: pointer;
 }
-
-
-/* --- RESPONSIVIDADE --- */
-
-/* Para Tablets (até 768px) */
-@media (max-width: 768px) {
-  .header-container {
-    padding: 1rem 1.5rem; /* Diminui o padding lateral */
-  }
-
-  /* A logo deixa de ser centralizada e vai para a esquerda */
-  .header-logo-link {
-    position: static;
-    transform: none;
-  }
-
-  .header-nav li {
-    margin-left: 1.5rem;
-  }
+.header-container.scrolled .nav-menu a {
+  color: #333; /* Cor escura ao rolar */
+}
+.nav-menu a:hover {
+  color: #a0a0a0;
+}
+.header-container.scrolled .nav-menu a:hover {
+  color: #0056b3;
 }
 
-/* Para Celulares (até 576px) */
-@media (max-width: 576px) {
-  /* Escondemos a navegação principal */
-  .header-nav {
-    display: none;
+.menu-toggle {
+  display: none; cursor: pointer;
+}
+.menu-toggle .bar {
+  width: 25px; height: 3px;
+  background-color: #fff; /* Cor inicial branca */
+  margin: 5px 0;
+  transition: 0.4s;
+}
+.header-container.scrolled .menu-toggle .bar {
+  background-color: #333; /* Cor escura ao rolar */
+}
+
+
+/* --- SEÇÃO RESPONSIVA REFEITA PARA SER À PROVA DE FALHAS --- */
+@media (max-width: 768px) {
+  .header-content {
+    min-height: 90px;
+  }
+  .header-container.scrolled .header-content {
+    min-height: 70px;
+  }
+  .logo {
+    height: 75px;
+  }
+  .header-container.scrolled .logo {
+    height: 55px;
   }
 
-  /* E mostramos o ícone do menu "hamburger" */
-  .mobile-menu-icon {
+  /* 1. Botão Hambúrguer: Garantimos que ele fique sempre por cima */
+  .menu-toggle {
     display: block;
+    position: relative; /* Necessário para o z-index funcionar aqui */
+    z-index: 1002; /* z-index MUITO alto para estar acima de tudo */
+  }
+
+  /* 2. O Painel do Menu: Agora desliza da direita para a esquerda */
+  .nav-menu {
+    position: fixed; /* Fixo na tela, independente do scroll */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* Ocupa a tela inteira */
+    background-color: rgba(255, 255, 255, 0.95); /* Fundo branco com leve transparência */
+    backdrop-filter: blur(8px); /* Efeito de vidro fosco, super moderno */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Esconde o menu fora da tela por padrão */
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); /* Animação suave */
+    z-index: 1001; /* Fica abaixo do botão de fechar, mas acima do resto do site */
+  }
+
+  /* 3. Quando o menu está aberto, ele desliza para a posição 0 */
+  .nav-menu.open {
+    transform: translateX(0);
+  }
+
+  /* 4. Links dentro do menu aberto */
+  .nav-menu ul {
+    flex-direction: column;
+    gap: 2.5rem; /* Espaçamento generoso para facilitar o toque */
+  }
+
+  .nav-menu a {
+      color: #333; /* Links sempre escuros dentro do menu */
+      font-size: 1.8rem; /* Fonte bem grande para fácil leitura e toque */
   }
 }
