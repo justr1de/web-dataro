@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Importando componentes reutilizáveis
 import Header from './components/header';
@@ -9,33 +10,70 @@ import ContactPopup from './components/contactPopup';
 import HomePage from './pages/homePage';
 import ServicesPage from './pages/ServicesPage/index';
 
+// Importando páginas de Painéis
+import Login from './pages/PaineisPage/Login';
+import Dashboard from './pages/PaineisPage/Dashboard';
+import MunicipioPainel from './pages/PaineisPage/MunicipioPainel';
+
+// Contexto de autenticação
+import { AuthProvider } from './contexts/AuthContext';
+
 import './App.css';
 
-function App() {
+// Componente para rotas protegidas
+const ProtectedRoute = ({ children }) => {
+  const user = localStorage.getItem('paineis_user');
+  return user ? children : <Navigate to="/paineis/login" />;
+};
+
+// Layout para páginas públicas (com Header e Footer)
+const PublicLayout = ({ children }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState('home'); // Estado para controlar a página
-
   const togglePopup = () => setIsPopupOpen(!isPopupOpen);
-
-  const navigateTo = (page) => {
-    setCurrentPage(page);
-    window.scrollTo(0, 0); // Leva o usuário para o topo da nova página
-  };
 
   return (
     <div className="App">
-      <Header onContactClick={togglePopup} onNavigate={navigateTo} />
-      
-      <main className="main-content">
-        {/* Renderização condicional da página com base no estado */}
-        {currentPage === 'home' && <HomePage />}
-        {currentPage === 'services' && <ServicesPage />}
-      </main>
-
+      <Header onContactClick={togglePopup} />
+      <main className="main-content">{children}</main>
       <Footer />
-      
       {isPopupOpen && <ContactPopup handleClose={togglePopup} />}
     </div>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Rotas públicas */}
+          <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+          <Route path="/services" element={<PublicLayout><ServicesPage /></PublicLayout>} />
+
+          {/* Rotas de Painéis */}
+          <Route path="/paineis/login" element={<Login />} />
+          <Route
+            path="/paineis/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/paineis/municipio/:id"
+            element={
+              <ProtectedRoute>
+                <MunicipioPainel />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Rota padrão - redireciona para home */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

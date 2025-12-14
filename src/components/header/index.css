@@ -136,3 +136,16 @@
       font-size: 1.8rem; /* Fonte bem grande para fácil leitura e toque */
   }
 }
+/* Estilos para o link de Painéis BI */
+.nav-menu .paineis-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.nav-menu .paineis-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
