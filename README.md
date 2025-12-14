@@ -130,7 +130,7 @@ DATA-RO é um site institucional para a empresa Dataro, desenvolvido com React e
 
 ## Contato
 - E-mail: contato@dataro-it.com.br
-- Telefone: (69) 99974-7809
+- Telefone: (69) 99908-9202
 - Instagram: [@dataro_it](https://www.instagram.com/dataro_it)
 
 ---
