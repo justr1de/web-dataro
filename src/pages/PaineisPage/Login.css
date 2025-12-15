@@ -1,10 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 /* Wrapper da página completa */
 .login-page-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background: #ffffff;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 /* Cabeçalho da Página */
@@ -22,6 +24,7 @@
   color: #1e3a8a;
   margin: 0;
   letter-spacing: 0.5px;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* Container principal */
@@ -80,12 +83,28 @@
   margin-bottom: 2.5rem;
 }
 
+.header-with-flag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.bandeira-rondonia {
+  width: 60px;
+  height: auto;
+  opacity: 0.5;
+  object-fit: contain;
+}
+
 .login-header h1 {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
   color: #1e3a8a;
-  margin: 0 0 0.75rem 0;
-  letter-spacing: 0.5px;
+  margin: 0;
+  letter-spacing: 0.3px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .login-header p {
@@ -93,6 +112,7 @@
   color: #718096;
   margin: 0;
   line-height: 1.5;
+  font-weight: 400;
 }
 
 .login-form {
@@ -121,17 +141,18 @@
   transition: all 0.2s;
   background: white;
   color: #2d3748;
+  font-family: 'Poppins', sans-serif;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .login-button {
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -140,11 +161,12 @@
   cursor: pointer;
   transition: all 0.3s;
   margin-top: 0.5rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 .login-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
 }
 
 .login-button:disabled {
@@ -176,6 +198,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Poppins', sans-serif;
 }
 
 .action-button.secondary {
@@ -216,18 +239,19 @@
 
 .login-right h3 {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 600;
   color: #1a202c;
   margin-bottom: 2rem;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .bandeiras-grid-carousel {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   width: 100%;
-  max-width: 450px;
+  max-width: 350px;
   padding: 1.5rem;
   background: #f7fafc;
   border-radius: 16px;
@@ -264,7 +288,7 @@
 
 .bandeira-grid-item img {
   width: 100%;
-  max-width: 120px;
+  max-width: 140px;
   height: auto;
   border-radius: 6px;
   object-fit: contain;
@@ -279,6 +303,7 @@
   line-height: 1.3;
   max-width: 100%;
   word-wrap: break-word;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* Indicadores do carrossel */
@@ -287,6 +312,7 @@
   gap: 0.5rem;
   margin-top: 1.5rem;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .carousel-indicators .indicator {
@@ -299,7 +325,7 @@
 }
 
 .carousel-indicators .indicator.active {
-  background: #667eea;
+  background: #10b981;
   width: 28px;
   border-radius: 5px;
 }
@@ -331,8 +357,8 @@
   }
 
   .bandeiras-grid-carousel {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 400px;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 350px;
   }
 }
 
@@ -365,7 +391,7 @@
 
   .bandeiras-grid-carousel {
     grid-template-columns: repeat(4, 1fr);
-    max-width: 500px;
+    max-width: 600px;
   }
 }
 
@@ -386,13 +412,17 @@
     font-size: 0.85rem;
   }
 
+  .bandeira-rondonia {
+    width: 50px;
+  }
+
   .logo-watermark {
     max-width: 350px;
   }
 
   .bandeiras-grid-carousel {
     grid-template-columns: repeat(3, 1fr);
-    max-width: 350px;
+    max-width: 400px;
     gap: 0.75rem;
   }
 
@@ -401,7 +431,7 @@
   }
 
   .bandeira-grid-item img {
-    max-width: 90px;
+    max-width: 100px;
   }
 
   .bandeira-grid-item .bandeira-nome {

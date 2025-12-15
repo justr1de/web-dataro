@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
 import { getBandeiraUrl } from '../../utils/bandeirasMap';
+import logo from '../../assets/logo.png';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -64,7 +65,14 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="header-content">
-          <div>
+          <div className="header-left">
+            <img src={logo} alt="DATA-RO" className="header-logo" />
+            <div className="header-text">
+              <span className="header-brand">DATA-RO</span>
+              <span className="header-subtitle">INTELIGÊNCIA TERRITORIAL</span>
+            </div>
+          </div>
+          <div className="header-center">
             <h1>Painéis de BI - CIMCERO</h1>
             <p>Rondônia em Números</p>
           </div>
@@ -106,24 +114,24 @@ const Dashboard = () => {
                   onClick={() => hasPainel && handleViewPainel(municipio)}
                   style={{ cursor: hasPainel ? 'pointer' : 'default' }}
                 >
+                  <div className="card-bandeira-section">
+                    <img 
+                      src={getBandeiraUrl(municipio.nome)} 
+                      alt={`Bandeira de ${municipio.nome}`}
+                      className="municipio-bandeira-large"
+                      onError={(e) => {
+                        e.target.src = `https://via.placeholder.com/200x150/10b981/ffffff?text=${encodeURIComponent(municipio.nome.substring(0, 3))}`;
+                      }}
+                    />
+                  </div>
                   <div className="card-header">
-                    <div className="municipio-header-content">
-                      <img 
-                        src={getBandeiraUrl(municipio.nome)} 
-                        alt={`Bandeira de ${municipio.nome}`}
-                        className="municipio-bandeira"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                      <h3>{municipio.nome}</h3>
-                    </div>
+                    <h3>{municipio.nome}</h3>
                     <span className={`status-badge ${painel?.status || 'pendente'}`}>
                       {painel?.status === 'ativo' ? 'Disponível' : 'Em breve'}
                     </span>
                   </div>
                   <div className="card-body">
-                    <p><strong>Prefeito:</strong> {municipio.prefeito}</p>
+                    <p><strong>Prefeito(a):</strong> {municipio.prefeito}</p>
                     <p><strong>CNPJ:</strong> {municipio.cnpj}</p>
                     {hasPainel && (
                       <p className="painel-title">

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { getBandeiraUrl } from '../../utils/bandeirasMap';
 import logo from '../../assets/logo.png';
+import bandeiraRondonia from '../../assets/bandeira-rondonia.png';
 import './Login.css';
 
 const Login = () => {
@@ -14,22 +15,25 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Lista completa de 36 municípios
-  const todosMunicipios = [
-    'Ariquemes', 'Cacoal', 'Jaru', 'Pimenta Bueno',
-    'Buritis', 'Espigão d\'Oeste', 'Alta Floresta d\'Oeste', 'Alto Alegre dos Parecis',
-    'Alto Paraíso', 'Alvorada d\'Oeste', 'Cacaulândia', 'Campo Novo de Rondônia',
-    'Candeias do Jamari', 'Cerejeiras', 'Chupinguaia', 'Corumbiara',
-    'Itapuã do Oeste', 'Machadinho d\'Oeste', 'Monte Negro', 'Nova Mamoré',
-    'Nova União', 'Novo Horizonte do Oeste', 'Parecis', 'Seringueiras',
-    'Alvorada d\'Oeste', 'Cabixi', 'Castanheiras', 'Colorado do Oeste',
-    'Costa Marques', 'Cujubim', 'Governador Jorge Teixeira', 'Guajará-Mirim',
-    'Ministro Andreazza', 'Mirante da Serra', 'Nova Brasilândia d\'Oeste', 'Ouro Preto do Oeste'
+  // Apenas municípios do CIMCERO (48 municípios)
+  const municipiosCimcero = [
+    'Alta Floresta d\'Oeste', 'Alto Alegre dos Parecis', 'Alto Paraíso', 'Alvorada d\'Oeste',
+    'Ariquemes', 'Buritis', 'Cabixi', 'Cacaulândia',
+    'Cacoal', 'Campo Novo de Rondônia', 'Candeias do Jamari', 'Castanheiras',
+    'Cerejeiras', 'Colorado do Oeste', 'Corumbiara', 'Costa Marques',
+    'Espigão d\'Oeste', 'Governador Jorge Teixeira', 'Guajará-Mirim', 'Itapuã do Oeste',
+    'Jaru', 'Ji-Paraná', 'Machadinho d\'Oeste', 'Ministro Andreazza',
+    'Mirante da Serra', 'Monte Negro', 'Nova Brasilândia d\'Oeste', 'Nova Mamoré',
+    'Nova União', 'Novo Horizonte do Oeste', 'Ouro Preto do Oeste', 'Parecis',
+    'Pimenta Bueno', 'Pimenteiras do Oeste', 'Porto Velho', 'Presidente Médici',
+    'Primavera de Rondônia', 'Rolim de Moura', 'Santa Luzia d\'Oeste', 'São Felipe d\'Oeste',
+    'São Francisco do Guaporé', 'São Miguel do Guaporé', 'Seringueiras', 'Teixeirópolis',
+    'Theobroma', 'Urupá', 'Vale do Anari', 'Vilhena'
   ];
 
-  // Dividir em grupos de 12 bandeiras
-  const bandeirasPerSet = 12;
-  const totalSets = Math.ceil(todosMunicipios.length / bandeirasPerSet);
+  // Reduzir para 8 bandeiras por conjunto (grid 2x4)
+  const bandeirasPerSet = 8;
+  const totalSets = Math.ceil(municipiosCimcero.length / bandeirasPerSet);
 
   // Carrossel automático - troca o conjunto a cada 5 segundos
   useEffect(() => {
@@ -43,7 +47,7 @@ const Login = () => {
   // Obter bandeiras do conjunto atual
   const getBandeirasAtuais = () => {
     const startIndex = currentSet * bandeirasPerSet;
-    return todosMunicipios.slice(startIndex, startIndex + bandeirasPerSet);
+    return municipiosCimcero.slice(startIndex, startIndex + bandeirasPerSet);
   };
 
   const handleSubmit = async (e) => {
@@ -95,7 +99,14 @@ const Login = () => {
         <div className="login-center">
           <div className="login-box">
             <div className="login-header">
-              <h1>RONDÔNIA EM NÚMEROS</h1>
+              <div className="header-with-flag">
+                <img 
+                  src={bandeiraRondonia} 
+                  alt="Bandeira de Rondônia" 
+                  className="bandeira-rondonia"
+                />
+                <h1>RONDÔNIA EM NÚMEROS</h1>
+              </div>
               <p>Plataforma de Gestão Integrada dos Municípios de Rondônia</p>
             </div>
 
@@ -149,7 +160,7 @@ const Login = () => {
 
         {/* Coluna Direita - Grid de Bandeiras com Carrossel */}
         <div className="login-right">
-          <h3>Municípios de Rondônia</h3>
+          <h3>Municípios do CIMCERO</h3>
           <div className="bandeiras-grid-carousel">
             {getBandeirasAtuais().map((municipio, index) => (
               <div key={`${currentSet}-${index}`} className="bandeira-grid-item">
@@ -158,7 +169,7 @@ const Login = () => {
                   alt={`Bandeira de ${municipio}`}
                   loading="lazy"
                   onError={(e) => {
-                    e.target.src = `https://via.placeholder.com/120x90/667eea/ffffff?text=${encodeURIComponent(municipio.substring(0, 3))}`;
+                    e.target.src = `https://via.placeholder.com/120x90/10b981/ffffff?text=${encodeURIComponent(municipio.substring(0, 3))}`;
                   }}
                 />
                 <span className="bandeira-nome">{municipio}</span>
