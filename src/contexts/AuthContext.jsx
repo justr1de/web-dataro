@@ -45,7 +45,10 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       localStorage.setItem('paineis_user', JSON.stringify(userData));
       
-      return { success: true };
+      // Verificar se é senha padrão (requer troca)
+      const requerTrocaSenha = data.senha_hash === '123456';
+      
+      return { success: true, requerTrocaSenha };
     } catch (error) {
       return { success: false, error: error.message };
     }

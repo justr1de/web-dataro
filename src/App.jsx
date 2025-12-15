@@ -12,6 +12,7 @@ import ServicesPage from './pages/ServicesPage/index';
 
 // Importando páginas de Painéis
 import Login from './pages/PaineisPage/Login';
+import TrocarSenha from './pages/PaineisPage/TrocarSenha';
 import Dashboard from './pages/PaineisPage/Dashboard';
 import MunicipioPainel from './pages/PaineisPage/MunicipioPainel';
 
@@ -52,6 +53,14 @@ function App() {
 
           {/* Rotas de Painéis */}
           <Route path="/paineis/login" element={<Login />} />
+          <Route
+            path="/paineis/trocar-senha"
+            element={
+              <ProtectedRoute>
+                <TrocarSenha />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/paineis/dashboard"
             element={

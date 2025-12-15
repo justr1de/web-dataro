@@ -77,7 +77,12 @@ const Login = () => {
     const result = await login(email, senha);
 
     if (result.success) {
-      navigate('/paineis/dashboard');
+      // Se requer troca de senha, redirecionar para página de troca
+      if (result.requerTrocaSenha) {
+        navigate('/paineis/trocar-senha');
+      } else {
+        navigate('/paineis/dashboard');
+      }
     } else {
       setError(result.error || 'Erro ao fazer login');
     }
