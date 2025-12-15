@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #ffffff;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(252, 211, 77, 0.08) 100%);
   font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -13,9 +13,10 @@
 .page-header {
   width: 100%;
   padding: 1.5rem 2rem;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
   text-align: center;
   border-bottom: 1px solid #e2e8f0;
+  backdrop-filter: blur(10px);
 }
 
 .page-header h2 {
@@ -25,13 +26,13 @@
   margin: 0;
   letter-spacing: 0.5px;
   font-family: 'Poppins', sans-serif;
+  font-style: italic;
 }
 
 /* Container principal */
 .login-container {
   display: flex;
   flex: 1;
-  background: #ffffff;
 }
 
 /* Coluna Esquerda - Logo DATA-RO */
@@ -41,7 +42,6 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: #ffffff;
 }
 
 .logo-watermark {
@@ -66,16 +66,16 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: #ffffff;
 }
 
 .login-box {
   width: 100%;
   max-width: 450px;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   padding: 3rem;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .login-header {
@@ -234,13 +234,12 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: #ffffff;
 }
 
 .login-right h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1a202c;
+  color: #1e3a8a;
   margin-bottom: 2rem;
   text-align: center;
   font-family: 'Poppins', sans-serif;
@@ -248,14 +247,15 @@
 
 .bandeiras-grid-carousel {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   width: 100%;
-  max-width: 350px;
+  max-width: 500px;
   padding: 1.5rem;
-  background: #f7fafc;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .bandeira-grid-item {
@@ -293,6 +293,15 @@
   border-radius: 6px;
   object-fit: contain;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease;
+}
+
+.bandeira-grid-item img.loading {
+  opacity: 0.5;
+}
+
+.bandeira-grid-item img.loaded {
+  opacity: 1;
 }
 
 .bandeira-grid-item .bandeira-nome {
@@ -338,9 +347,10 @@
 .page-footer {
   width: 100%;
   padding: 1.5rem 2rem;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
   text-align: center;
   border-top: 1px solid #e2e8f0;
+  backdrop-filter: blur(10px);
 }
 
 .page-footer p {
@@ -357,8 +367,8 @@
   }
 
   .bandeiras-grid-carousel {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 350px;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 500px;
   }
 }
 

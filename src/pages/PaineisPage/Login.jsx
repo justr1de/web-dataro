@@ -12,6 +12,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [currentSet, setCurrentSet] = useState(0);
+  const [loadedImages, setLoadedImages] = useState(new Set());
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -31,9 +32,27 @@ const Login = () => {
     'Theobroma', 'Urupá', 'Vale do Anari', 'Vilhena'
   ];
 
-  // Reduzir para 8 bandeiras por conjunto (grid 2x4)
-  const bandeirasPerSet = 8;
+  // Grid 3x4 = 12 bandeiras por conjunto
+  const bandeirasPerSet = 12;
   const totalSets = Math.ceil(municipiosCimcero.length / bandeirasPerSet);
+
+  // Preload de imagens para otimizar carregamento
+  useEffect(() => {
+    const preloadImages = () => {
+      municipiosCimcero.forEach((municipio) => {
+        const img = new Image();
+        img.src = getBandeiraUrl(municipio);
+        img.onload = () => {
+          setLoadedImages(prev => new Set([...prev, municipio]));
+        };
+        img.onerror = () => {
+          console.warn(`Falha ao carregar bandeira de ${municipio}`);
+        };
+      });
+    };
+
+    preloadImages();
+  }, []);
 
   // Carrossel automático - troca o conjunto a cada 5 segundos
   useEffect(() => {
@@ -167,7 +186,7 @@ const Login = () => {
                 <img
                   src={getBandeiraUrl(municipio)}
                   alt={`Bandeira de ${municipio}`}
-                  loading="lazy"
+                  className={loadedImages.has(municipio) ? 'loaded' : 'loading'}
                   onError={(e) => {
                     e.target.src = `https://via.placeholder.com/120x90/10b981/ffffff?text=${encodeURIComponent(municipio.substring(0, 3))}`;
                   }}
