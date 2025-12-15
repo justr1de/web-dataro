@@ -5,18 +5,17 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(252, 211, 77, 0.08) 100%);
+  background: #ffffff;
   font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* Cabeçalho da Página */
+/* Cabeçalho da Página com Degradê */
 .page-header {
   width: 100%;
   padding: 1.5rem 2rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(252, 211, 77, 0.08) 100%);
   text-align: center;
   border-bottom: 1px solid #e2e8f0;
-  backdrop-filter: blur(10px);
 }
 
 .page-header h2 {
@@ -33,6 +32,7 @@
 .login-container {
   display: flex;
   flex: 1;
+  background: #ffffff;
 }
 
 /* Coluna Esquerda - Logo DATA-RO */
@@ -42,6 +42,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  background: #ffffff;
 }
 
 .logo-watermark {
@@ -66,6 +67,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  background: #ffffff;
 }
 
 .login-box {
@@ -146,14 +148,14 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: rgba(5, 150, 105, 0.2);
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.05);
 }
 
 .login-button {
   padding: 1rem;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
+  background: rgba(5, 150, 105, 0.2);
+  color: #065f46;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -165,8 +167,9 @@
 }
 
 .login-button:hover:not(:disabled) {
+  background: rgba(5, 150, 105, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 10px 25px rgba(5, 150, 105, 0.15);
 }
 
 .login-button:disabled {
@@ -234,13 +237,14 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  background: #ffffff;
 }
 
 .login-right h3 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #1e3a8a;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   text-align: center;
   font-family: 'Poppins', sans-serif;
 }
@@ -248,13 +252,13 @@
 .bandeiras-grid-carousel {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 0.75rem;
   width: 100%;
-  max-width: 500px;
-  padding: 1.5rem;
+  max-width: 380px;
+  padding: 1.25rem;
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
 }
 
@@ -262,10 +266,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
+  gap: 0.4rem;
+  padding: 0.6rem;
   background: white;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: all 0.3s ease;
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -282,17 +286,17 @@
 }
 
 .bandeira-grid-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .bandeira-grid-item img {
   width: 100%;
-  max-width: 140px;
+  max-width: 100px;
   height: auto;
-  border-radius: 6px;
+  border-radius: 4px;
   object-fit: contain;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transition: opacity 0.3s ease;
 }
 
@@ -305,11 +309,11 @@
 }
 
 .bandeira-grid-item .bandeira-nome {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 600;
   color: #2d3748;
   text-align: center;
-  line-height: 1.3;
+  line-height: 1.2;
   max-width: 100%;
   word-wrap: break-word;
   font-family: 'Poppins', sans-serif;
@@ -319,14 +323,14 @@
 .carousel-indicators {
   display: flex;
   gap: 0.5rem;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .carousel-indicators .indicator {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #cbd5e0;
   cursor: pointer;
@@ -334,23 +338,22 @@
 }
 
 .carousel-indicators .indicator.active {
-  background: #10b981;
-  width: 28px;
-  border-radius: 5px;
+  background: rgba(5, 150, 105, 0.5);
+  width: 24px;
+  border-radius: 4px;
 }
 
 .carousel-indicators .indicator:hover {
   background: #a0aec0;
 }
 
-/* Rodapé da Página */
+/* Rodapé da Página com Degradê */
 .page-footer {
   width: 100%;
   padding: 1.5rem 2rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(252, 211, 77, 0.08) 100%);
   text-align: center;
   border-top: 1px solid #e2e8f0;
-  backdrop-filter: blur(10px);
 }
 
 .page-footer p {
@@ -367,8 +370,12 @@
   }
 
   .bandeiras-grid-carousel {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 500px;
+    max-width: 350px;
+    gap: 0.65rem;
+  }
+
+  .bandeira-grid-item img {
+    max-width: 90px;
   }
 }
 
@@ -401,7 +408,7 @@
 
   .bandeiras-grid-carousel {
     grid-template-columns: repeat(4, 1fr);
-    max-width: 600px;
+    max-width: 500px;
   }
 }
 
@@ -430,10 +437,15 @@
     max-width: 350px;
   }
 
+  .login-right h3 {
+    font-size: 1.1rem;
+  }
+
   .bandeiras-grid-carousel {
     grid-template-columns: repeat(3, 1fr);
-    max-width: 400px;
-    gap: 0.75rem;
+    max-width: 320px;
+    gap: 0.6rem;
+    padding: 1rem;
   }
 
   .bandeira-grid-item {
@@ -441,21 +453,26 @@
   }
 
   .bandeira-grid-item img {
-    max-width: 100px;
+    max-width: 80px;
   }
 
   .bandeira-grid-item .bandeira-nome {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
 }
 
 @media (max-width: 480px) {
   .bandeiras-grid-carousel {
     grid-template-columns: repeat(2, 1fr);
-    max-width: 280px;
+    max-width: 240px;
+    gap: 0.5rem;
   }
 
   .logo-watermark {
     max-width: 250px;
+  }
+
+  .bandeira-grid-item img {
+    max-width: 70px;
   }
 }
