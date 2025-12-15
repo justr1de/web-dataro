@@ -77,102 +77,112 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      {/* Coluna Esquerda - Logo DATA-RO */}
-      <div className="login-left">
-        <div className="logo-watermark">
-          <img src={logo} alt="DATA-RO" />
+    <div className="login-page-wrapper">
+      {/* Cabeçalho da Página */}
+      <header className="page-header">
+        <h2>DATA-RO INTELIGÊNCIA TERRITORIAL</h2>
+      </header>
+
+      <div className="login-container">
+        {/* Coluna Esquerda - Logo DATA-RO */}
+        <div className="login-left">
+          <div className="logo-watermark">
+            <img src={logo} alt="DATA-RO" />
+          </div>
+        </div>
+
+        {/* Coluna Centro - Formulário */}
+        <div className="login-center">
+          <div className="login-box">
+            <div className="login-header">
+              <h1>RONDÔNIA EM NÚMEROS</h1>
+              <p>Plataforma de Gestão Integrada dos Municípios de Rondônia</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="login-form">
+              {error && <div className="error-message">{error}</div>}
+
+              <div className="form-group">
+                <label htmlFor="email">E-mail</label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="seu@email.com"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="senha">Senha</label>
+                <input
+                  type="password"
+                  id="senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button type="submit" className="login-button" disabled={loading}>
+                {loading ? 'Entrando...' : 'Entrar'}
+              </button>
+            </form>
+
+            {/* Botões adicionais */}
+            <div className="login-actions">
+              <button onClick={handleVoltar} className="action-button secondary">
+                Voltar à página inicial
+              </button>
+              <button onClick={handleContato} className="action-button secondary">
+                Para ter acesso entre em contato conosco
+              </button>
+            </div>
+
+            <div className="login-footer">
+              <p>TODOS OS DIREITOS RESERVADOS</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Coluna Direita - Grid de Bandeiras com Carrossel */}
+        <div className="login-right">
+          <h3>Municípios de Rondônia</h3>
+          <div className="bandeiras-grid-carousel">
+            {getBandeirasAtuais().map((municipio, index) => (
+              <div key={`${currentSet}-${index}`} className="bandeira-grid-item">
+                <img
+                  src={getBandeiraUrl(municipio)}
+                  alt={`Bandeira de ${municipio}`}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.target.src = `https://via.placeholder.com/120x90/667eea/ffffff?text=${encodeURIComponent(municipio.substring(0, 3))}`;
+                  }}
+                />
+                <span className="bandeira-nome">{municipio}</span>
+              </div>
+            ))}
+          </div>
+          
+          {/* Indicadores do carrossel */}
+          <div className="carousel-indicators">
+            {Array.from({ length: totalSets }).map((_, index) => (
+              <span 
+                key={index}
+                className={`indicator ${index === currentSet ? 'active' : ''}`}
+                onClick={() => setCurrentSet(index)}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Coluna Centro - Formulário */}
-      <div className="login-center">
-        <div className="login-box">
-          <div className="login-header">
-            <h1>RONDÔNIA EM NÚMEROS</h1>
-            <p>Plataforma de Gestão Integrada dos Municípios de Rondônia</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="login-form">
-            {error && <div className="error-message">{error}</div>}
-
-            <div className="form-group">
-              <label htmlFor="email">E-mail</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="seu@email.com"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="senha">Senha</label>
-              <input
-                type="password"
-                id="senha"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                required
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button type="submit" className="login-button" disabled={loading}>
-              {loading ? 'Entrando...' : 'Entrar'}
-            </button>
-          </form>
-
-          {/* Botões adicionais */}
-          <div className="login-actions">
-            <button onClick={handleVoltar} className="action-button secondary">
-              Voltar à página inicial
-            </button>
-            <button onClick={handleContato} className="action-button secondary">
-              Para ter acesso entre em contato conosco
-            </button>
-          </div>
-
-          <div className="login-footer">
-            <p>DATA-RO INTELIGÊNCIA TERRITORIAL</p>
-            <p>TODOS OS DIREITOS RESERVADOS</p>
-            <p className="update-info">Informações atualizadas diariamente</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Coluna Direita - Grid de Bandeiras com Carrossel */}
-      <div className="login-right">
-        <h3>Municípios de Rondônia</h3>
-        <div className="bandeiras-grid-carousel">
-          {getBandeirasAtuais().map((municipio, index) => (
-            <div key={`${currentSet}-${index}`} className="bandeira-grid-item">
-              <img
-                src={getBandeiraUrl(municipio)}
-                alt={`Bandeira de ${municipio}`}
-                loading="lazy"
-                onError={(e) => {
-                  e.target.src = `https://via.placeholder.com/120x90/667eea/ffffff?text=${encodeURIComponent(municipio.substring(0, 3))}`;
-                }}
-              />
-              <span className="bandeira-nome">{municipio}</span>
-            </div>
-          ))}
-        </div>
-        
-        {/* Indicadores do carrossel */}
-        <div className="carousel-indicators">
-          {Array.from({ length: totalSets }).map((_, index) => (
-            <span 
-              key={index}
-              className={`indicator ${index === currentSet ? 'active' : ''}`}
-              onClick={() => setCurrentSet(index)}
-            />
-          ))}
-        </div>
-      </div>
+      {/* Rodapé da Página */}
+      <footer className="page-footer">
+        <p>Informações atualizadas diariamente</p>
+      </footer>
     </div>
   );
 };

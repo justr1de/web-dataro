@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
+import { getBandeiraUrl } from '../../utils/bandeirasMap';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -106,7 +107,17 @@ const Dashboard = () => {
                   style={{ cursor: hasPainel ? 'pointer' : 'default' }}
                 >
                   <div className="card-header">
-                    <h3>{municipio.nome}</h3>
+                    <div className="municipio-header-content">
+                      <img 
+                        src={getBandeiraUrl(municipio.nome)} 
+                        alt={`Bandeira de ${municipio.nome}`}
+                        className="municipio-bandeira"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                      <h3>{municipio.nome}</h3>
+                    </div>
                     <span className={`status-badge ${painel?.status || 'pendente'}`}>
                       {painel?.status === 'ativo' ? 'Disponível' : 'Em breve'}
                     </span>

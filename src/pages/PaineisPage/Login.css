@@ -1,8 +1,34 @@
-.login-container {
+/* Wrapper da página completa */
+.login-page-wrapper {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background: #ffffff;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Cabeçalho da Página */
+.page-header {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.page-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* Container principal */
+.login-container {
+  display: flex;
+  flex: 1;
+  background: #ffffff;
 }
 
 /* Coluna Esquerda - Logo DATA-RO */
@@ -17,7 +43,7 @@
 
 .logo-watermark {
   width: 100%;
-  max-width: 500px;
+  max-width: 1000px;
   opacity: 0.5;
   display: flex;
   align-items: center;
@@ -57,7 +83,7 @@
 .login-header h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: #1a202c;
+  color: #1e3a8a;
   margin: 0 0 0.75rem 0;
   letter-spacing: 0.5px;
 }
@@ -177,13 +203,6 @@
   line-height: 1.4;
 }
 
-.login-footer .update-info {
-  margin-top: 0.75rem;
-  font-size: 0.7rem;
-  color: #cbd5e0;
-  font-style: italic;
-}
-
 /* Coluna Direita - Grid de Bandeiras com Carrossel */
 .login-right {
   flex: 1;
@@ -289,8 +308,28 @@
   background: #a0aec0;
 }
 
+/* Rodapé da Página */
+.page-footer {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  text-align: center;
+  border-top: 1px solid #e2e8f0;
+}
+
+.page-footer p {
+  font-size: 0.85rem;
+  color: #718096;
+  margin: 0;
+  font-style: italic;
+}
+
 /* Responsividade */
 @media (max-width: 1400px) {
+  .logo-watermark {
+    max-width: 800px;
+  }
+
   .bandeiras-grid-carousel {
     grid-template-columns: repeat(3, 1fr);
     max-width: 400px;
@@ -313,7 +352,7 @@
   }
 
   .logo-watermark {
-    max-width: 300px;
+    max-width: 500px;
   }
 
   .login-center {
@@ -331,6 +370,10 @@
 }
 
 @media (max-width: 768px) {
+  .page-header h2 {
+    font-size: 1.2rem;
+  }
+
   .login-box {
     padding: 2rem 1.5rem;
   }
@@ -341,6 +384,10 @@
 
   .login-header p {
     font-size: 0.85rem;
+  }
+
+  .logo-watermark {
+    max-width: 350px;
   }
 
   .bandeiras-grid-carousel {
@@ -366,5 +413,9 @@
   .bandeiras-grid-carousel {
     grid-template-columns: repeat(2, 1fr);
     max-width: 280px;
+  }
+
+  .logo-watermark {
+    max-width: 250px;
   }
 }

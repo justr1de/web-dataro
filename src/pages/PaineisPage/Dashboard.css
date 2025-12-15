@@ -197,3 +197,20 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Estilos para bandeira no header do card */
+.municipio-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.municipio-bandeira {
+  width: 50px;
+  height: auto;
+  border-radius: 4px;
+  object-fit: contain;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
