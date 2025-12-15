@@ -125,3 +125,58 @@
     height: calc(100vh - 160px);
   }
 }
+
+/* ========== BANDEIRA NO CABEÇALHO ========== */
+
+.painel-header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.painel-bandeira {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.painel-text {
+  flex: 1;
+}
+
+.painel-text h1 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.painel-text p {
+  font-size: 14px;
+  margin: 4px 0 0 0;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .painel-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .painel-bandeira {
+    width: 100px;
+    height: 75px;
+  }
+  
+  .painel-text h1 {
+    font-size: 20px;
+  }
+  
+  .painel-text p {
+    font-size: 13px;
+  }
+}

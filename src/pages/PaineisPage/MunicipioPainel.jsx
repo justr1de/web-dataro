@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
 import { getPainelConfig } from '../../utils/paineisConfig';
+import { getBandeiraUrl } from '../../utils/bandeirasMap';
 import './MunicipioPainel.css';
 
 const MunicipioPainel = () => {
@@ -101,8 +102,20 @@ const MunicipioPainel = () => {
           ← Voltar
         </button>
         <div className="painel-info">
-          <h1>{municipio.nome}</h1>
-          <p>{painelConfig.titulo}</p>
+          <div className="painel-header-content">
+            <img 
+              src={getBandeiraUrl(municipio.nome)} 
+              alt={`Bandeira de ${municipio.nome}`}
+              className="painel-bandeira"
+              onError={(e) => {
+                e.target.src = `https://via.placeholder.com/120x90/10b981/ffffff?text=${encodeURIComponent(municipio.nome.substring(0, 3))}`;
+              }}
+            />
+            <div className="painel-text">
+              <h1>{municipio.nome}</h1>
+              <p>{painelConfig.titulo}</p>
+            </div>
+          </div>
         </div>
       </header>
 
