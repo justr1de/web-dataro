@@ -58,13 +58,15 @@
   font-size: 2rem;
   font-weight: 700;
   color: #1a202c;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.5px;
 }
 
 .login-header p {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #718096;
   margin: 0;
+  line-height: 1.5;
 }
 
 .login-form {
@@ -171,10 +173,18 @@
 .login-footer p {
   font-size: 0.75rem;
   color: #a0aec0;
-  margin: 0;
+  margin: 0.25rem 0;
+  line-height: 1.4;
 }
 
-/* Coluna Direita - Carrossel de Bandeiras */
+.login-footer .update-info {
+  margin-top: 0.75rem;
+  font-size: 0.7rem;
+  color: #cbd5e0;
+  font-style: italic;
+}
+
+/* Coluna Direita - Grid de Bandeiras com Carrossel */
 .login-right {
   flex: 1;
   display: flex;
@@ -193,56 +203,63 @@
   text-align: center;
 }
 
-.bandeiras-carousel {
-  position: relative;
+.bandeiras-grid-carousel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
   width: 100%;
-  max-width: 400px;
-  height: 350px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 16px;
+  max-width: 450px;
+  padding: 1.5rem;
   background: #f7fafc;
+  border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
-.bandeira-carousel-item {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+.bandeira-grid-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 2rem;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.5s ease-in-out;
-  pointer-events: none;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-.bandeira-carousel-item.active {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.bandeira-carousel-item img {
+.bandeira-grid-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.bandeira-grid-item img {
   width: 100%;
-  max-width: 280px;
+  max-width: 120px;
   height: auto;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
   object-fit: contain;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.bandeira-carousel-item .bandeira-nome {
-  font-size: 1.25rem;
+.bandeira-grid-item .bandeira-nome {
+  font-size: 0.75rem;
   font-weight: 600;
   color: #2d3748;
   text-align: center;
+  line-height: 1.3;
+  max-width: 100%;
+  word-wrap: break-word;
 }
 
 /* Indicadores do carrossel */
@@ -250,14 +267,12 @@
   display: flex;
   gap: 0.5rem;
   margin-top: 1.5rem;
-  flex-wrap: wrap;
   justify-content: center;
-  max-width: 400px;
 }
 
 .carousel-indicators .indicator {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #cbd5e0;
   cursor: pointer;
@@ -266,8 +281,8 @@
 
 .carousel-indicators .indicator.active {
   background: #667eea;
-  width: 24px;
-  border-radius: 4px;
+  width: 28px;
+  border-radius: 5px;
 }
 
 .carousel-indicators .indicator:hover {
@@ -275,6 +290,13 @@
 }
 
 /* Responsividade */
+@media (max-width: 1400px) {
+  .bandeiras-grid-carousel {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 400px;
+  }
+}
+
 @media (max-width: 1200px) {
   .login-container {
     flex-direction: column;
@@ -302,8 +324,9 @@
     padding: 2rem 1rem 3rem 1rem;
   }
 
-  .bandeiras-carousel {
-    height: 300px;
+  .bandeiras-grid-carousel {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 500px;
   }
 }
 
@@ -313,18 +336,35 @@
   }
 
   .login-header h1 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 
-  .bandeiras-carousel {
-    height: 250px;
+  .login-header p {
+    font-size: 0.85rem;
   }
 
-  .bandeira-carousel-item img {
-    max-width: 200px;
+  .bandeiras-grid-carousel {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 350px;
+    gap: 0.75rem;
   }
 
-  .bandeira-carousel-item .bandeira-nome {
-    font-size: 1.1rem;
+  .bandeira-grid-item {
+    padding: 0.5rem;
+  }
+
+  .bandeira-grid-item img {
+    max-width: 90px;
+  }
+
+  .bandeira-grid-item .bandeira-nome {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .bandeiras-grid-carousel {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 280px;
   }
 }

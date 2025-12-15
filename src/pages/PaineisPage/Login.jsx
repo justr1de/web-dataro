@@ -10,30 +10,41 @@ const Login = () => {
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [currentBandeiraIndex, setCurrentBandeiraIndex] = useState(0);
+  const [currentSet, setCurrentSet] = useState(0);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Lista de 24 municípios para o carrossel
-  const municipiosDestaque = [
+  // Lista completa de 36 municípios
+  const todosMunicipios = [
     'Ariquemes', 'Cacoal', 'Jaru', 'Pimenta Bueno',
     'Buritis', 'Espigão d\'Oeste', 'Alta Floresta d\'Oeste', 'Alto Alegre dos Parecis',
     'Alto Paraíso', 'Alvorada d\'Oeste', 'Cacaulândia', 'Campo Novo de Rondônia',
     'Candeias do Jamari', 'Cerejeiras', 'Chupinguaia', 'Corumbiara',
     'Itapuã do Oeste', 'Machadinho d\'Oeste', 'Monte Negro', 'Nova Mamoré',
-    'Nova União', 'Novo Horizonte do Oeste', 'Parecis', 'Seringueiras'
+    'Nova União', 'Novo Horizonte do Oeste', 'Parecis', 'Seringueiras',
+    'Alvorada d\'Oeste', 'Cabixi', 'Castanheiras', 'Colorado do Oeste',
+    'Costa Marques', 'Cujubim', 'Governador Jorge Teixeira', 'Guajará-Mirim',
+    'Ministro Andreazza', 'Mirante da Serra', 'Nova Brasilândia d\'Oeste', 'Ouro Preto do Oeste'
   ];
 
-  // Carrossel automático - troca a cada 3 segundos
+  // Dividir em grupos de 12 bandeiras
+  const bandeirasPerSet = 12;
+  const totalSets = Math.ceil(todosMunicipios.length / bandeirasPerSet);
+
+  // Carrossel automático - troca o conjunto a cada 5 segundos
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBandeiraIndex((prevIndex) => 
-        (prevIndex + 1) % municipiosDestaque.length
-      );
-    }, 3000);
+      setCurrentSet((prevSet) => (prevSet + 1) % totalSets);
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [municipiosDestaque.length]);
+  }, [totalSets]);
+
+  // Obter bandeiras do conjunto atual
+  const getBandeirasAtuais = () => {
+    const startIndex = currentSet * bandeirasPerSet;
+    return todosMunicipios.slice(startIndex, startIndex + bandeirasPerSet);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,7 +68,6 @@ const Login = () => {
 
   const handleContato = () => {
     navigate('/');
-    // Após navegar, rolar até a seção de contato
     setTimeout(() => {
       const contatoSection = document.getElementById('contato');
       if (contatoSection) {
@@ -79,8 +89,8 @@ const Login = () => {
       <div className="login-center">
         <div className="login-box">
           <div className="login-header">
-            <h1>Painéis de BI</h1>
-            <p>CIMCERO - Rondônia em Números</p>
+            <h1>RONDÔNIA EM NÚMEROS</h1>
+            <p>Plataforma de Gestão Integrada dos Municípios de Rondônia</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
@@ -126,26 +136,25 @@ const Login = () => {
           </div>
 
           <div className="login-footer">
-            <p>DATA-RO INTELIGÊNCIA TERRITORIAL. TODOS OS DIREITOS RESERVADOS</p>
+            <p>DATA-RO INTELIGÊNCIA TERRITORIAL</p>
+            <p>TODOS OS DIREITOS RESERVADOS</p>
+            <p className="update-info">Informações atualizadas diariamente</p>
           </div>
         </div>
       </div>
 
-      {/* Coluna Direita - Carrossel de Bandeiras */}
+      {/* Coluna Direita - Grid de Bandeiras com Carrossel */}
       <div className="login-right">
         <h3>Municípios de Rondônia</h3>
-        <div className="bandeiras-carousel">
-          {municipiosDestaque.map((municipio, index) => (
-            <div 
-              key={index} 
-              className={`bandeira-carousel-item ${index === currentBandeiraIndex ? 'active' : ''}`}
-            >
+        <div className="bandeiras-grid-carousel">
+          {getBandeirasAtuais().map((municipio, index) => (
+            <div key={`${currentSet}-${index}`} className="bandeira-grid-item">
               <img
                 src={getBandeiraUrl(municipio)}
                 alt={`Bandeira de ${municipio}`}
                 loading="lazy"
                 onError={(e) => {
-                  e.target.src = `https://via.placeholder.com/200x150/667eea/ffffff?text=${encodeURIComponent(municipio.substring(0, 3))}`;
+                  e.target.src = `https://via.placeholder.com/120x90/667eea/ffffff?text=${encodeURIComponent(municipio.substring(0, 3))}`;
                 }}
               />
               <span className="bandeira-nome">{municipio}</span>
@@ -155,11 +164,11 @@ const Login = () => {
         
         {/* Indicadores do carrossel */}
         <div className="carousel-indicators">
-          {municipiosDestaque.map((_, index) => (
+          {Array.from({ length: totalSets }).map((_, index) => (
             <span 
               key={index}
-              className={`indicator ${index === currentBandeiraIndex ? 'active' : ''}`}
-              onClick={() => setCurrentBandeiraIndex(index)}
+              className={`indicator ${index === currentSet ? 'active' : ''}`}
+              onClick={() => setCurrentSet(index)}
             />
           ))}
         </div>
