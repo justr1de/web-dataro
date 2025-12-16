@@ -45,8 +45,9 @@
 
 .logo-text {
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .logo-text-line1 {
