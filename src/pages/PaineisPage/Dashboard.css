@@ -75,7 +75,7 @@
 }
 
 .logo-cimcero {
-  width: 140px;
+  width: 175px;
   height: auto;
   object-fit: contain;
   margin-bottom: 8px;
@@ -751,4 +751,63 @@
 .card-body strong {
   color: #2d3748;
   font-weight: 600;
+}
+
+
+/* ========== INFORMAÇÕES DAS PREFEITURAS NOS CARDS ========== */
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+.info-row span {
+  flex: 1;
+  word-break: break-word;
+}
+
+.info-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: #10b981;
+  margin-top: 2px;
+}
+
+.email-row {
+  margin-bottom: 12px;
+}
+
+.email-text {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* Ajuste do card-body para melhor aproveitamento */
+.card-body {
+  padding: 12px 16px 16px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ajuste da seção de bandeira */
+.card-bandeira-section {
+  height: 120px;
+  padding: 12px;
+}
+
+/* Ajuste do header do card */
+.card-header {
+  padding: 12px 16px 8px 16px;
+}
+
+.card-header h3 {
+  font-size: 15px;
+  line-height: 1.2;
 }
