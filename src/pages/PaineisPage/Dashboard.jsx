@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
-import { getBandeiraUrl } from '../../utils/bandeirasMap';
+import { getBandeira } from '../../utils/bandeirasData';
+import AdminPanel from '../../components/AdminPanel/AdminPanel';
+import ChangePasswordModal from '../../components/ChangePasswordModal/ChangePasswordModal';
+import LazyImage from '../../components/LazyImage/LazyImage';
 import logo from '../../assets/logo.png';
 import logoCimcero from '../../assets/logo-cimcero.png';
 import './Dashboard.css';
@@ -12,6 +15,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -43,7 +48,16 @@ const Dashboard = () => {
         .order('nome', { ascending: true });
 
       if (error) throw error;
-      setMunicipios(data || []);
+      
+      // Normalizar paineis_bi para sempre ser um array
+      const normalizedData = (data || []).map(municipio => ({
+        ...municipio,
+        paineis_bi: municipio.paineis_bi 
+          ? (Array.isArray(municipio.paineis_bi) ? municipio.paineis_bi : [municipio.paineis_bi])
+          : []
+      }));
+      
+      setMunicipios(normalizedData);
     } catch (error) {
       console.error('Erro ao carregar municípios:', error);
     } finally {
@@ -51,55 +65,56 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleViewPainel = (municipio) => {
+    navigate(`/paineis/${municipio.id}`, { state: { municipio } });
+  };
+
+  const handleLogout = async () => {
+    await logout();
     navigate('/paineis/login');
   };
 
-  const filteredMunicipios = municipios.filter(m =>
-    m.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filtrar municípios com base no termo de busca
+  const filteredMunicipios = municipios.filter((municipio) =>
+    municipio.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Paginação
+  // Calcular paginação
   const totalPages = Math.ceil(filteredMunicipios.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentMunicipios = filteredMunicipios.slice(startIndex, endIndex);
 
-  const handleViewPainel = (municipio) => {
-    if (municipio.paineis_bi && municipio.paineis_bi.length > 0) {
-      navigate(`/paineis/municipio/${municipio.id}`);
-    }
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Reset para página 1 quando buscar
+  // Reset para primeira página quando o termo de busca mudar
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Carregando municípios...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="header-content">
-          <div className="header-left">
-            <img src={logo} alt="DATA-RO" className="header-logo" />
-            <div className="header-text">
-              <span className="header-brand">DATA-RO</span>
-              <span className="header-subtitle">INTELIGÊNCIA TERRITORIAL</span>
-            </div>
+          <div className="header-logos">
+            <img src={logo} alt="Logo DataRO" className="header-logo" />
+            <img src={logoCimcero} alt="Logo CIMCERO" className="header-logo-cimcero" />
           </div>
-          <div className="header-center">
-            <img src={logoCimcero} alt="CIMCERO" className="logo-cimcero" />
-            <h1>Painéis de BI - CIMCERO</h1>
-            <p>Rondônia em Números</p>
-          </div>
+          <h1>Painéis de BI - CIMCERO</h1>
           <div className="header-actions">
             <span className="user-name">Olá, {user?.nome}</span>
+            {user?.role === 'admin' && (
+              <button onClick={() => setShowAdminPanel(true)} className="admin-button">
+                🔧 Admin
+              </button>
+            )}
             <button onClick={handleLogout} className="logout-button">
               Sair
             </button>
@@ -155,9 +170,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {loading ? (
-          <div className="loading">Carregando municípios...</div>
-        ) : filteredMunicipios.length === 0 ? (
+        {filteredMunicipios.length === 0 ? (
           <div className="no-results-container">
             <svg className="no-results-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/>
@@ -182,6 +195,7 @@ const Dashboard = () => {
               {currentMunicipios.map((municipio) => {
                 const hasPainel = municipio.paineis_bi && municipio.paineis_bi.length > 0;
                 const painel = hasPainel ? municipio.paineis_bi[0] : null;
+                const bandeira = getBandeira(municipio.nome);
 
                 return (
                   <div
@@ -191,14 +205,26 @@ const Dashboard = () => {
                     style={{ cursor: hasPainel ? 'pointer' : 'default' }}
                   >
                     <div className="card-bandeira-section">
-                      <img 
-                        src={getBandeiraUrl(municipio.nome)} 
-                        alt={`Bandeira de ${municipio.nome}`}
-                        className="municipio-bandeira-large"
-                        onError={(e) => {
-                          e.target.src = `https://via.placeholder.com/200x150/10b981/ffffff?text=${encodeURIComponent(municipio.nome.substring(0, 3))}`;
-                        }}
-                      />
+                      {bandeira ? (
+                        <LazyImage
+                          src={bandeira} 
+                          alt={`Bandeira de ${municipio.nome}`}
+                          className="municipio-bandeira-large"
+                          placeholder={
+                            <div className="bandeira-placeholder">
+                              <span className="municipio-sigla">
+                                {municipio.nome.substring(0, 3)}
+                              </span>
+                            </div>
+                          }
+                        />
+                      ) : (
+                        <div className="bandeira-placeholder">
+                          <span className="municipio-sigla">
+                            {municipio.nome.substring(0, 3)}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div className="card-header">
                       <h3>{municipio.nome}</h3>
@@ -208,50 +234,44 @@ const Dashboard = () => {
                     </div>
                     <div className="card-body">
                       <p><strong>Prefeito(a):</strong> {municipio.prefeito}</p>
-                      <p><strong>CNPJ:</strong> {municipio.cnpj}</p>
-                      {hasPainel && (
-                        <p className="painel-title">
-                          <strong>Painel:</strong> {painel.titulo}
+                      {hasPainel ? (
+                        <p className="painel-info">
+                          <svg className="icon-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                          Painel disponível
+                        </p>
+                      ) : (
+                        <p className="painel-info pending">
+                          <svg className="icon-clock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                          </svg>
+                          Painel em breve
                         </p>
                       )}
                     </div>
-                    {!hasPainel && (
-                      <div className="card-footer">
-                        <p className="no-painel-message">Painel em desenvolvimento</p>
-                      </div>
-                    )}
                   </div>
                 );
               })}
             </div>
 
-            {/* Paginação */}
             {totalPages > 1 && (
               <div className="pagination">
                 <button
-                  className="pagination-button"
-                  onClick={() => handlePageChange(currentPage - 1)}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
+                  className="pagination-button"
                 >
                   ← Anterior
                 </button>
-
-                <div className="pagination-numbers">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <button
-                      key={page}
-                      className={`pagination-number ${page === currentPage ? 'active' : ''}`}
-                      onClick={() => handlePageChange(page)}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-
+                <span className="pagination-info">
+                  Página {currentPage} de {totalPages}
+                </span>
                 <button
-                  className="pagination-button"
-                  onClick={() => handlePageChange(currentPage + 1)}
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
+                  className="pagination-button"
                 >
                   Próxima →
                 </button>
@@ -260,6 +280,21 @@ const Dashboard = () => {
           </>
         )}
       </main>
+
+      {/* Modals */}
+      {showAdminPanel && (
+        <AdminPanel onClose={() => setShowAdminPanel(false)} />
+      )}
+
+      {(showChangePassword || user?.primeiro_acesso) && (
+        <ChangePasswordModal 
+          user={user} 
+          onPasswordChanged={() => {
+            setShowChangePassword(false);
+            logout();
+          }} 
+        />
+      )}
     </div>
   );
 };
