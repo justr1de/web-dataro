@@ -107,11 +107,13 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="header-content">
-          <div className="header-logos">
-            <img src={logo} alt="Logo DataRO" className="header-logo" />
-            <img src={logoCimcero} alt="Logo CIMCERO" className="header-logo-cimcero" />
+          <div className="header-left">
+            <img src={logo} alt="Logo DataRO" className="header-logo-dataro" />
           </div>
-          <h1>Painéis de BI - CIMCERO</h1>
+          <div className="header-center">
+            <img src={logoCimcero} alt="Logo CIMCERO" className="logo-cimcero" />
+            <h1>Painéis de BI</h1>
+          </div>
           <div className="header-actions">
             <span className="user-name">Olá, {user?.nome}</span>
             {user?.role === 'admin' && (

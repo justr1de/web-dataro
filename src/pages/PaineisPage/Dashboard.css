@@ -32,7 +32,13 @@
 }
 
 .header-logo {
-  width: 62.5px; /* 50px + 25% = 62.5px */
+  width: 62.5px;
+  height: auto;
+  object-fit: contain;
+}
+
+.header-logo-dataro {
+  width: 125px; /* Dobro do tamanho original (62.5px x 2) */
   height: auto;
   object-fit: contain;
 }
@@ -67,10 +73,10 @@
 }
 
 .logo-cimcero {
-  width: 120px;
+  width: 140px;
   height: auto;
   object-fit: contain;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .header-center h1 {
@@ -88,7 +94,29 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+}
+
+/* Botão Admin */
+.admin-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.admin-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .user-name {
