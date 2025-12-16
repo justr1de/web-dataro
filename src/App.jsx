@@ -19,6 +19,9 @@ import MunicipioPainel from './pages/PaineisPage/MunicipioPainel';
 // Contexto de autenticação
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
+// Contexto de tema
+import { ThemeProvider } from './contexts/ThemeContext';
+
 import './App.css';
 
 // Componente para rotas protegidas - usa o contexto de autenticação
@@ -82,8 +85,9 @@ const PublicLayout = ({ children }) => {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
         <Routes>
           {/* Rotas públicas */}
           <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
@@ -119,8 +123,9 @@ function App() {
           {/* Rota padrão - redireciona para home */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </Router>
-    </AuthProvider>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

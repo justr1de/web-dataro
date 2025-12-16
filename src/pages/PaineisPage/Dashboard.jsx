@@ -8,6 +8,7 @@ import ChangePasswordModal from '../../components/ChangePasswordModal/ChangePass
 import LazyImage from '../../components/LazyImage/LazyImage';
 import logo from '../../assets/logo.png';
 import logoCimcero from '../../assets/logo-cimcero.png';
+import ThemeToggle from '../../components/ThemeToggle';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -119,6 +120,7 @@ const Dashboard = () => {
             <h1>Painéis de BI</h1>
           </div>
           <div className="header-actions">
+            <ThemeToggle />
             <span className="user-name">Olá, {user?.nome}</span>
             {user?.role === 'admin' && (
               <button onClick={() => setShowAdminPanel(true)} className="admin-button">

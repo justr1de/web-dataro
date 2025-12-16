@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './index.css';
 import logo from '../../assets/logo.png';
+import ThemeToggle from '../ThemeToggle';
 
 const Header = ({ onContactClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -57,10 +58,13 @@ const Header = ({ onContactClick }) => {
           </ul>
         </nav>
 
-        <div className="menu-toggle" onClick={toggleMenu}>
-          <div className="bar"></div>
-          <div className="bar"></div>
-          <div className="bar"></div>
+        <div className="header-actions">
+          <ThemeToggle />
+          <div className="menu-toggle" onClick={toggleMenu}>
+            <div className="bar"></div>
+            <div className="bar"></div>
+            <div className="bar"></div>
+          </div>
         </div>
       </div>
     </header>

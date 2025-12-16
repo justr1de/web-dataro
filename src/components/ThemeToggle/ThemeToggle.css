@@ -1,0 +1,70 @@
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--theme-toggle-bg, rgba(0, 0, 0, 0.1));
+  color: var(--theme-toggle-color, #1e3a8a);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.theme-toggle:hover {
+  background: var(--theme-toggle-hover-bg, rgba(0, 0, 0, 0.15));
+  transform: scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-icon {
+  transition: transform 0.3s ease;
+}
+
+.theme-icon.sun {
+  color: #fbbf24;
+}
+
+.theme-icon.moon {
+  color: #6366f1;
+}
+
+.theme-toggle:hover .theme-icon {
+  transform: rotate(15deg);
+}
+
+/* Variações de tamanho */
+.theme-toggle.small {
+  width: 36px;
+  height: 36px;
+}
+
+.theme-toggle.small svg {
+  width: 16px;
+  height: 16px;
+}
+
+.theme-toggle.large {
+  width: 52px;
+  height: 52px;
+}
+
+.theme-toggle.large svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Tema escuro */
+[data-theme="dark"] .theme-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

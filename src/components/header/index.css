@@ -11,9 +11,16 @@
 }
 
 .header-container.scrolled {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid #e0e0e0;
+  background-color: var(--bg-primary, #fff);
+  box-shadow: var(--shadow-md, 0 2px 4px rgba(0, 0, 0, 0.05));
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+/* Header Actions (botão de tema + menu toggle) */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .header-content {
@@ -53,7 +60,7 @@
 .logo-text-line1 {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #1e3a8a;
+  color: var(--blue-primary, #1e3a8a);
   font-family: 'Poppins', sans-serif;
   letter-spacing: 0.5px;
 }
@@ -61,18 +68,18 @@
 .logo-text-line2 {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #1e3a8a;
+  color: var(--blue-primary, #1e3a8a);
   font-family: 'Poppins', sans-serif;
   letter-spacing: 0.3px;
   text-transform: uppercase;
 }
 
 .header-container.scrolled .logo-text-line1 {
-  color: #1e3a8a;
+  color: var(--blue-primary, #1e3a8a);
 }
 
 .header-container.scrolled .logo-text-line2 {
-  color: #1e3a8a;
+  color: var(--blue-primary, #1e3a8a);
 }
 
 .header-container.scrolled .logo {
@@ -84,7 +91,7 @@
 }
 .nav-menu a {
   text-decoration: none;
-  color: #333; /* Cor inicial branca */
+  color: var(--text-primary, #333);
   font-weight: 600;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.9rem;
@@ -93,13 +100,13 @@
   cursor: pointer;
 }
 .header-container.scrolled .nav-menu a {
-  color: #333; /* Cor escura ao rolar */
+  color: var(--text-primary, #333);
 }
 .nav-menu a:hover {
-  color: #a0a0a0;
+  color: var(--accent-primary, #10b981);
 }
 .header-container.scrolled .nav-menu a:hover {
-  color: #0056b3;
+  color: var(--accent-primary, #10b981);
 }
 
 .menu-toggle {
@@ -107,12 +114,12 @@
 }
 .menu-toggle .bar {
   width: 25px; height: 3px;
-  background-color: #fff; /* Cor inicial branca */
+  background-color: var(--text-primary, #333);
   margin: 5px 0;
   transition: 0.4s;
 }
 .header-container.scrolled .menu-toggle .bar {
-  background-color: #333; /* Cor escura ao rolar */
+  background-color: var(--text-primary, #333);
 }
 
 
@@ -158,7 +165,7 @@
     left: 0;
     width: 100%;
     height: 100vh; /* Ocupa a tela inteira */
-    background-color: rgba(255, 255, 255, 0.95); /* Fundo branco com leve transparência */
+    background-color: var(--glass, rgba(255, 255, 255, 0.95));
     backdrop-filter: blur(8px); /* Efeito de vidro fosco, super moderno */
     
     display: flex;
@@ -183,8 +190,12 @@
   }
 
   .nav-menu a {
-      color: #333; /* Links sempre escuros dentro do menu */
+      color: var(--text-primary, #333);
       font-size: 1.8rem; /* Fonte bem grande para fácil leitura e toque */
+  }
+  
+  .header-actions {
+    gap: 0.5rem;
   }
 }
 
