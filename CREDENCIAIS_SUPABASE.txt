@@ -1,0 +1,81 @@
+========================================
+CREDENCIAIS DE ACESSO - SUPABASE
+========================================
+
+Data: 15/12/2025
+Projeto: Rondônia em Números
+Database: RO_BI_DATABASE
+
+----------------------------------------
+ACESSO AO SUPABASE DASHBOARD
+----------------------------------------
+
+URL: https://supabase.com/dashboard/project/csuzmlajnhfauxqgczmu
+Email: eduardo1892007@gmail.com
+Senha: @Dudu280111
+
+----------------------------------------
+INFORMAÇÕES DO PROJETO
+----------------------------------------
+
+Project ID: csuzmlajnhfauxqgczmu
+Project Name: RO_BI_DATABASE
+Region: South America (São Paulo)
+
+----------------------------------------
+ACESSO DIRETO AO SQL EDITOR
+----------------------------------------
+
+URL: https://supabase.com/dashboard/project/csuzmlajnhfauxqgczmu/editor
+
+----------------------------------------
+TABELAS PRINCIPAIS
+----------------------------------------
+
+1. usuarios
+   - Armazena usuários do sistema
+   - Campos: id, nome, email, senha_hash, ativo, created_at
+   - PENDENTE: adicionar colunas 'role' e 'primeiro_acesso'
+
+2. municipios
+   - Armazena os 48 municípios do CIMCERO
+   - Campos: id, nome, populacao, area, ativo, created_at
+
+3. paineis_bi
+   - Armazena URLs dos painéis Power BI
+   - Campos: id, municipio_id, titulo, url_powerbi, ativo, created_at
+   - Relação: 1:1 com municipios
+
+4. acessos (se existir)
+   - Registra acessos dos usuários
+   - Campos: id, usuario_id, municipio_id, data_acesso
+
+----------------------------------------
+SCRIPTS SQL PENDENTES
+----------------------------------------
+
+Execute nesta ordem:
+
+1. scripts/add_admin_fields.sql
+   - Adiciona colunas role e primeiro_acesso
+   - CRÍTICO: Habilita o login
+
+2. scripts/fix_guajara_mirim_nome.sql
+   - Corrige nome do município
+
+3. scripts/enable_rls.sql
+   - Ativa Row Level Security
+   - Cria políticas de segurança
+
+----------------------------------------
+OBSERVAÇÕES
+----------------------------------------
+
+- Sempre faça backup antes de executar scripts SQL
+- Use o SQL Editor do Supabase para executar os scripts
+- Verifique os resultados após cada execução
+- Em caso de erro, consulte os logs do Supabase
+
+========================================
+FIM DO ARQUIVO
+========================================
