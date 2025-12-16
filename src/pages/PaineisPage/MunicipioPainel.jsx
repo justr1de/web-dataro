@@ -10,18 +10,21 @@ const MunicipioPainel = () => {
   const { id } = useParams();
   const [municipio, setMunicipio] = useState(null);
   const [painelConfig, setPainelConfig] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const [pageLoading, setPageLoading] = useState(true);
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Aguardar o AuthContext carregar antes de verificar autenticação
+    if (authLoading) return;
+    
     if (!user) {
       navigate('/paineis/login');
       return;
     }
 
     fetchMunicipioPainel();
-  }, [id, user, navigate]);
+  }, [id, user, authLoading, navigate]);
 
   const fetchMunicipioPainel = async () => {
     try {
@@ -42,7 +45,7 @@ const MunicipioPainel = () => {
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
     } finally {
-      setLoading(false);
+      setPageLoading(false);
     }
   };
 
@@ -50,7 +53,8 @@ const MunicipioPainel = () => {
     navigate('/paineis/dashboard');
   };
 
-  if (loading) {
+  // Mostrar loading enquanto AuthContext carrega
+  if (authLoading || pageLoading) {
     return (
       <div className="painel-container">
         <div className="loading">Carregando painel...</div>
