@@ -55,7 +55,8 @@
 }
 
 .logo-watermark img {
-  width: 100%;
+  width: 200%;
+  max-width: 600px;
   height: auto;
   object-fit: contain;
 }
