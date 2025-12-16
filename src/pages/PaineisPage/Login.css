@@ -28,19 +28,17 @@
   font-style: italic;
 }
 
-/* Container principal - Layout centralizado */
+/* Container principal - Layout simétrico em 3 colunas iguais */
 .login-container {
   display: flex;
   flex: 1;
   background: #ffffff;
-  align-items: center;
-  justify-content: center;
-  gap: 4rem;
-  padding: 2rem;
+  align-items: stretch;
 }
 
-/* Coluna Esquerda - Logo DATA-RO (aumentada 75%) */
+/* Coluna Esquerda - Logo DATA-RO (450px, 75% opacidade) */
 .login-left {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,15 +53,16 @@
 }
 
 .logo-watermark img {
-  width: 1050px !important;
-  min-width: 1050px !important;
+  width: 450px !important;
+  min-width: 450px !important;
   height: auto;
   object-fit: contain;
-  opacity: 0.85;
+  opacity: 0.75;
 }
 
 /* Coluna Centro - Formulário (centralizado) */
 .login-center {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -232,6 +231,7 @@
 
 /* Coluna Direita - Grid de Bandeiras com Carrossel */
 .login-right {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
