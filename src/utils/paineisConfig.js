@@ -52,6 +52,18 @@ export const paineisConfig = {
     titulo: 'Painel de Costa Marques',
     powerbi_url: 'https://app.powerbi.com/view?r=eyJrIjoiMWViNTQ4NWQtOWUyNy00MTViLTg4NjYtOWZmMzQ3MDk4MmE3IiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ny1iM2NmLWJmZjA0YmI0YTFlNCJ9',
     ativo: true
+  },
+  
+  // Jaru
+  'Jaru': {
+    titulo: 'Inteligência Territorial de Jaru',
+    powerbi_url: 'https://app.powerbi.com/view?r=eyJrIjoiNzBmNDM0OTUtNjg5Zi00ZTE3LTg5MTgtYzIwYTk4NGJhOTI0IiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ny1iM2NmLWJmZjA0YmI0YTFlNCJ9',
+    ativo: true
+  },
+  'JARU': {
+    titulo: 'Inteligência Territorial de Jaru',
+    powerbi_url: 'https://app.powerbi.com/view?r=eyJrIjoiNzBmNDM0OTUtNjg5Zi00ZTE3LTg5MTgtYzIwYTk4NGJhOTI0IiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ny1iM2NmLWJmZjA0YmI0YTFlNCJ9',
+    ativo: true
   }
 };
 
