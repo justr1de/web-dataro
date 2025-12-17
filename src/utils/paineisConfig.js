@@ -64,6 +64,18 @@ export const paineisConfig = {
     titulo: 'Inteligência Territorial de Jaru',
     powerbi_url: 'https://app.powerbi.com/view?r=eyJrIjoiNzBmNDM0OTUtNjg5Zi00ZTE3LTg5MTgtYzIwYTk4NGJhOTI0IiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ny1iM2NmLWJmZjA0YmI0YTFlNCJ9',
     ativo: true
+  },
+  
+  // Vale do Anari
+  'Vale do Anari': {
+    titulo: 'Painel de Vale do Anari',
+    powerbi_url: 'https://app.powerbi.com/view?r=eyJrIjoiNjExODg3MWMtYTE2Yy00M2UwLThiYmQtYTlkOWJkNGUyNDMxIiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ny1iM2NmLWJmZjA0YmI0YTFlNCJ9&pageName=3a087bc40a8b00d207e0',
+    ativo: true
+  },
+  'VALE DO ANARI': {
+    titulo: 'Painel de Vale do Anari',
+    powerbi_url: 'https://app.powerbi.com/view?r=eyJrIjoiNjExODg3MWMtYTE2Yy00M2UwLThiYmQtYTlkOWJkNGUyNDMxIiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ny1iM2NmLWJmZjA0YmI0YTFlNCJ9&pageName=3a087bc40a8b00d207e0',
+    ativo: true
   }
 };
 
