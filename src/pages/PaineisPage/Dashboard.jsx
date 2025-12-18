@@ -169,7 +169,7 @@ const Dashboard = () => {
                 <span className="no-results">Nenhum município encontrado</span>
               ) : (
                 <span>
-                  <strong>{filteredMunicipios.length}</strong> município(s) encontrado(s)
+                  <strong>{filteredMunicipios.length}</strong> municípios | <strong>{filteredMunicipios.filter(m => m.paineis_bi && m.paineis_bi.length > 0 && m.paineis_bi.some(p => p.status === 'ativo')).length}</strong> painéis ativos
                   {searchTerm && <span className="search-term"> para "{searchTerm}"</span>}
                 </span>
               )}
