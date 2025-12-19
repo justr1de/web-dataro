@@ -19,6 +19,9 @@ import MunicipioPainel from './pages/PaineisPage/MunicipioPainel';
 // Contexto de autenticação
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
+// Componente para scroll automático ao topo
+import ScrollToTop from './components/ScrollToTop';
+
 // Contexto de tema
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -88,6 +91,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <Router>
+        <ScrollToTop />
         <Routes>
           {/* Rotas públicas */}
           <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
