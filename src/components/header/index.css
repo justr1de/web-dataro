@@ -170,42 +170,51 @@
 /* ========== RESPONSIVIDADE MOBILE ========== */
 
 @media (max-width: 768px) {
+  /* Header com layout flexbox: logo esquerda, controles direita */
   .header-content {
-    min-height: 70px;
+    min-height: 60px;
     padding: 0 1rem;
-    position: relative;
+    display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   .header-container.scrolled .header-content {
-    min-height: 60px;
+    min-height: 55px;
   }
 
-  /* Logo container centralizado */
+  /* Logo à ESQUERDA */
   .logo-container {
-    flex: 1;
-    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
-  /* Logo menor em mobile */
   .logo {
-    height: 45px;
-  }
-
-  .header-container.scrolled .logo {
     height: 40px;
   }
 
+  .header-container.scrolled .logo {
+    height: 36px;
+  }
+
   .logo-text {
-    gap: 0.1rem;
+    gap: 0;
   }
 
   .logo-text-line1 {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .logo-text-line2 {
-    font-size: 0.5rem;
+    font-size: 0.45rem;
+  }
+
+  /* Controles à DIREITA (tema + menu hambúrguer) */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   /* Mostrar menu hambúrguer */
@@ -213,19 +222,19 @@
     display: block;
   }
 
-  /* Header actions - posicionado à direita */
-  .header-actions {
-    gap: 0.5rem;
-    flex-shrink: 0;
+  .menu-toggle .bar {
+    width: 22px;
+    height: 2px;
+    margin: 4px 0;
   }
 
-  /* Menu de navegação - SIDEBAR PARCIAL à direita */
+  /* Menu de navegação - SIDEBAR à direita */
   .nav-menu {
     position: fixed;
     top: 0;
     right: 0;
-    width: 280px;
-    max-width: 80%;
+    width: 260px;
+    max-width: 75vw;
     height: 100vh;
     background-color: var(--bg-primary, #ffffff);
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
@@ -233,7 +242,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    padding-top: 80px;
+    padding-top: 70px;
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     z-index: 999;
@@ -258,14 +267,14 @@
     border-bottom: none;
   }
 
-  /* LETRAS DO MENU - tamanho adequado */
+  /* Tamanho adequado do texto do menu */
   .nav-menu a {
     display: block;
     color: var(--text-primary, #333);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    padding: 1rem 1.5rem;
-    letter-spacing: 0.5px;
+    padding: 1rem 1.25rem;
+    letter-spacing: 0.3px;
     transition: background-color 0.2s ease;
   }
 
@@ -273,14 +282,14 @@
     background-color: var(--bg-secondary, #f7fafc);
   }
 
-  /* Botão Rondônia em Números - estilo especial no menu mobile */
+  /* Botão Rondônia em Números no menu mobile */
   .nav-menu .paineis-link {
     display: block;
-    font-size: 0.85rem;
-    padding: 1rem 1.5rem;
-    margin: 1rem;
+    font-size: 0.8rem;
+    padding: 0.9rem 1.25rem;
+    margin: 0.75rem;
     text-align: center;
-    border-radius: 8px;
+    border-radius: 6px;
     background: linear-gradient(135deg, #059669 0%, #047857 100%);
     color: white !important;
     border: none;
@@ -289,26 +298,6 @@
   .nav-menu .paineis-link:hover {
     transform: none;
     background: linear-gradient(135deg, #047857 0%, #065f46 100%);
-  }
-
-  /* Overlay escuro atrás do menu */
-  .nav-menu::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: -1;
-  }
-
-  .nav-menu.open::before {
-    opacity: 1;
-    visibility: visible;
   }
 }
 
@@ -319,35 +308,35 @@
   }
 
   .logo-container {
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .logo {
-    height: 40px;
+    height: 35px;
   }
 
   .header-container.scrolled .logo {
-    height: 38px;
+    height: 32px;
   }
 
   .logo-text-line1 {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
   }
 
   .logo-text-line2 {
-    font-size: 0.5rem;
+    font-size: 0.4rem;
   }
 
   .header-actions {
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .nav-menu {
-    width: 250px;
+    width: 220px;
   }
 
   .nav-menu a {
-    font-size: 0.85rem;
-    padding: 0.9rem 1.25rem;
+    font-size: 0.8rem;
+    padding: 0.85rem 1rem;
   }
 }
