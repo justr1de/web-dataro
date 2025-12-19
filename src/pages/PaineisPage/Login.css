@@ -387,6 +387,15 @@
   font-style: italic;
 }
 
+.page-footer .copyright {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.5px;
+  color: var(--text-muted, #a0aec0);
+}
+
 /* Responsividade */
 @media (max-width: 1800px) {
   .logo-watermark img {

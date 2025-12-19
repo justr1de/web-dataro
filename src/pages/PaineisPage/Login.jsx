@@ -178,10 +178,7 @@ const Login = () => {
               </button>
             </div>
 
-            <div className="login-footer">
-              <p>TODOS OS DIREITOS RESERVADOS</p>
             </div>
-          </div>
         </div>
 
         {/* Coluna Direita - Grid de Bandeiras com Carrossel */}
@@ -221,6 +218,7 @@ const Login = () => {
       {/* Rodapé da Página */}
       <footer className="page-footer">
         <p>Informações atualizadas diariamente</p>
+        <p className="copyright">TODOS OS DIREITOS RESERVADOS</p>
       </footer>
     </div>
   );
