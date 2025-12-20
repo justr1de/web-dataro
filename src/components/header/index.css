@@ -195,23 +195,23 @@
   }
 
   .logo {
-    height: 38px;
+    height: 50px;
   }
 
   .header-container.scrolled .logo {
-    height: 34px;
+    height: 45px;
   }
 
   .logo-text {
-    gap: 0;
+    gap: 0.1rem;
   }
 
   .logo-text-line1 {
-    font-size: 0.75rem;
+    font-size: 1rem;
   }
 
   .logo-text-line2 {
-    font-size: 0.42rem;
+    font-size: 0.55rem;
   }
 
   /* Controles à DIREITA - na mesma linha do header */
@@ -318,19 +318,19 @@
   }
 
   .logo {
-    height: 32px;
+    height: 42px;
   }
 
   .header-container.scrolled .logo {
-    height: 30px;
+    height: 38px;
   }
 
   .logo-text-line1 {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
   }
 
   .logo-text-line2 {
-    font-size: 0.38rem;
+    font-size: 0.48rem;
   }
 
   .header-actions {
