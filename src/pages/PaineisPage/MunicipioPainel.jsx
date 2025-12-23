@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabaseClient';
 import { getBandeiraUrl } from '../../utils/bandeirasMap';
 import './MunicipioPainel.css';
+import logoDataRO from '../../assets/logo-dataro-transparente.png';
 
 const MunicipioPainel = () => {
   const { id } = useParams();
@@ -130,6 +131,10 @@ const MunicipioPainel = () => {
               <h1>{municipio.nome}</h1>
               <p>{painel.titulo}</p>
             </div>
+          </div>
+          <div className="painel-copyright">
+            <img src={logoDataRO} alt="DATA-RO" className="copyright-logo" />
+            <span>DESENVOLVIDO POR DATA-RO INTELIGÊNCIA TERRITORIAL. TODOS OS DIREITOS RESERVADOS.</span>
           </div>
         </div>
       </header>

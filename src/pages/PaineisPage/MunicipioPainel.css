@@ -31,6 +31,13 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
+.painel-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .painel-info h1 {
   font-size: 24px;
   margin: 0;
@@ -41,6 +48,32 @@
   font-size: 14px;
   margin: 4px 0 0 0;
   opacity: 0.9;
+}
+
+/* ========== COPYRIGHT NO CABEÇALHO ========== */
+
+.painel-copyright {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 16px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.copyright-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.painel-copyright span {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.95;
+  max-width: 200px;
+  line-height: 1.3;
 }
 
 .painel-main {
@@ -123,6 +156,26 @@
 
   .powerbi-iframe {
     height: calc(100vh - 160px);
+  }
+  
+  .painel-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .painel-copyright {
+    padding: 6px 12px;
+  }
+  
+  .copyright-logo {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .painel-copyright span {
+    font-size: 8px;
+    max-width: 150px;
   }
 }
 
