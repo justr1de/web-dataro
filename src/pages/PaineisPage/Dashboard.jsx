@@ -299,7 +299,7 @@ const Dashboard = () => {
             {totalPages > 1 && (
               <div className="pagination">
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  onClick={() => { setCurrentPage((prev) => Math.max(prev - 1, 1)); window.scrollTo(0, 0); }}
                   disabled={currentPage === 1}
                   className="pagination-button"
                 >
@@ -309,7 +309,7 @@ const Dashboard = () => {
                   Página {currentPage} de {totalPages}
                 </span>
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  onClick={() => { setCurrentPage((prev) => Math.min(prev + 1, totalPages)); window.scrollTo(0, 0); }}
                   disabled={currentPage === totalPages}
                   className="pagination-button"
                 >
