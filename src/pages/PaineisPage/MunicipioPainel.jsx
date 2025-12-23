@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { supabase } from '../../utils/supabaseClient';
 import { getBandeiraUrl } from '../../utils/bandeirasMap';
+import ThemeToggle from '../../components/ThemeToggle';
 import './MunicipioPainel.css';
 import logoDataRO from '../../assets/logo-dataro-transparente.png';
 
@@ -11,8 +13,12 @@ const MunicipioPainel = () => {
   const [municipio, setMunicipio] = useState(null);
   const [painel, setPainel] = useState(null);
   const [pageLoading, setPageLoading] = useState(true);
+  const [iframeLoading, setIframeLoading] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { user, loading: authLoading } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
+  const iframeContainerRef = useRef(null);
 
   useEffect(() => {
     // Aguardar o AuthContext carregar antes de verificar autenticação
@@ -61,11 +67,56 @@ const MunicipioPainel = () => {
     navigate('/paineis/dashboard');
   };
 
+  const handleIframeLoad = () => {
+    setIframeLoading(false);
+  };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      if (iframeContainerRef.current?.requestFullscreen) {
+        iframeContainerRef.current.requestFullscreen();
+        setIsFullscreen(true);
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  // Skeleton Loading Component
+  const SkeletonLoader = () => (
+    <div className="skeleton-container">
+      <div className="skeleton-header">
+        <div className="skeleton-bandeira"></div>
+        <div className="skeleton-text">
+          <div className="skeleton-title"></div>
+          <div className="skeleton-subtitle"></div>
+        </div>
+      </div>
+      <div className="skeleton-iframe">
+        <div className="skeleton-spinner">
+          <div className="spinner"></div>
+          <p>Carregando painel...</p>
+        </div>
+      </div>
+    </div>
+  );
+
   // Mostrar loading enquanto AuthContext carrega
   if (authLoading || pageLoading) {
     return (
       <div className="painel-container">
-        <div className="loading">Carregando painel...</div>
+        <SkeletonLoader />
       </div>
     );
   }
@@ -87,11 +138,18 @@ const MunicipioPainel = () => {
     return (
       <div className="painel-container">
         <header className="painel-header">
-          <button onClick={handleBack} className="back-button">
-            ← Voltar
-          </button>
-          <div className="painel-info">
-            <h1>{municipio.nome}</h1>
+          <div className="header-left">
+            <button onClick={handleBack} className="back-button">
+              ← Voltar
+            </button>
+            <nav className="breadcrumb">
+              <Link to="/paineis/dashboard">Dashboard</Link>
+              <span className="breadcrumb-separator">›</span>
+              <span>{municipio.nome}</span>
+            </nav>
+          </div>
+          <div className="header-right">
+            <ThemeToggle />
           </div>
         </header>
         <main className="painel-main">
@@ -110,9 +168,25 @@ const MunicipioPainel = () => {
   return (
     <div className="painel-container">
       <header className="painel-header">
-        <button onClick={handleBack} className="back-button">
-          ← Voltar
-        </button>
+        <div className="header-top">
+          <div className="header-left">
+            <button onClick={handleBack} className="back-button">
+              ← Voltar
+            </button>
+            <nav className="breadcrumb">
+              <Link to="/paineis/dashboard">Dashboard</Link>
+              <span className="breadcrumb-separator">›</span>
+              <span>{municipio.nome}</span>
+            </nav>
+          </div>
+          <div className="header-right">
+            <button onClick={toggleFullscreen} className="fullscreen-button" title={isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}>
+              {isFullscreen ? '⛶' : '⛶'}
+            </button>
+            <ThemeToggle />
+          </div>
+        </div>
+        
         <div className="painel-info">
           <div className="painel-header-content">
             {getBandeiraUrl(municipio.nome) ? (
@@ -134,20 +208,51 @@ const MunicipioPainel = () => {
           </div>
           <div className="painel-copyright">
             <img src={logoDataRO} alt="DATA-RO" className="copyright-logo" />
-            <span>DESENVOLVIDO POR DATA-RO INTELIGÊNCIA TERRITORIAL. TODOS OS DIREITOS RESERVADOS.</span>
+            <span>© DESENVOLVIDO POR DATA-RO INTELIGÊNCIA TERRITORIAL.<br/>TODOS OS DIREITOS RESERVADOS.</span>
           </div>
         </div>
       </header>
 
-      <main className="painel-main">
+      <main className="painel-main" ref={iframeContainerRef}>
+        {iframeLoading && (
+          <div className="iframe-loading-overlay">
+            <div className="spinner"></div>
+            <p>Carregando painel de BI...</p>
+          </div>
+        )}
         <iframe
           src={painel.url_powerbi}
           frameBorder="0"
           allowFullScreen={true}
-          className="powerbi-iframe"
+          className={`powerbi-iframe ${iframeLoading ? 'loading' : ''}`}
           title={`Painel de BI - ${municipio.nome}`}
+          onLoad={handleIframeLoad}
         />
       </main>
+
+      <footer className="painel-footer">
+        <div className="footer-content">
+          <div className="footer-info">
+            <img src={logoDataRO} alt="DATA-RO" className="footer-logo" />
+            <div className="footer-text">
+              <strong>DATA-RO Inteligência Territorial</strong>
+              <p>Plataforma de Gestão Integrada dos Municípios de Rondônia</p>
+            </div>
+          </div>
+          <div className="footer-contact">
+            <p><strong>Contato:</strong></p>
+            <p>contato@dataro-it.com.br</p>
+            <p>www.dataro-it.com.br</p>
+          </div>
+          <div className="footer-links">
+            <Link to="/">Página Inicial</Link>
+            <Link to="/paineis/dashboard">Dashboard</Link>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p>© {new Date().getFullYear()} DATA-RO Inteligência Territorial. Todos os direitos reservados.</p>
+        </div>
+      </footer>
     </div>
   );
 };
