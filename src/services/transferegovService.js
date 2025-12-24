@@ -259,6 +259,20 @@ function getObjetoAleatorio() {
 /**
  * Gera dados mockados de emendas parlamentares para RO
  */
+// Lista de municípios de RO para evitar dependência circular
+const MUNICIPIOS_RO_LISTA = [
+  'Alta Floresta do Oeste', 'Alto Alegre dos Parecis', 'Alto Paraíso', 'Alvorada do Oeste',
+  'Ariquemes', 'Buritis', 'Cabixi', 'Cacaulândia', 'Cacoal', 'Campo Novo de Rondônia',
+  'Candeias do Jamari', 'Castanheiras', 'Cerejeiras', 'Colorado do Oeste', 'Corumbiara',
+  'Costa Marques', 'Cujubim', 'Espigão do Oeste', 'Governador Jorge Teixeira', 'Guajará-Mirim',
+  'Itapuã do Oeste', 'Jaru', 'Ji-Paraná', 'Machadinho do Oeste', 'Ministro Andreazza',
+  'Mirante da Serra', 'Monte Negro', 'Nova Brasilândia do Oeste', 'Nova Mamoré', 'Nova União',
+  'Novo Horizonte do Oeste', 'Ouro Preto do Oeste', 'Parecis', 'Pimenta Bueno', 'Pimenteiras do Oeste',
+  'Porto Velho', 'Presidente Médici', 'Primavera de Rondônia', 'Rio Crespo', 'Rolim de Moura',
+  'Santa Luzia do Oeste', 'São Felipe do Oeste', 'São Francisco do Guaporé', 'São Miguel do Guaporé',
+  'Seringueiras', 'Teixeirópolis', 'Theobroma', 'Urupá', 'Vale do Anari', 'Vale do Paraíso', 'Vilhena'
+];
+
 export function getMockEmendasRO() {
   const parlamentares = [
     { nome: 'Senador Confúcio Moura', partido: 'MDB', tipo: 'Individual' },
@@ -271,7 +285,7 @@ export function getMockEmendasRO() {
   ];
   
   const emendas = [];
-  const municipios = Object.keys(require('./portalTransparenciaService').MUNICIPIOS_RO || {});
+  const municipios = MUNICIPIOS_RO_LISTA;
   
   for (let i = 0; i < 30; i++) {
     const parlamentar = parlamentares[Math.floor(Math.random() * parlamentares.length)];
