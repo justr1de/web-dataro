@@ -12,6 +12,7 @@ import ThemeToggle from '../../components/ThemeToggle';
 import AIAssistant from '../../components/AIAssistant';
 import TransferenciasDashboard from '../../components/TransferenciasDashboard';
 import { MinisteriosSidebar } from '../../components/Sidebar';
+import UserManagement from '../../components/UserManagement';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -25,6 +26,7 @@ const Dashboard = () => {
   const [showMinisteriosSidebar, setShowMinisteriosSidebar] = useState(false);
   const [showTransferenciasDashboard, setShowTransferenciasDashboard] = useState(false);
   const [selectedMunicipioTransferencias, setSelectedMunicipioTransferencias] = useState(null);
+  const [showUserManagement, setShowUserManagement] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -134,9 +136,14 @@ const Dashboard = () => {
           <div className="header-actions">
             <ThemeToggle />
             <span className="user-name">Olá, {user?.nome}</span>
-            {user?.role === 'admin' && (
+            {(user?.role === 'admin' || user?.role === 'superadmin') && (
               <button onClick={() => setShowAdminPanel(true)} className="admin-button">
                 🔧 Admin
+              </button>
+            )}
+            {user?.role === 'superadmin' && (
+              <button onClick={() => setShowUserManagement(true)} className="admin-button users-button">
+                👥 Usuários
               </button>
             )}
             <button onClick={handleLogout} className="logout-button">
@@ -395,6 +402,11 @@ const Dashboard = () => {
             />
           </div>
         </div>
+      )}
+
+      {/* User Management Modal - Apenas para SuperAdmin */}
+      {showUserManagement && user?.role === 'superadmin' && (
+        <UserManagement onClose={() => setShowUserManagement(false)} />
       )}
     </div>
   );
