@@ -122,6 +122,33 @@
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
+/* Botão Assistente IA */
+.ai-assistant-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+}
+
+.ai-assistant-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.4);
+}
+
+.ai-assistant-button:active {
+  transform: translateY(0);
+}
+
 .user-name {
   font-size: 18px;
   font-weight: 500;

@@ -9,6 +9,7 @@ import LazyImage from '../../components/LazyImage/LazyImage';
 import logo from '../../assets/logo.png';
 import logoCimcero from '../../assets/logo-cimcero.png';
 import ThemeToggle from '../../components/ThemeToggle';
+import AIAssistant from '../../components/AIAssistant';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -120,6 +122,13 @@ const Dashboard = () => {
             <h1>Painéis de BI</h1>
           </div>
           <div className="header-actions">
+            <button 
+              onClick={() => setShowAIAssistant(true)} 
+              className="ai-assistant-button"
+              title="Assistente de IA"
+            >
+              🤖 Assistente IA
+            </button>
             <ThemeToggle />
             <span className="user-name">Olá, {user?.nome}</span>
             {user?.role === 'admin' && (
@@ -333,6 +342,14 @@ const Dashboard = () => {
             setShowChangePassword(false);
             logout();
           }} 
+        />
+      )}
+
+      {/* AI Assistant Modal */}
+      {showAIAssistant && (
+        <AIAssistant 
+          municipios={municipios}
+          onClose={() => setShowAIAssistant(false)} 
         />
       )}
     </div>
