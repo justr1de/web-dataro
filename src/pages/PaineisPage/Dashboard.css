@@ -44,7 +44,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(2, 80, 50, 0.10); /* Overlay verde com 10% para dar 90% de transparência à imagem */
+  background: rgba(2, 80, 50, 0.20); /* Overlay verde com 20% para dar 80% de transparência à imagem */
   z-index: 0;
 }
 
