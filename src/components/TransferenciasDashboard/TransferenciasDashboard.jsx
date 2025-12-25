@@ -47,7 +47,18 @@ const TransferenciasDashboard = ({ municipio, onClose }) => {
         console.log('Dados reais obtidos do Supabase!');
         setDados(dadosSupabase);
         setUsandoDadosReais(true);
-        setConvenios(getMockConvenios(municipio));
+        
+        // Usar dados de convênios do Supabase se disponíveis
+        if (dadosSupabase.convenios && dadosSupabase.convenios.valorTotal > 0) {
+          setConvenios({
+            totalConvenios: dadosSupabase.convenios.ativos,
+            valorTotalConvenios: dadosSupabase.convenios.valorTotal,
+            valorLiberado: dadosSupabase.convenios.valorLiberado,
+            convenios: dadosSupabase.convenios.lista || getMockConvenios(municipio).convenios
+          });
+        } else {
+          setConvenios(getMockConvenios(municipio));
+        }
       } else {
         // Fallback para dados mockados se não encontrar no Supabase
         console.log('Usando dados mockados como fallback');
@@ -303,13 +314,13 @@ const TransferenciasDashboard = ({ municipio, onClose }) => {
                   <h3>Convênios ({anoSelecionado})</h3>
                   <p className="valor">
                     {formatarMoeda(
+                      convenios?.valorTotalConvenios || 
                       dadosAnoAtual?.convenios?.valor || 
-                      dados?.convenios?.totalGeral ||
-                      dados?.convenios?.valorTotal
+                      dados?.convenios?.valorTotal || 0
                     )}
                   </p>
                   <span className="detalhe">
-                    {dadosAnoAtual?.convenios?.quantidade || dados?.convenios?.quantidade || dados?.convenios?.ativos || 0} convênios
+                    {convenios?.totalConvenios || dados?.convenios?.ativos || 0} convênios
                   </span>
                 </div>
               </div>
@@ -352,7 +363,7 @@ const TransferenciasDashboard = ({ municipio, onClose }) => {
                   (dadosAnoAtual?.bpc?.valor || dados?.transferencias?.bpc?.valor || dados?.resumo?.bpc?.valor || 0) +
                   (dadosAnoAtual?.fnde?.valor || dados?.transferencias?.fnde?.valor || dados?.resumo?.fnde?.valor || 0) +
                   (dadosAnoAtual?.fns?.valor || dados?.transferencias?.fns?.valor || dados?.resumo?.fns?.valor || 0) +
-                  (dadosAnoAtual?.convenios?.valor || dados?.convenios?.totalGeral || dados?.convenios?.valorTotal || 0) +
+                  (convenios?.valorTotalConvenios || dadosAnoAtual?.convenios?.valor || dados?.convenios?.valorTotal || 0) +
                   (dadosAnoAtual?.emendas?.valor || dados?.emendas?.valorTotal || 0)
                 )}
               </p>
