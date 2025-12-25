@@ -47,8 +47,8 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 2px; /* Reduzido para aproximar texto da logo */
-  margin-left: 0; /* Removido margin negativo */
+  gap: 0; /* Sem espaço - texto colado à logo */
+  margin-left: 0;
 }
 
 .header-logo {
