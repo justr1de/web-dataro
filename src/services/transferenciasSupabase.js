@@ -94,6 +94,32 @@ function encontrarCodigoIBGE(municipio) {
 }
 
 /**
+ * Busca dados de convênios de um município do Supabase
+ */
+async function buscarConveniosSupabase(codigo) {
+  try {
+    const { data, error } = await supabase
+      .from('convenios_resumo_municipio')
+      .select('*')
+      .eq('municipio_codigo', codigo)
+      .single();
+    
+    if (error || !data) {
+      return { ativos: 0, valorTotal: 0, valorLiberado: 0 };
+    }
+    
+    return {
+      ativos: data.total_convenios || 0,
+      valorTotal: parseFloat(data.valor_total) || 0,
+      valorLiberado: parseFloat(data.valor_liberado) || 0
+    };
+  } catch (error) {
+    console.error('Erro ao buscar convênios:', error);
+    return { ativos: 0, valorTotal: 0, valorLiberado: 0 };
+  }
+}
+
+/**
  * Busca dados de transferências de um município do Supabase
  */
 export async function buscarTransferenciasSupabase(municipio) {
@@ -107,6 +133,7 @@ export async function buscarTransferenciasSupabase(municipio) {
   const { codigo, nome } = info;
   
   try {
+    // Buscar transferências federais
     const { data, error } = await supabase
       .from('transferencias_federais')
       .select('*')
@@ -122,6 +149,9 @@ export async function buscarTransferenciasSupabase(municipio) {
       console.log('Nenhum dado encontrado para:', municipio);
       return null;
     }
+    
+    // Buscar convênios
+    const conveniosData = await buscarConveniosSupabase(codigo);
     
     // Organizar dados por ano
     const dadosPorAno = {};
@@ -171,8 +201,9 @@ export async function buscarTransferenciasSupabase(municipio) {
         fns: dadosAnoRecente.fns || { valor: 0, programas: ['PAB', 'MAC', 'ESF'] }
       },
       convenios: {
-        ativos: 0,
-        valorTotal: 0,
+        ativos: conveniosData.ativos,
+        valorTotal: conveniosData.valorTotal,
+        valorLiberado: conveniosData.valorLiberado,
         lista: []
       },
       emendas: {
