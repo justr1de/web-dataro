@@ -137,9 +137,6 @@ const Dashboard = () => {
           <div className="header-actions">
             <ThemeToggle />
             <span className="user-name">Olá, {user?.nome}</span>
-            <button onClick={handleLogout} className="logout-button">
-              🚪 Sair
-            </button>
             {(user?.role === 'admin' || user?.role === 'superadmin') && (
               <div className={`admin-dropdown ${showAdminDropdown ? 'open' : ''}`}>
                 <button 
@@ -162,6 +159,9 @@ const Dashboard = () => {
                 )}
               </div>
             )}
+            <button onClick={handleLogout} className="logout-button">
+              🚪 Sair
+            </button>
           </div>
         </div>
       </header>
