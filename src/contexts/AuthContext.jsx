@@ -105,7 +105,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('paineis_user', JSON.stringify(userData));
       
       // Verificar se é senha padrão (requer troca)
-      const requerTrocaSenha = data.senha_hash === '123456' || data.primeiro_acesso;
+      // Exceção para conta principal do sistema
+      const isContaPrincipal = data.email === 'contato@dataro-it.com.br';
+      const requerTrocaSenha = !isContaPrincipal && (data.senha_hash === '123456' || data.primeiro_acesso);
       
       return { success: true, requerTrocaSenha };
     } catch (error) {

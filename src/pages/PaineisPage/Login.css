@@ -147,19 +147,21 @@
 }
 
 .form-group label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #000000 !important;
   letter-spacing: 0.3px;
+  display: block;
+  margin-bottom: 0.25rem;
 }
 
 /* Modo claro - garantir visibilidade das labels */
 [data-theme="light"] .form-group label {
-  color: #0f172a;
+  color: #000000 !important;
 }
 
 [data-theme="dark"] .form-group label {
-  color: #e2e8f0;
+  color: #ffffff !important;
 }
 
 .form-group input {
