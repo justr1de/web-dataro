@@ -133,18 +133,33 @@ function normalizarNomeMunicipio(nome) {
  * Função auxiliar para encontrar código IBGE do município (case-insensitive)
  */
 function encontrarCodigoIBGE(municipio) {
+  // Busca direta primeiro
   if (MUNICIPIOS_RO[municipio]) {
     return { codigo: MUNICIPIOS_RO[municipio], nome: municipio };
   }
   
+  // Normalizar o nome do município para busca case-insensitive
   const municipioNormalizado = normalizarNomeMunicipio(municipio);
+  console.log('Buscando município normalizado:', municipioNormalizado);
   
   for (const [nome, codigo] of Object.entries(MUNICIPIOS_RO)) {
-    if (normalizarNomeMunicipio(nome) === municipioNormalizado) {
+    const nomeNormalizado = normalizarNomeMunicipio(nome);
+    if (nomeNormalizado === municipioNormalizado) {
+      console.log('Município encontrado:', nome, '- Código:', codigo);
       return { codigo, nome };
     }
   }
   
+  // Tentativa adicional: buscar por contenção parcial
+  for (const [nome, codigo] of Object.entries(MUNICIPIOS_RO)) {
+    const nomeNormalizado = normalizarNomeMunicipio(nome);
+    if (municipioNormalizado.includes(nomeNormalizado) || nomeNormalizado.includes(municipioNormalizado)) {
+      console.log('Município encontrado por contenção:', nome, '- Código:', codigo);
+      return { codigo, nome };
+    }
+  }
+  
+  console.error('Município não encontrado após normalização:', municipio);
   return null;
 }
 
