@@ -47,7 +47,7 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 8px; /* Reduzido de 16px para 8px para aproximar texto da logo */
+  gap: 4px; /* Reduzido ainda mais para aproximar texto da logo */
   margin-left: -50px; /* Mover 5cm (~50px) para a esquerda */
 }
 
@@ -70,14 +70,14 @@
 }
 
 .header-brand {
-  font-size: 24px;
+  font-size: 18px; /* Reduzido de 24px para 18px */
   font-weight: 700;
   line-height: 1;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
 }
 
 .header-subtitle {
-  font-size: 14px;
+  font-size: 11px; /* Reduzido de 14px para 11px */
   font-weight: 500;
   opacity: 0.95;
   line-height: 1;
@@ -103,18 +103,18 @@
 }
 
 .header-title-group h1 {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 32px; /* Aumentado de 28px para 32px para maior destaque */
+  font-weight: 800; /* Aumentado de 700 para 800 */
   margin: 0;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .header-title-subtitle {
-  font-size: 16px;
-  font-weight: 500;
-  opacity: 0.9;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  font-size: 18px; /* Aumentado de 16px para 18px para maior destaque */
+  font-weight: 600; /* Aumentado de 500 para 600 */
+  opacity: 1; /* Aumentado de 0.9 para 1 */
+  letter-spacing: 1.5px; /* Aumentado de 1px para 1.5px */
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .logo-cimcero {
@@ -330,9 +330,9 @@
 }
 
 .user-name {
-  font-size: 18px;
-  font-weight: 500;
-  opacity: 1;
+  font-size: 14px; /* Reduzido de 18px para 14px */
+  font-weight: 400; /* Reduzido de 500 para 400 */
+  opacity: 0.9; /* Reduzido de 1 para 0.9 */
   text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
 }
 
