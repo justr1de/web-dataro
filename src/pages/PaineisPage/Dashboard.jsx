@@ -131,8 +131,10 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="header-center">
-            <img src={logoCimcero} alt="Logo CIMCERO" className="logo-cimcero" />
-            <h1>Painéis de BI</h1>
+            <div className="header-title-group">
+              <h1>Painéis de BI</h1>
+              <span className="header-title-subtitle">Rondônia em Números</span>
+            </div>
           </div>
           <div className="header-actions">
             <ThemeToggle />
