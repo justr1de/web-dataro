@@ -66,8 +66,9 @@
 /* Header da Sidebar */
 .sidebar-header {
   padding: 24px 20px;
-  background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+  background: #ffffff;
   text-align: center;
+  color: #1b5e20;
 }
 
 .sidebar-header h2 {
@@ -96,7 +97,8 @@
   display: inline-block;
   margin-top: 8px;
   padding: 4px 12px;
-  background: rgba(255, 255, 255, 0.2);
+  background: #1b5e20;
+  color: #ffffff;
   border-radius: 12px;
   font-size: 11px;
   font-weight: 500;
