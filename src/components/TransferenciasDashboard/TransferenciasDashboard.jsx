@@ -652,7 +652,7 @@ const TransferenciasDashboard = ({ municipio, onClose }) => {
                   <tbody>
                     {emendas.emendas.map((emenda, index) => (
                       <tr key={index}>
-                        <td>{emenda.autor}</td>
+                        <td>{emenda.parlamentar || emenda.autor}</td>
                         <td>{emenda.partido}</td>
                         <td>{emenda.tipo}</td>
                         <td>{formatarMoeda(emenda.valor)}</td>
