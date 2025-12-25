@@ -1070,3 +1070,47 @@
 [data-theme="light"] .resumo-item .label {
   color: rgba(0, 0, 0, 0.5);
 }
+
+/* Estilos para lista de parlamentares no card de emendas */
+.parlamentares-lista {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.parlamentares-lista small {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.parlamentares-lista ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.parlamentares-lista li {
+  font-size: 0.8rem;
+  color: #fff;
+  padding: 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.parlamentares-lista li::before {
+  content: "• ";
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Card de emendas com altura ajustável */
+.card-emendas {
+  min-height: 150px;
+}
+
+.card-emendas .card-info {
+  display: flex;
+  flex-direction: column;
+}

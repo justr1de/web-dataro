@@ -344,6 +344,19 @@ const TransferenciasDashboard = ({ municipio, onClose }) => {
                   <span className="detalhe">
                     {dadosAnoAtual?.emendas?.quantidade || dados?.emendas?.quantidade || 0} emendas
                   </span>
+                  {(dados?.emendas?.parlamentares?.length > 0 || dados?.resumo?.emendas?.parlamentares?.length > 0) && (
+                    <div className="parlamentares-lista">
+                      <small>Parlamentares:</small>
+                      <ul>
+                        {(dados?.emendas?.parlamentares || dados?.resumo?.emendas?.parlamentares || []).slice(0, 3).map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                        {(dados?.emendas?.parlamentares?.length > 3 || dados?.resumo?.emendas?.parlamentares?.length > 3) && (
+                          <li>e mais {(dados?.emendas?.parlamentares?.length || dados?.resumo?.emendas?.parlamentares?.length || 0) - 3}...</li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
