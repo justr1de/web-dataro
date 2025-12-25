@@ -142,6 +142,16 @@ export async function buscarTransferenciasSupabase(municipio) {
           valor: parseFloat(item.valor) || 0,
           beneficiarios: item.quantidade_beneficiarios || 0
         };
+      } else if (item.programa === 'Fundo Nacional de Saúde') {
+        dadosPorAno[ano].fns = {
+          valor: parseFloat(item.valor) || 0,
+          programas: ['PAB', 'MAC', 'ESF']
+        };
+      } else if (item.programa === 'Fundo Nacional de Desenvolvimento da Educação') {
+        dadosPorAno[ano].fnde = {
+          valor: parseFloat(item.valor) || 0,
+          programas: ['PDDE', 'PNAE', 'PNATE']
+        };
       }
     });
     
@@ -157,9 +167,8 @@ export async function buscarTransferenciasSupabase(municipio) {
       resumo: {
         bolsaFamilia: dadosAnoRecente.bolsaFamilia || { valor: 0, beneficiarios: 0 },
         bpc: dadosAnoRecente.bpc || { valor: 0, beneficiarios: 0 },
-        // FNDE, FNS, Convênios e Emendas ainda são mockados
-        fnde: { valor: 0, programas: ['PDDE', 'PNAE', 'PNATE'] },
-        fns: { valor: 0, programas: ['PAB', 'MAC', 'ESF'] }
+        fnde: dadosAnoRecente.fnde || { valor: 0, programas: ['PDDE', 'PNAE', 'PNATE'] },
+        fns: dadosAnoRecente.fns || { valor: 0, programas: ['PAB', 'MAC', 'ESF'] }
       },
       convenios: {
         ativos: 0,
