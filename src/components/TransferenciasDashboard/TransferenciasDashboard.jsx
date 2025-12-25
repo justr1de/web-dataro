@@ -73,8 +73,25 @@ const TransferenciasDashboard = ({ municipio, onClose }) => {
       // Programas disponíveis (dados estáticos)
       setProgramas(getMockProgramasDisponiveis());
       
-      // Emendas (ainda mockadas)
-      setEmendas(getMockEmendasRO());
+      // Usar emendas do Supabase se disponíveis
+      if (dadosSupabase && dadosSupabase.emendas && dadosSupabase.emendas.quantidade > 0) {
+        setEmendas({
+          totalEmendas: dadosSupabase.emendas.quantidade,
+          valorTotal: dadosSupabase.emendas.valorTotal,
+          valorPago: dadosSupabase.emendas.valorPago,
+          emendas: dadosSupabase.emendas.parlamentares.map((p, i) => ({
+            id: i + 1,
+            parlamentar: p.nome,
+            partido: p.partido,
+            tipo: 'Individual',
+            valor: p.valor,
+            valorPago: p.valorPago,
+            situacao: p.situacao || 'Paga'
+          }))
+        });
+      } else {
+        setEmendas(getMockEmendasRO());
+      }
       
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -331,22 +348,23 @@ const TransferenciasDashboard = ({ municipio, onClose }) => {
                   <h3>Emendas Parlamentares</h3>
                   <p className="valor">
                     {formatarMoeda(
+                      emendas?.valorTotal || 
                       dadosAnoAtual?.emendas?.valor || 
-                      dados?.emendas?.valorTotal
+                      dados?.emendas?.valorTotal || 0
                     )}
                   </p>
                   <span className="detalhe">
-                    {dadosAnoAtual?.emendas?.quantidade || dados?.emendas?.quantidade || 0} emendas
+                    {emendas?.totalEmendas || emendas?.emendas?.length || dadosAnoAtual?.emendas?.quantidade || dados?.emendas?.quantidade || 0} emendas
                   </span>
-                  {(dados?.emendas?.parlamentares?.length > 0 || dados?.resumo?.emendas?.parlamentares?.length > 0) && (
+                  {emendas?.emendas?.length > 0 && (
                     <div className="parlamentares-lista">
                       <small>Parlamentares:</small>
                       <ul>
-                        {(dados?.emendas?.parlamentares || dados?.resumo?.emendas?.parlamentares || []).slice(0, 3).map((p, i) => (
+                        {[...new Set(emendas.emendas.map(e => e.parlamentar))].slice(0, 3).map((p, i) => (
                           <li key={i}>{p}</li>
                         ))}
-                        {(dados?.emendas?.parlamentares?.length > 3 || dados?.resumo?.emendas?.parlamentares?.length > 3) && (
-                          <li>e mais {(dados?.emendas?.parlamentares?.length || dados?.resumo?.emendas?.parlamentares?.length || 0) - 3}...</li>
+                        {[...new Set(emendas.emendas.map(e => e.parlamentar))].length > 3 && (
+                          <li>e mais {[...new Set(emendas.emendas.map(e => e.parlamentar))].length - 3}...</li>
                         )}
                       </ul>
                     </div>
@@ -364,7 +382,7 @@ const TransferenciasDashboard = ({ municipio, onClose }) => {
                   (dadosAnoAtual?.fnde?.valor || dados?.transferencias?.fnde?.valor || dados?.resumo?.fnde?.valor || 0) +
                   (dadosAnoAtual?.fns?.valor || dados?.transferencias?.fns?.valor || dados?.resumo?.fns?.valor || 0) +
                   (convenios?.valorTotalConvenios || dadosAnoAtual?.convenios?.valor || dados?.convenios?.valorTotal || 0) +
-                  (dadosAnoAtual?.emendas?.valor || dados?.emendas?.valorTotal || 0)
+                  (emendas?.valorTotal || dadosAnoAtual?.emendas?.valor || dados?.emendas?.valorTotal || 0)
                 )}
               </p>
               {usandoDadosReais && (
