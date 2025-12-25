@@ -74,6 +74,16 @@
   margin: 0;
   font-size: 20px;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.logo-governo-federal {
+  width: 40px;
+  height: auto;
+  vertical-align: middle;
 }
 
 .sidebar-header p {

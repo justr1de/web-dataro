@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './MinisteriosSidebar.css';
+import logoGovernoFederal from '../../assets/logo-governo-federal.png';
 
 const MinisteriosSidebar = ({ isOpen, onToggle }) => {
   const [expandedMinisterio, setExpandedMinisterio] = useState(null);
@@ -390,7 +391,7 @@ const MinisteriosSidebar = ({ isOpen, onToggle }) => {
       {/* Sidebar */}
       <aside className={`ministerios-sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <h2>🏛️ Ministérios</h2>
+          <h2><img src={logoGovernoFederal} alt="Governo Federal" className="logo-governo-federal" /> Ministérios</h2>
           <p>Programas e Transferências Federais</p>
           <span className="ministerio-count">{ministerios.length} ministérios disponíveis</span>
         </div>
