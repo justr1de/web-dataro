@@ -140,9 +140,11 @@
 
 /* ========== BANDEIRA NO CABEÇALHO ========== */
 .painel-header-content {
+  position: relative; /* permite centralizar a bandeira com absoluta */
   display: flex;
   align-items: center;
   gap: 20px;
+  min-height: 110px; /* espaço para bandeira centralizada */
 }
 
 .painel-bandeira {
@@ -153,10 +155,17 @@
   border: 2px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
+  position: absolute; /* centraliza horizontalmente no header */
+  left: 50%;
+  transform: translateX(-50%);
+  top: 16px;
 }
 
 .painel-text {
   flex: 1;
+  text-align: left; /* alinha textos à esquerda */
+  padding-left: 2cm; /* recuo solicitado */
+  margin-top: 48px; /* evita sobreposição com a bandeira central */
 }
 
 .painel-text h1 {
@@ -203,14 +212,12 @@
   font-weight: 700;
 }
 
-
 .site-link {
   color: #ffffff;
   text-decoration: underline;
   transition: all 0.2s ease;
   font-weight: 800;
 }
-
 
 .site-prefeitura-header {
   width: 100%;
@@ -257,6 +264,7 @@
   color: #fff;
   border-color: #1e40af;
 }
+}
 
 .site-link:hover {
   color: #a5d6a7;
@@ -281,6 +289,10 @@
   justify-content: center;
   font-weight: bold;
   font-size: 18px;
+  position: absolute; /* placeholder também centralizado quando usado */
+  left: 50%;
+  transform: translateX(-50%);
+  top: 16px;
 }
 
 /* ========== ÁREA PRINCIPAL ========== */

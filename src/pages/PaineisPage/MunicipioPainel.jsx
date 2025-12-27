@@ -204,18 +204,7 @@ const MunicipioPainel = () => {
             <div className="painel-text">
               <h1>{municipio.nome}</h1>
               <p>{painel.titulo}</p>
-              {municipio.site_prefeitura && (
-                <div className="site-prefeitura-header">
-                  <a 
-                    href={municipio.site_prefeitura}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="site-link destaque"
-                  >
-                    {municipio.site_prefeitura.replace(/^https?:\/\//, '')}
-                  </a>
-                </div>
-              )}
+              
               <div className="municipio-info-details">
                 {municipio.prefeito && (
                   <div className="info-item">
@@ -233,6 +222,19 @@ const MunicipioPainel = () => {
                   <div className="info-item">
                     <span className="info-label">E-mail:</span>
                     <span className="info-value">{municipio.email}</span>
+                  </div>
+                )}
+                {municipio.site_prefeitura && (
+                  <div className="info-item">
+                    <span className="info-label">Site:</span>
+                    <a 
+                      href={municipio.site_prefeitura} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="info-value site-link"
+                    >
+                      {municipio.site_prefeitura.replace(/^https?:\/\//, '')}
+                    </a>
                   </div>
                 )}
               </div>
