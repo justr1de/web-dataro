@@ -162,11 +162,6 @@ const Dashboard = () => {
               <h1>Painéis de BI</h1>
               <span className="header-title-subtitle">Rondônia em Números</span>
             </div>
-            <nav className="dashboard-nav">
-              <Link to="/" className="nav-link">INÍCIO</Link>
-              <Link to="/services" className="nav-link">SERVIÇOS</Link>
-              <a href="/#contato" className="nav-link">CONTATO</a>
-            </nav>
           </div>
           <div className="header-actions">
             <span className="user-name">Olá, {user?.nome}</span>
