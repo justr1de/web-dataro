@@ -383,9 +383,18 @@ const Dashboard = () => {
                 >
                   ← Anterior
                 </button>
-                <span className="pagination-info">
-                  Página {currentPage} de {totalPages}
-                </span>
+                <div className="pagination-pages">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => { setCurrentPage(page); window.scrollTo(0, 0); }}
+                      className={`pagination-page-button ${currentPage === page ? 'active' : ''}`}
+                      aria-current={currentPage === page ? 'page' : undefined}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
                 <button
                   onClick={() => { setCurrentPage((prev) => Math.min(prev + 1, totalPages)); window.scrollTo(0, 0); }}
                   disabled={currentPage === totalPages}

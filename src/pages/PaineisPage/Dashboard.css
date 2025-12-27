@@ -645,6 +645,44 @@
   color: #cbd5e0;
 }
 
+.pagination-pages {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination-page-button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary, white);
+  color: var(--text-primary, #4a5568);
+  border: 2px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.pagination-page-button:hover {
+  border-color: var(--accent-primary, #10b981);
+  color: var(--accent-primary, #10b981);
+  transform: translateY(-2px);
+}
+
+.pagination-page-button.active {
+  background: var(--accent-primary, #10b981);
+  color: white;
+  border-color: var(--accent-primary, #10b981);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Manter os antigos para retrocompatibilidade */
 .pagination-numbers {
   display: flex;
   gap: 8px;
@@ -809,6 +847,7 @@
     font-size: 13px;
   }
 
+  .pagination-page-button,
   .pagination-number {
     width: 36px;
     height: 36px;
