@@ -53,7 +53,12 @@ const MunicipioPainel = () => {
         .single();
 
       if (!painelError && painelData) {
+        console.log('Painel carregado:', painelData);
+        console.log('URL Power BI:', painelData.url_powerbi);
+        console.log('Embed URL:', painelData.embed_url);
         setPainel(painelData);
+      } else {
+        console.log('Nenhum painel encontrado para município ID:', id);
       }
 
     } catch (error) {
@@ -221,7 +226,7 @@ const MunicipioPainel = () => {
           </div>
         )}
         <iframe
-          src={painel.url_powerbi}
+          src={painel.embed_url || painel.url_powerbi}
           frameBorder="0"
           allowFullScreen={true}
           className={`powerbi-iframe ${iframeLoading ? 'loading' : ''}`}
