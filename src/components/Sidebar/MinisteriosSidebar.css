@@ -373,8 +373,12 @@
 }
 
 [data-theme="light"] .sidebar-header {
-  background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-  color: white;
+  background: #ffffff !important;
+  color: #1e3a8a !important;
+}
+
+[data-theme="light"] .sidebar-header h2 {
+  color: #1e3a8a !important;
 }
 
 [data-theme="light"] .sidebar-search input {
