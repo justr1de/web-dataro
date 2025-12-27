@@ -23,23 +23,29 @@
   position: relative;
 }
 
-/* Container Principal (O Fundo Azul) */
+/* Container Principal (O Fundo do Cabeçalho) */
 .page-header-with-image {
   width: 100%;
-  min-height: 140px; /* Altura mínima para Desktop */
+  min-height: 140px;
   padding: 20px;
   
-  /* Gradiente azul */
-  background: linear-gradient(to right, #0a192f, #1e3a5f);
+  /* Fundo branco */
+  background: #ffffff;
   
   /* Centraliza a imagem dentro dele */
   display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: center;     /* Centraliza verticalmente */
+  justify-content: center;
+  align-items: center;
   
-  /* Borda e Sombra opcionais */
-  border-bottom: 2px solid rgba(0, 255, 0, 0.1); 
+  /* Borda sutil */
+  border-bottom: 1px solid #e2e8f0;
   box-sizing: border-box;
+}
+
+/* Tema escuro */
+[data-theme="dark"] .page-header-with-image {
+  background: var(--bg-primary, #1a202c);
+  border-bottom: 1px solid #2d3748;
 }
 
 /* A Imagem em si */
