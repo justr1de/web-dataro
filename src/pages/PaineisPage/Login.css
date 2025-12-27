@@ -26,8 +26,7 @@
 /* Container Principal (O Fundo do Cabeçalho) */
 .page-header-with-image {
   width: 100%;
-  min-height: 140px;
-  padding: 20px;
+  padding: 0;
   
   /* Fundo branco */
   background: #ffffff;
@@ -53,11 +52,13 @@
   width: 100%;
   height: auto;
   
-  /* Limites definidos */
-  max-width: 900px;
-  max-height: 100px;
+  /* Ocupa toda a largura disponível */
+  max-width: 100%;
   
-  /* Garante que a imagem não estique */
+  /* Altura flexível para manter proporção */
+  max-height: 180px;
+  
+  /* Garante que a imagem cubra bem o espaço */
   object-fit: contain;
   
   /* Remove qualquer fundo xadrez/transparente */
