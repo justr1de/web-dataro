@@ -14,25 +14,14 @@ ORDER BY nome;
 -- ======================================================================
 
 -- Painel de Chupinguaia
-INSERT INTO paineis_bi (
-    municipio_id,
-    titulo,
-    descricao,
-    url_powerbi,
-    embed_url,
-    status,
-    created_at,
-    updated_at
-)
+INSERT INTO paineis_bi (municipio_id, titulo, descricao, url_powerbi, embed_url, status)
 SELECT 
     id,
     'Inteligência Territorial de Chupinguaia',
     'Painel Power BI com indicadores e análises do município de Chupinguaia',
     'https://app.powerbi.com/view?r=eyJrIjoiOTk2ZWI2YzAtZmE5Mi00MjhjLTk5YmYtNTczZGEzYmYwYTQ1IiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ny1iM2NmLWJmZjA0YmI0YTFlNCJ9&pageName=a39dc3705064708de137',
     'https://app.powerbi.com/view?r=eyJrIjoiOTk2ZWI2YzAtZmE5Mi00MjhjLTk5YmYtNTczZGEzYmYwYTQ1IiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ny1iM2NmLWJmZjA0YmI0YTFlNCJ9&pageName=a39dc3705064708de137',
-    'ativo',
-    NOW(),
-    NOW()
+    'ativo'
 FROM municipios
 WHERE nome = 'Chupinguaia'
 AND NOT EXISTS (
@@ -41,25 +30,14 @@ AND NOT EXISTS (
 );
 
 -- Painel de Rio Crespo
-INSERT INTO paineis_bi (
-    municipio_id,
-    titulo,
-    descricao,
-    url_powerbi,
-    embed_url,
-    status,
-    created_at,
-    updated_at
-)
+INSERT INTO paineis_bi (municipio_id, titulo, descricao, url_powerbi, embed_url, status)
 SELECT 
     id,
     'Inteligência Territorial de Rio Crespo',
     'Painel Power BI com indicadores e análises do município de Rio Crespo',
     'https://app.powerbi.com/view?r=eyJrIjoiM2RkZWM4OGEtMzM3OC00NzIyLWEyNWUtMWZkNDY0ZDBhMWIxIiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ly1iM2NmLWJmZjA0YmI0YTFlNCJ9&pageName=a39dc3705064708de137',
     'https://app.powerbi.com/view?r=eyJrIjoiM2RkZWM4OGEtMzM3OC00NzIyLWEyNWUtMWZkNDY0ZDBhMWIxIiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ly1iM2NmLWJmZjA0YmI0YTFlNCJ9&pageName=a39dc3705064708de137',
-    'ativo',
-    NOW(),
-    NOW()
+    'ativo'
 FROM municipios
 WHERE nome = 'Rio Crespo'
 AND NOT EXISTS (
@@ -68,25 +46,14 @@ AND NOT EXISTS (
 );
 
 -- Painel de Vilhena
-INSERT INTO paineis_bi (
-    municipio_id,
-    titulo,
-    descricao,
-    url_powerbi,
-    embed_url,
-    status,
-    created_at,
-    updated_at
-)
+INSERT INTO paineis_bi (municipio_id, titulo, descricao, url_powerbi, embed_url, status)
 SELECT 
     id,
     'Inteligência Territorial de Vilhena',
     'Painel Power BI com indicadores e análises do município de Vilhena',
     'https://app.powerbi.com/view?r=eyJrIjoiNmEzMDBhYjUtNzNlYS00NGY5LTk5ZWYtMjExZmFjODk5ZjA5IiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ly1iM2NmLWJmZjA0YmI0YTFlNCJ9&pageName=a39dc3705064708de137',
     'https://app.powerbi.com/view?r=eyJrIjoiNmEzMDBhYjUtNzNlYS00NGY5LTk5ZWYtMjExZmFjODk5ZjA5IiwidCI6IjliZDQ3NzVkLTk5OWYtNGM4Ly1iM2NmLWJmZjA0YmI0YTFlNCJ9&pageName=a39dc3705064708de137',
-    'ativo',
-    NOW(),
-    NOW()
+    'ativo'
 FROM municipios
 WHERE nome = 'Vilhena'
 AND NOT EXISTS (
@@ -107,7 +74,7 @@ SELECT
         WHEN p.embed_url IS NOT NULL THEN '✅ URL configurada'
         ELSE '❌ URL faltando'
     END AS url_status,
-    p.created_at
+    p.data_criacao
 FROM municipios m
 LEFT JOIN paineis_bi p ON p.municipio_id = m.id
 WHERE m.nome IN ('Chupinguaia', 'Rio Crespo', 'Vilhena')
