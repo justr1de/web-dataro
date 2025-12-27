@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getBandeiraUrl } from '../../utils/bandeirasMap';
 import logo from '../../assets/logo.png';
 import bandeiraRondonia from '../../assets/bandeira-rondonia.png';
+import headerImage from '../../../public/assets/header-inteligencia-territorial.png';
 import ThemeToggle from '../../components/ThemeToggle';
 import './Login.css';
 
@@ -114,8 +115,12 @@ const Login = () => {
   return (
     <div className="login-page-wrapper">
       {/* Cabeçalho da Página */}
-      <header className="page-header">
-        <h2>DATA-RO INTELIGÊNCIA TERRITORIAL</h2>
+      <header className="page-header page-header-with-image">
+        <img 
+          src={headerImage} 
+          alt="DATA-RO INTELIGÊNCIA TERRITORIAL" 
+          className="header-image"
+        />
         <ThemeToggle className="header-theme-toggle" />
       </header>
 
