@@ -58,8 +58,8 @@
   /* Sem limite de altura - deixa a imagem definir */
   /* max-height: removido para ocupar todo o espaço */
   
-  /* Garante que a imagem cubra bem o espaço */
-  object-fit: cover;
+  /* CONTAIN para mostrar a imagem inteira sem cortes */
+  object-fit: contain;
   
   /* Remove qualquer fundo xadrez/transparente */
   background: transparent;
