@@ -55,11 +55,11 @@
   /* Ocupa toda a largura disponível */
   max-width: 100%;
   
-  /* Altura flexível para manter proporção */
-  max-height: 180px;
+  /* Sem limite de altura - deixa a imagem definir */
+  /* max-height: removido para ocupar todo o espaço */
   
   /* Garante que a imagem cubra bem o espaço */
-  object-fit: contain;
+  object-fit: cover;
   
   /* Remove qualquer fundo xadrez/transparente */
   background: transparent;
