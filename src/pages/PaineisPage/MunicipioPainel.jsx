@@ -43,6 +43,9 @@ const MunicipioPainel = () => {
 
       if (municipioError) throw municipioError;
       setMunicipio(municipioData);
+      
+      // Debug: verificar dados do município
+      console.log('Dados do município carregados:', municipioData);
 
       // Buscar painel do banco de dados
       const { data: painelData, error: painelError } = await supabase

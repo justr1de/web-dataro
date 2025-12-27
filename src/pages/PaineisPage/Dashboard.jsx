@@ -72,6 +72,9 @@ const Dashboard = () => {
         .select(`
           id,
           nome,
+          prefeito,
+          telefone,
+          email,
           paineis_bi!inner (
             id,
             titulo,
