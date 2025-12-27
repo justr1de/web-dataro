@@ -68,7 +68,17 @@
   padding: 24px 20px;
   background: #ffffff;
   text-align: center;
-  color: #1b5e20;
+  color: #1e3a8a !important;
+}
+
+/* Tema escuro - manter mesma cor azul no header */
+[data-theme="dark"] .sidebar-header {
+  background: #ffffff;
+  color: #1e3a8a !important;
+}
+
+[data-theme="dark"] .sidebar-header h2 {
+  color: #1e3a8a !important;
 }
 
 .sidebar-header h2 {
@@ -79,6 +89,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  color: #1e3a8a !important;
 }
 
 .logo-governo-federal {
