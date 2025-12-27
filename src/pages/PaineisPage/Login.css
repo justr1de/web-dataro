@@ -472,6 +472,15 @@
   color: var(--text-muted, #a0aec0);
 }
 
+.page-footer .footer-brand {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 1px;
+  color: var(--blue-primary, #1e3a8a);
+}
+
 /* Responsividade */
 
 /* Telas muito grandes (4K e acima) */

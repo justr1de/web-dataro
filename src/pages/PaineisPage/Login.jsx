@@ -234,6 +234,7 @@ const Login = () => {
       {/* Rodapé da Página */}
       <footer className="page-footer">
         <p>Informações atualizadas diariamente</p>
+        <p className="footer-brand">DATA-RO INTELIGÊNCIA TERRITORIAL</p>
         <p className="copyright">TODOS OS DIREITOS RESERVADOS</p>
       </footer>
     </div>
