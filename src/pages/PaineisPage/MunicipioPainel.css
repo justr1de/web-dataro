@@ -146,8 +146,8 @@
 }
 
 .painel-bandeira {
-  width: 100px;
-  height: 75px;
+  width: 140px;
+  height: 100px;
   object-fit: cover;
   border-radius: 8px;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -274,8 +274,8 @@
 }
 
 .bandeira-placeholder-small {
-  width: 100px;
-  height: 75px;
+  width: 140px;
+  height: 100px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   display: flex;
@@ -283,6 +283,27 @@
   justify-content: center;
   font-weight: bold;
   font-size: 18px;
+}
+
+/* Responsivo: reduzir bandeira em telas pequenas e empilhar conteúdo para evitar sobreposição */
+@media (max-width: 720px) {
+  .painel-header-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .painel-bandeira,
+  .bandeira-placeholder-small {
+    width: 90px;
+    height: 64px;
+  }
+
+  .painel-text {
+    padding-left: 0; /* remover recuos em mobile */
+    margin-top: 0;
+    text-align: center;
+  }
 }
 
 /* ========== ÁREA PRINCIPAL ========== */
