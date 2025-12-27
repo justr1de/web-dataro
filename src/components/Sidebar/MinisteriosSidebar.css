@@ -355,6 +355,7 @@
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
 }
 
 .portais-uteis h4 {
@@ -362,6 +363,7 @@
   margin: 0 0 8px;
   opacity: 0.7;
   font-weight: 700;
+  text-align: center;
 }
 
 .portais-uteis a {
@@ -372,11 +374,12 @@
   font-size: 12px;
   transition: all 0.2s ease;
   font-weight: 700;
+  text-align: center;
 }
 
 .portais-uteis a:hover {
   color: #a5d6a7;
-  padding-left: 8px;
+  padding-left: 0;
 }
 
 /* Tema claro */
