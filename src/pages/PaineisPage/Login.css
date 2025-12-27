@@ -459,18 +459,18 @@
   background: var(--text-tertiary, #a0aec0);
 }
 
-/* Rodapé da Página com Degradê */
+/* Rodapé da Página com Fundo Azul Claro */
 .page-footer {
   width: 100%;
   padding: 1.5rem 2rem;
-  background: var(--bg-footer, linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(252, 211, 77, 0.08) 100%));
+  background: #4a90c2;
   text-align: center;
-  border-top: 1px solid var(--border-color, #e2e8f0);
+  border-top: none;
 }
 
 .page-footer p {
   font-size: 0.85rem;
-  color: var(--text-secondary, #718096);
+  color: #ffffff;
   margin: 0;
   font-style: italic;
 }
@@ -481,7 +481,7 @@
   font-weight: 600;
   font-style: normal;
   letter-spacing: 0.5px;
-  color: var(--text-muted, #a0aec0);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .page-footer .footer-brand {
@@ -490,7 +490,7 @@
   font-weight: 700;
   font-style: normal;
   letter-spacing: 1px;
-  color: var(--text-secondary, #718096);
+  color: #ffffff;
 }
 
 /* Responsividade */
