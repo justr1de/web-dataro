@@ -17,8 +17,18 @@ import TrocarSenha from './pages/PaineisPage/TrocarSenha';
 import Dashboard from './pages/PaineisPage/Dashboard';
 import MunicipioPainel from './pages/PaineisPage/MunicipioPainel';
 
+// Importando páginas de Admin
+import { 
+  AdminLogin, 
+  AdminLayout, 
+  AdminDashboard, 
+  AdminGabinetes, 
+  AdminPlaceholder 
+} from './pages/AdminPage';
+
 // Contexto de autenticação
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AdminAuthProvider, useAdminAuth } from './contexts/AdminAuthContext';
 
 // Componente para scroll automático ao topo
 import ScrollToTop from './components/ScrollToTop';
@@ -72,6 +82,48 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Componente para rotas protegidas do Admin
+const AdminProtectedRoute = ({ children }) => {
+  const { adminUser, loading } = useAdminAuth();
+  
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        backgroundColor: '#0f172a'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: '4px solid rgba(255,255,255,0.1)',
+            borderTop: '4px solid #10b981',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }}></div>
+          <p style={{ color: 'rgba(255,255,255,0.7)' }}>Carregando...</p>
+        </div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+  
+  if (!adminUser) {
+    return <Navigate to="/admin/login" />;
+  }
+  
+  return children;
+};
+
 // Layout para páginas públicas (com Header e Footer)
 const PublicLayout = ({ children }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -91,45 +143,72 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Router>
-        <ScrollToTop />
-        <Routes>
-          {/* Rotas públicas */}
-          <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
-          <Route path="/services" element={<PublicLayout><ServicesPage /></PublicLayout>} />
-          <Route path="/about-us" element={<PublicLayout><AboutUs /></PublicLayout>} />
+        <AdminAuthProvider>
+          <Router>
+          <ScrollToTop />
+          <Routes>
+            {/* Rotas públicas */}
+            <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+            <Route path="/services" element={<PublicLayout><ServicesPage /></PublicLayout>} />
+            <Route path="/about-us" element={<PublicLayout><AboutUs /></PublicLayout>} />
 
-          {/* Rotas de Painéis */}
-          <Route path="/paineis/login" element={<Login />} />
-          <Route
-            path="/paineis/trocar-senha"
-            element={
-              <ProtectedRoute>
-                <TrocarSenha />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/paineis/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/paineis/municipio/:id"
-            element={
-              <ProtectedRoute>
-                <MunicipioPainel />
-              </ProtectedRoute>
-            }
-          />
+            {/* Rotas de Painéis */}
+            <Route path="/paineis/login" element={<Login />} />
+            <Route
+              path="/paineis/trocar-senha"
+              element={
+                <ProtectedRoute>
+                  <TrocarSenha />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/paineis/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/paineis/municipio/:id"
+              element={
+                <ProtectedRoute>
+                  <MunicipioPainel />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Rota padrão - redireciona para home */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-        </Router>
+            {/* Rotas de Admin */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin"
+              element={
+                <AdminProtectedRoute>
+                  <AdminLayout />
+                </AdminProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to="/admin/demandas" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="gabinetes" element={<AdminGabinetes />} />
+              <Route path="demandas" element={<AdminDashboard />} />
+              <Route path="relatorios" element={<AdminPlaceholder />} />
+              <Route path="contatos" element={<AdminPlaceholder />} />
+              <Route path="perfil" element={<AdminPlaceholder />} />
+              <Route path="usuarios" element={<AdminPlaceholder />} />
+              <Route path="credenciais" element={<AdminPlaceholder />} />
+              <Route path="busca" element={<AdminPlaceholder />} />
+              <Route path="logs" element={<AdminPlaceholder />} />
+              <Route path="excluidos" element={<AdminPlaceholder />} />
+              <Route path="configuracoes" element={<AdminPlaceholder />} />
+            </Route>
+
+            {/* Rota padrão - redireciona para home */}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+          </Router>
+        </AdminAuthProvider>
       </AuthProvider>
     </ThemeProvider>
   );

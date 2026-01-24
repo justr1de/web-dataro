@@ -1,0 +1,71 @@
+/* Admin Layout */
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #0f172a;
+}
+
+.admin-layout.light {
+  background: #f1f5f9;
+}
+
+/* Main Content Area */
+.admin-main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 1.5rem;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+}
+
+.admin-layout.sidebar-collapsed .admin-main {
+  margin-left: 70px;
+}
+
+/* Loading State */
+.admin-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.admin-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: admin-layout-spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes admin-layout-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-loading p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 70px;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-main {
+    margin-left: 0;
+    padding: 0.75rem;
+  }
+}
