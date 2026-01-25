@@ -910,10 +910,8 @@ const AdminFinanceiro = () => {
       <div className="financeiro-header">
         <div className="header-title">
           <Icons.DollarSign />
-          <div>
-            <h1>Gestão Financeira</h1>
-            <p>Controle completo de finanças, impostos e documentos fiscais</p>
-          </div>
+          <h1>Gestão Financeira</h1>
+          <span className="header-subtitle">Controle completo de finanças, impostos e documentos fiscais</span>
         </div>
         <button className="btn-nova-transacao" onClick={() => handleOpenModal('create')}>
           <Icons.Plus />
