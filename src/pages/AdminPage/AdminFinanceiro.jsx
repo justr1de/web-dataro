@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../utils/supabaseClient';
 import './AdminFinanceiro.css';
 
 // Ícones SVG inline
