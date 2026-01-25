@@ -156,8 +156,9 @@ const AdminClientes = () => {
       {/* Header */}
       <div className="clientes-header">
         <div className="header-info">
+          <Icons.Globe />
           <h1>Clientes</h1>
-          <p>Gerencie os sistemas e plataformas dos clientes</p>
+          <span className="header-subtitle">Gerencie os sistemas e plataformas dos clientes</span>
         </div>
         <button className="btn-novo-cliente" onClick={handleNovoCliente}>
           <Icons.Plus />

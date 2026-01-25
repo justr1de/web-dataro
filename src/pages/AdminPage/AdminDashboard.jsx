@@ -136,10 +136,8 @@ const AdminDashboard = () => {
       <div className="dashboard-header">
         <div className="header-title">
           <Icons.Document />
-          <div>
-            <h1>Gestão de Demandas</h1>
-            <p>Gerencie todas as demandas dos gabinetes</p>
-          </div>
+          <h1>Gestão de Demandas</h1>
+          <span className="header-subtitle">Gerencie todas as demandas dos gabinetes</span>
         </div>
         <button className="btn-nova-demanda" onClick={() => navigate('/admin/demandas/nova')}>
           <Icons.Plus />

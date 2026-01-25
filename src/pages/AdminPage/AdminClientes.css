@@ -14,30 +14,49 @@
   gap: 1rem;
 }
 
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header-info svg {
+  width: 40px;
+  height: 40px;
+  color: #ffffff !important;
+}
+
 .header-info h1 {
   font-size: 1.75rem;
   font-weight: 700;
-  margin-bottom: 0.25rem;
+  margin: 0;
+  color: #ffffff !important;
 }
 
 .admin-clientes.dark .header-info h1 {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .admin-clientes.light .header-info h1 {
-  color: #111827;
+  color: #ffffff !important;
 }
 
-.header-info p {
+.header-info .header-subtitle {
   font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  margin-left: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-.admin-clientes.dark .header-info p {
-  color: rgba(255, 255, 255, 0.6);
+.admin-clientes.dark .header-info .header-subtitle {
+  color: rgba(255, 255, 255, 0.85);
 }
 
-.admin-clientes.light .header-info p {
-  color: #6b7280;
+.admin-clientes.light .header-info .header-subtitle {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .btn-novo-cliente {

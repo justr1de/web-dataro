@@ -155,10 +155,8 @@ const AdminGabinetes = () => {
       <div className="gabinetes-header">
         <div className="header-title">
           <Icons.Building />
-          <div>
-            <h1>Gabinetes</h1>
-            <p>Gerencie os gabinetes cadastrados no sistema</p>
-          </div>
+          <h1>Gabinetes</h1>
+          <span className="header-subtitle">Gerencie os gabinetes cadastrados no sistema</span>
         </div>
         {isSuperAdmin() && (
           <button className="btn-novo" onClick={() => handleOpenModal()}>
