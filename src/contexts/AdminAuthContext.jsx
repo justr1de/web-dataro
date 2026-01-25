@@ -3,8 +3,13 @@ import { supabase } from '../utils/supabaseClient';
 
 const AdminAuthContext = createContext({});
 
+// Gerar ID único para a sessão
+const generateSessionId = () => {
+  return 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+};
+
 // Função para registrar log de auditoria admin
-const registrarLogAuditoriaAdmin = async (email, tipoEvento, detalhes) => {
+const registrarLogAuditoriaAdmin = async (email, tipoEvento, detalhes, ipAddress = null) => {
   try {
     await supabase
       .from('admin_log_auditoria')
@@ -13,28 +18,130 @@ const registrarLogAuditoriaAdmin = async (email, tipoEvento, detalhes) => {
         tipo_evento: tipoEvento,
         user_agent: navigator.userAgent,
         detalhes: detalhes,
-        ip_address: null // Será preenchido pelo backend se disponível
+        ip_address: ipAddress
       });
   } catch (error) {
     console.error('Erro ao registrar log de auditoria admin:', error);
   }
 };
 
+// Função para obter IP do cliente
+const getClientIP = async () => {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    return data.ip;
+  } catch (error) {
+    console.error('Erro ao obter IP:', error);
+    return null;
+  }
+};
+
 export const AdminAuthProvider = ({ children }) => {
   const [adminUser, setAdminUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sessionId, setSessionId] = useState(null);
 
   useEffect(() => {
     // Verificar se há admin logado no localStorage
     const storedAdmin = localStorage.getItem('admin_user');
-    if (storedAdmin) {
-      setAdminUser(JSON.parse(storedAdmin));
+    const storedSessionId = localStorage.getItem('admin_session_id');
+    
+    if (storedAdmin && storedSessionId) {
+      const adminData = JSON.parse(storedAdmin);
+      setAdminUser(adminData);
+      setSessionId(storedSessionId);
+      
+      // Verificar se a sessão ainda é válida
+      verificarSessaoAtiva(adminData.id, storedSessionId);
     }
     setLoading(false);
   }, []);
 
+  // Verificar se a sessão ainda está ativa no banco
+  const verificarSessaoAtiva = async (userId, sessId) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_sessoes')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('session_id', sessId)
+        .eq('ativa', true)
+        .single();
+
+      if (error || !data) {
+        // Sessão não existe mais ou foi encerrada
+        logoutAdmin(true); // Logout silencioso
+      }
+    } catch (error) {
+      console.error('Erro ao verificar sessão:', error);
+    }
+  };
+
+  // Criar nova sessão no banco
+  const criarSessao = async (userId, email, ip) => {
+    const newSessionId = generateSessionId();
+    
+    try {
+      await supabase
+        .from('admin_sessoes')
+        .insert({
+          user_id: userId,
+          session_id: newSessionId,
+          user_agent: navigator.userAgent,
+          ip_address: ip,
+          ativa: true
+        });
+      
+      return newSessionId;
+    } catch (error) {
+      console.error('Erro ao criar sessão:', error);
+      return null;
+    }
+  };
+
+  // Encerrar sessão no banco
+  const encerrarSessao = async (userId, sessId) => {
+    try {
+      await supabase
+        .from('admin_sessoes')
+        .update({ 
+          ativa: false, 
+          encerrada_em: new Date().toISOString() 
+        })
+        .eq('user_id', userId)
+        .eq('session_id', sessId);
+    } catch (error) {
+      console.error('Erro ao encerrar sessão:', error);
+    }
+  };
+
+  // Verificar se usuário já tem sessão ativa
+  const verificarSessaoExistente = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_sessoes')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('ativa', true);
+
+      if (error) {
+        console.error('Erro ao verificar sessão existente:', error);
+        return null;
+      }
+
+      return data && data.length > 0 ? data[0] : null;
+    } catch (error) {
+      console.error('Erro ao verificar sessão existente:', error);
+      return null;
+    }
+  };
+
   const loginAdmin = async (email, senha) => {
     try {
+      // Obter IP do cliente
+      const clientIP = await getClientIP();
+
       // Buscar admin pelo email
       const { data, error } = await supabase
         .from('admin_usuarios')
@@ -47,7 +154,8 @@ export const AdminAuthProvider = ({ children }) => {
         await registrarLogAuditoriaAdmin(
           email,
           'TENTATIVA_LOGIN_FALHA',
-          'Usuário admin não encontrado ou inativo'
+          'Usuário admin não encontrado ou inativo',
+          clientIP
         );
         throw new Error('Credenciais inválidas');
       }
@@ -57,16 +165,39 @@ export const AdminAuthProvider = ({ children }) => {
         await registrarLogAuditoriaAdmin(
           email,
           'TENTATIVA_LOGIN_SENHA_INCORRETA',
-          `Senha incorreta para o admin: ${data.nome}`
+          `Senha incorreta para o admin: ${data.nome}`,
+          clientIP
         );
         throw new Error('Credenciais inválidas');
+      }
+
+      // Verificar se já existe uma sessão ativa para este usuário
+      const sessaoExistente = await verificarSessaoExistente(data.id);
+      
+      if (sessaoExistente) {
+        // Já existe uma sessão ativa - bloquear novo login
+        await registrarLogAuditoriaAdmin(
+          email,
+          'LOGIN_BLOQUEADO_SESSAO_ATIVA',
+          `Tentativa de login bloqueada. Já existe uma sessão ativa desde ${new Date(sessaoExistente.created_at).toLocaleString('pt-BR')}. IP da sessão ativa: ${sessaoExistente.ip_address || 'N/A'}. Navegador: ${sessaoExistente.user_agent?.substring(0, 100) || 'N/A'}`,
+          clientIP
+        );
+        throw new Error('Já existe uma sessão ativa para esta conta. Faça logout no outro dispositivo ou aguarde a sessão expirar.');
+      }
+
+      // Criar nova sessão
+      const newSessionId = await criarSessao(data.id, email, clientIP);
+      
+      if (!newSessionId) {
+        throw new Error('Erro ao criar sessão. Tente novamente.');
       }
 
       // Login bem-sucedido
       await registrarLogAuditoriaAdmin(
         email,
         'LOGIN_SUCESSO',
-        `Login admin realizado com sucesso. Nome: ${data.nome}`
+        `Login admin realizado com sucesso. Nome: ${data.nome}. IP: ${clientIP}. Navegador: ${navigator.userAgent.substring(0, 100)}`,
+        clientIP
       );
 
       // Atualizar último acesso
@@ -81,12 +212,15 @@ export const AdminAuthProvider = ({ children }) => {
         nome: data.nome,
         role: data.role,
         avatar_url: data.avatar_url,
+        github: data.github,
         is_super_admin: data.is_super_admin || data.email === 'contato@dataro-it.com.br',
         primeiro_acesso: data.primeiro_acesso
       };
 
       setAdminUser(adminData);
+      setSessionId(newSessionId);
       localStorage.setItem('admin_user', JSON.stringify(adminData));
+      localStorage.setItem('admin_session_id', newSessionId);
       
       return { success: true, primeiro_acesso: data.primeiro_acesso };
     } catch (error) {
@@ -99,6 +233,8 @@ export const AdminAuthProvider = ({ children }) => {
       if (!adminUser) {
         throw new Error('Usuário não autenticado');
       }
+
+      const clientIP = await getClientIP();
 
       // Atualizar senha no banco
       const { error } = await supabase
@@ -118,7 +254,8 @@ export const AdminAuthProvider = ({ children }) => {
       await registrarLogAuditoriaAdmin(
         adminUser.email,
         'SENHA_ALTERADA',
-        `Senha alterada com sucesso. Nome: ${adminUser.nome}`
+        `Senha alterada com sucesso. Nome: ${adminUser.nome}`,
+        clientIP
       );
 
       // Atualizar estado local
@@ -132,16 +269,26 @@ export const AdminAuthProvider = ({ children }) => {
     }
   };
 
-  const logoutAdmin = () => {
-    if (adminUser) {
-      registrarLogAuditoriaAdmin(
-        adminUser.email,
-        'LOGOUT',
-        `Logout admin realizado. Nome: ${adminUser.nome}`
-      );
+  const logoutAdmin = async (silent = false) => {
+    if (adminUser && sessionId) {
+      // Encerrar sessão no banco
+      await encerrarSessao(adminUser.id, sessionId);
+      
+      if (!silent) {
+        const clientIP = await getClientIP();
+        await registrarLogAuditoriaAdmin(
+          adminUser.email,
+          'LOGOUT',
+          `Logout admin realizado. Nome: ${adminUser.nome}`,
+          clientIP
+        );
+      }
     }
+    
     setAdminUser(null);
+    setSessionId(null);
     localStorage.removeItem('admin_user');
+    localStorage.removeItem('admin_session_id');
   };
 
   const isSuperAdmin = () => {
@@ -155,7 +302,8 @@ export const AdminAuthProvider = ({ children }) => {
       logoutAdmin, 
       atualizarSenha,
       loading,
-      isSuperAdmin 
+      isSuperAdmin,
+      sessionId
     }}>
       {children}
     </AdminAuthContext.Provider>

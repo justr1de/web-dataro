@@ -18,7 +18,8 @@ const AdminUsuarios = () => {
     nome: '',
     email: '',
     role: 'user',
-    ativo: true
+    ativo: true,
+    github: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -55,7 +56,8 @@ const AdminUsuarios = () => {
       nome: '',
       email: '',
       role: 'user',
-      ativo: true
+      ativo: true,
+      github: ''
     });
     setError('');
     setShowModal(true);
@@ -69,7 +71,8 @@ const AdminUsuarios = () => {
       nome: user.nome,
       email: user.email,
       role: user.role,
-      ativo: user.ativo
+      ativo: user.ativo,
+      github: user.github || ''
     });
     setError('');
     setShowModal(true);
@@ -130,7 +133,11 @@ const AdminUsuarios = () => {
             'Prefer': 'return=minimal'
           },
           body: JSON.stringify({
-            ...formData,
+            nome: formData.nome,
+            email: formData.email,
+            role: formData.role,
+            ativo: formData.ativo,
+            github: formData.github || null,
             senha_hash: '123456',
             primeiro_acesso: true,
             is_super_admin: false
@@ -164,6 +171,7 @@ const AdminUsuarios = () => {
             email: formData.email,
             role: formData.role,
             ativo: formData.ativo,
+            github: formData.github || null,
             updated_at: new Date().toISOString()
           })
         });
@@ -467,6 +475,22 @@ const AdminUsuarios = () => {
                   <option value="user">Usuário</option>
                   <option value="admin">Administrador</option>
                 </select>
+              </div>
+
+              <div className="admin-form-group">
+                <label>GitHub (opcional)</label>
+                <div className="admin-input-with-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                  </svg>
+                  <input
+                    type="text"
+                    value={formData.github}
+                    onChange={e => setFormData({...formData, github: e.target.value})}
+                    placeholder="username"
+                  />
+                </div>
+                <span className="admin-form-hint">Apenas o nome de usuário do GitHub</span>
               </div>
 
               <div className="admin-form-group checkbox">

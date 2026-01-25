@@ -620,3 +620,67 @@
     min-width: 700px;
   }
 }
+
+/* Campo com ícone */
+.admin-input-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.admin-input-with-icon:focus-within {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.admin-input-with-icon svg {
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.admin-input-with-icon input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.admin-input-with-icon input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.admin-usuarios.light .admin-input-with-icon {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.admin-usuarios.light .admin-input-with-icon svg {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.admin-usuarios.light .admin-input-with-icon input {
+  color: #1f2937;
+}
+
+.admin-usuarios.light .admin-input-with-icon input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* Hint de formulário */
+.admin-form-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.25rem;
+}
+
+.admin-usuarios.light .admin-form-hint {
+  color: rgba(0, 0, 0, 0.5);
+}
