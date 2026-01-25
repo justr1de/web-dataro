@@ -51,91 +51,9 @@ export const AdminAuthProvider = ({ children }) => {
       const adminData = JSON.parse(storedAdmin);
       setAdminUser(adminData);
       setSessionId(storedSessionId);
-      
-      // Verificar se a sessão ainda é válida
-      verificarSessaoAtiva(adminData.id, storedSessionId);
     }
     setLoading(false);
   }, []);
-
-  // Verificar se a sessão ainda está ativa no banco
-  const verificarSessaoAtiva = async (userId, sessId) => {
-    try {
-      const { data, error } = await supabase
-        .from('admin_sessoes')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('session_id', sessId)
-        .eq('ativa', true)
-        .single();
-
-      if (error || !data) {
-        // Sessão não existe mais ou foi encerrada
-        logoutAdmin(true); // Logout silencioso
-      }
-    } catch (error) {
-      console.error('Erro ao verificar sessão:', error);
-    }
-  };
-
-  // Criar nova sessão no banco
-  const criarSessao = async (userId, email, ip) => {
-    const newSessionId = generateSessionId();
-    
-    try {
-      await supabase
-        .from('admin_sessoes')
-        .insert({
-          user_id: userId,
-          session_id: newSessionId,
-          user_agent: navigator.userAgent,
-          ip_address: ip,
-          ativa: true
-        });
-      
-      return newSessionId;
-    } catch (error) {
-      console.error('Erro ao criar sessão:', error);
-      return null;
-    }
-  };
-
-  // Encerrar sessão no banco
-  const encerrarSessao = async (userId, sessId) => {
-    try {
-      await supabase
-        .from('admin_sessoes')
-        .update({ 
-          ativa: false, 
-          encerrada_em: new Date().toISOString() 
-        })
-        .eq('user_id', userId)
-        .eq('session_id', sessId);
-    } catch (error) {
-      console.error('Erro ao encerrar sessão:', error);
-    }
-  };
-
-  // Verificar se usuário já tem sessão ativa
-  const verificarSessaoExistente = async (userId) => {
-    try {
-      const { data, error } = await supabase
-        .from('admin_sessoes')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('ativa', true);
-
-      if (error) {
-        console.error('Erro ao verificar sessão existente:', error);
-        return null;
-      }
-
-      return data && data.length > 0 ? data[0] : null;
-    } catch (error) {
-      console.error('Erro ao verificar sessão existente:', error);
-      return null;
-    }
-  };
 
   const loginAdmin = async (email, senha) => {
     try {
@@ -171,26 +89,8 @@ export const AdminAuthProvider = ({ children }) => {
         throw new Error('Credenciais inválidas');
       }
 
-      // Verificar se já existe uma sessão ativa para este usuário
-      const sessaoExistente = await verificarSessaoExistente(data.id);
-      
-      if (sessaoExistente) {
-        // Já existe uma sessão ativa - bloquear novo login
-        await registrarLogAuditoriaAdmin(
-          email,
-          'LOGIN_BLOQUEADO_SESSAO_ATIVA',
-          `Tentativa de login bloqueada. Já existe uma sessão ativa desde ${new Date(sessaoExistente.created_at).toLocaleString('pt-BR')}. IP da sessão ativa: ${sessaoExistente.ip_address || 'N/A'}. Navegador: ${sessaoExistente.user_agent?.substring(0, 100) || 'N/A'}`,
-          clientIP
-        );
-        throw new Error('Já existe uma sessão ativa para esta conta. Faça logout no outro dispositivo ou aguarde a sessão expirar.');
-      }
-
-      // Criar nova sessão
-      const newSessionId = await criarSessao(data.id, email, clientIP);
-      
-      if (!newSessionId) {
-        throw new Error('Erro ao criar sessão. Tente novamente.');
-      }
+      // Gerar nova sessão
+      const newSessionId = generateSessionId();
 
       // Login bem-sucedido
       await registrarLogAuditoriaAdmin(
@@ -270,19 +170,14 @@ export const AdminAuthProvider = ({ children }) => {
   };
 
   const logoutAdmin = async (silent = false) => {
-    if (adminUser && sessionId) {
-      // Encerrar sessão no banco
-      await encerrarSessao(adminUser.id, sessionId);
-      
-      if (!silent) {
-        const clientIP = await getClientIP();
-        await registrarLogAuditoriaAdmin(
-          adminUser.email,
-          'LOGOUT',
-          `Logout admin realizado. Nome: ${adminUser.nome}`,
-          clientIP
-        );
-      }
+    if (adminUser && !silent) {
+      const clientIP = await getClientIP();
+      await registrarLogAuditoriaAdmin(
+        adminUser.email,
+        'LOGOUT',
+        `Logout admin realizado. Nome: ${adminUser.nome}`,
+        clientIP
+      );
     }
     
     setAdminUser(null);

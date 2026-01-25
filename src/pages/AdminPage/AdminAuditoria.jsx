@@ -7,8 +7,7 @@ import './AdminAuditoria.css';
 const AdminAuditoria = () => {
   const { theme } = useTheme();
   const { adminUser, isSuperAdmin } = useAdminAuth();
-  const [activeTab, setActiveTab] = useState('sessoes');
-  const [sessoes, setSessoes] = useState([]);
+  const [activeTab, setActiveTab] = useState('logs');
   const [logs, setLogs] = useState([]);
   const [tentativas, setTentativas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,22 +20,6 @@ const AdminAuditoria = () => {
 
   const SUPABASE_URL = 'https://csuzmlajnhfauxqgczmu.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzdXptbGFqbmhmYXV4cWdjem11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU3MzExMzcsImV4cCI6MjA4MTMwNzEzN30.eATRbvz2klesZnV3iGBk6sgrvZMbk_1YscW5oi9etfA';
-
-  // Carregar sessões ativas
-  const fetchSessoes = useCallback(async () => {
-    try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/admin_sessoes?select=*,admin_usuarios(nome,email)&ativa=eq.true&order=created_at.desc`, {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
-      });
-      const data = await response.json();
-      setSessoes(data || []);
-    } catch (err) {
-      console.error('Erro ao carregar sessões:', err);
-    }
-  }, []);
 
   // Carregar logs de auditoria
   const fetchLogs = useCallback(async () => {
@@ -63,13 +46,18 @@ const AdminAuditoria = () => {
         }
       });
       const data = await response.json();
-      setLogs(data || []);
+      if (Array.isArray(data)) {
+        setLogs(data);
+      } else {
+        setLogs([]);
+      }
     } catch (err) {
       console.error('Erro ao carregar logs:', err);
+      setLogs([]);
     }
   }, [filtros]);
 
-  // Carregar tentativas de acesso
+  // Carregar tentativas de acesso falhas
   const fetchTentativas = useCallback(async () => {
     try {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/admin_log_auditoria?select=*&tipo_evento=in.(TENTATIVA_LOGIN_FALHA,TENTATIVA_LOGIN_SENHA_INCORRETA,LOGIN_BLOQUEADO_SESSAO_ATIVA)&order=created_at.desc&limit=100`, {
@@ -79,66 +67,31 @@ const AdminAuditoria = () => {
         }
       });
       const data = await response.json();
-      setTentativas(data || []);
+      if (Array.isArray(data)) {
+        setTentativas(data);
+      } else {
+        setTentativas([]);
+      }
     } catch (err) {
       console.error('Erro ao carregar tentativas:', err);
+      setTentativas([]);
     }
   }, []);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      await Promise.all([fetchSessoes(), fetchLogs(), fetchTentativas()]);
+      await Promise.all([fetchLogs(), fetchTentativas()]);
       setLoading(false);
     };
     loadData();
-  }, [fetchSessoes, fetchLogs, fetchTentativas]);
-
-  // Encerrar sessão
-  const handleEncerrarSessao = async (sessaoId, userId) => {
-    try {
-      await fetch(`${SUPABASE_URL}/rest/v1/admin_sessoes?id=eq.${sessaoId}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ativa: false,
-          encerrada_em: new Date().toISOString(),
-          encerrada_por: adminUser?.email
-        })
-      });
-      
-      // Registrar log
-      await supabase.from('admin_log_auditoria').insert({
-        email: adminUser?.email,
-        tipo_evento: 'SESSAO_ENCERRADA_ADMIN',
-        detalhes: `Sessão encerrada pelo administrador. ID: ${sessaoId}`,
-        user_agent: navigator.userAgent
-      });
-
-      fetchSessoes();
-    } catch (err) {
-      console.error('Erro ao encerrar sessão:', err);
-    }
-  };
+  }, [fetchLogs, fetchTentativas]);
 
   // Formatar data
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
     return date.toLocaleString('pt-BR');
-  };
-
-  // Calcular tempo de sessão
-  const calcularTempoSessao = (inicio) => {
-    if (!inicio) return '-';
-    const diff = Date.now() - new Date(inicio).getTime();
-    const horas = Math.floor(diff / (1000 * 60 * 60));
-    const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    return `${horas}h ${minutos}min`;
   };
 
   // Extrair informações do User Agent
@@ -182,14 +135,14 @@ const AdminAuditoria = () => {
       'SESSAO_ENCERRADA_ADMIN': { label: 'Sessão Encerrada', class: 'warning' },
       'USUARIO_CRIADO': { label: 'Usuário Criado', class: 'success' },
       'USUARIO_EDITADO': { label: 'Usuário Editado', class: 'info' },
-      'USUARIO_EXCLUIDO': { label: 'Usuário Excluído', class: 'danger' }
+      'USUARIO_EXCLUIDO': { label: 'Usuário Excluído', class: 'danger' },
+      'PRIMEIRO_ACESSO': { label: 'Primeiro Acesso', class: 'info' }
     };
     return badges[tipo] || { label: tipo, class: 'default' };
   };
 
   // Métricas
   const metricas = {
-    sessoesAtivas: sessoes.length,
     loginsHoje: logs.filter(l => {
       const hoje = new Date().toDateString();
       return l.tipo_evento === 'LOGIN_SUCESSO' && new Date(l.created_at).toDateString() === hoje;
@@ -198,8 +151,30 @@ const AdminAuditoria = () => {
       const hoje = new Date().toDateString();
       return new Date(t.created_at).toDateString() === hoje;
     }).length,
-    usuariosUnicos: [...new Set(logs.filter(l => l.tipo_evento === 'LOGIN_SUCESSO').map(l => l.email))].length
+    usuariosUnicos: [...new Set(logs.filter(l => l.tipo_evento === 'LOGIN_SUCESSO').map(l => l.email))].length,
+    totalEventos: logs.length
   };
+
+  // Estatísticas por navegador
+  const estatisticasBrowser = logs.reduce((acc, log) => {
+    const { browser } = parseUserAgent(log.user_agent);
+    acc[browser] = (acc[browser] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Estatísticas por sistema operacional
+  const estatisticasOS = logs.reduce((acc, log) => {
+    const { os } = parseUserAgent(log.user_agent);
+    acc[os] = (acc[os] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Estatísticas por dispositivo
+  const estatisticasDevice = logs.reduce((acc, log) => {
+    const { device } = parseUserAgent(log.user_agent);
+    acc[device] = (acc[device] || 0) + 1;
+    return acc;
+  }, {});
 
   // Verificar se é super admin
   if (!isSuperAdmin()) {
@@ -211,7 +186,7 @@ const AdminAuditoria = () => {
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
             <h1>Auditoria</h1>
-            <span className="header-subtitle">Acesso restrito</span>
+            <span className="header-subtitle">| Acesso restrito</span>
           </div>
         </div>
         <div className="admin-auditoria-restricted">
@@ -235,9 +210,9 @@ const AdminAuditoria = () => {
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
           </svg>
           <h1>Auditoria</h1>
-          <span className="header-subtitle">Monitoramento de acessos e segurança</span>
+          <span className="header-subtitle">| Monitoramento de acessos e segurança</span>
         </div>
-        <button className="admin-btn-secondary" onClick={() => { fetchSessoes(); fetchLogs(); fetchTentativas(); }}>
+        <button className="admin-btn-secondary" onClick={() => { fetchLogs(); fetchTentativas(); }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="23 4 23 10 17 10"></polyline>
             <polyline points="1 20 1 14 7 14"></polyline>
@@ -249,18 +224,6 @@ const AdminAuditoria = () => {
 
       {/* Métricas */}
       <div className="admin-auditoria-metrics">
-        <div className="admin-metric-card">
-          <div className="admin-metric-icon sessions">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </div>
-          <div className="admin-metric-info">
-            <span className="admin-metric-value">{metricas.sessoesAtivas}</span>
-            <span className="admin-metric-label">Sessões Ativas</span>
-          </div>
-        </div>
         <div className="admin-metric-card">
           <div className="admin-metric-icon logins">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -274,12 +237,13 @@ const AdminAuditoria = () => {
             <span className="admin-metric-label">Logins Hoje</span>
           </div>
         </div>
+
         <div className="admin-metric-card">
           <div className="admin-metric-icon failures">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
-              <line x1="15" y1="9" x2="9" y2="15"></line>
-              <line x1="9" y1="9" x2="15" y2="15"></line>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
           </div>
           <div className="admin-metric-info">
@@ -287,6 +251,7 @@ const AdminAuditoria = () => {
             <span className="admin-metric-label">Tentativas Falhas Hoje</span>
           </div>
         </div>
+
         <div className="admin-metric-card">
           <div className="admin-metric-icon users">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -301,20 +266,26 @@ const AdminAuditoria = () => {
             <span className="admin-metric-label">Usuários Únicos</span>
           </div>
         </div>
+
+        <div className="admin-metric-card">
+          <div className="admin-metric-icon events">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div className="admin-metric-info">
+            <span className="admin-metric-value">{metricas.totalEventos}</span>
+            <span className="admin-metric-label">Total de Eventos</span>
+          </div>
+        </div>
       </div>
 
       {/* Tabs */}
       <div className="admin-auditoria-tabs">
-        <button 
-          className={`admin-tab ${activeTab === 'sessoes' ? 'active' : ''}`}
-          onClick={() => setActiveTab('sessoes')}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          Sessões Ativas ({sessoes.length})
-        </button>
         <button 
           className={`admin-tab ${activeTab === 'logs' ? 'active' : ''}`}
           onClick={() => setActiveTab('logs')}
@@ -324,7 +295,6 @@ const AdminAuditoria = () => {
             <polyline points="14 2 14 8 20 8"></polyline>
             <line x1="16" y1="13" x2="8" y2="13"></line>
             <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
           Logs de Acesso
         </button>
@@ -333,11 +303,12 @@ const AdminAuditoria = () => {
           onClick={() => setActiveTab('tentativas')}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-            <line x1="12" y1="9" x2="12" y2="13"></line>
-            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
-          Tentativas de Acesso ({tentativas.length})
+          Tentativas Falhas
+          {tentativas.length > 0 && <span className="admin-tab-badge">{tentativas.length}</span>}
         </button>
         <button 
           className={`admin-tab ${activeTab === 'estatisticas' ? 'active' : ''}`}
@@ -352,117 +323,31 @@ const AdminAuditoria = () => {
         </button>
       </div>
 
-      {/* Conteúdo das Tabs */}
+      {/* Content */}
       <div className="admin-auditoria-content">
         {loading ? (
-          <div className="admin-loading">
+          <div className="admin-auditoria-loading">
             <div className="admin-spinner"></div>
             <p>Carregando dados de auditoria...</p>
           </div>
         ) : (
           <>
-            {/* Tab Sessões Ativas */}
-            {activeTab === 'sessoes' && (
-              <div className="admin-tab-content">
-                <div className="admin-section-header">
-                  <h3>Sessões Ativas</h3>
-                  <p>Usuários atualmente logados no sistema</p>
-                </div>
-                {sessoes.length === 0 ? (
-                  <div className="admin-empty-state">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="8" x2="12" y2="12"></line>
-                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <p>Nenhuma sessão ativa no momento</p>
-                  </div>
-                ) : (
-                  <div className="admin-table-container">
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Usuário</th>
-                          <th>Email</th>
-                          <th>IP</th>
-                          <th>Navegador</th>
-                          <th>Sistema</th>
-                          <th>Dispositivo</th>
-                          <th>Início</th>
-                          <th>Tempo</th>
-                          <th>Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sessoes.map((sessao) => {
-                          const uaInfo = parseUserAgent(sessao.user_agent);
-                          return (
-                            <tr key={sessao.id}>
-                              <td className="user-cell">
-                                <div className="user-avatar">
-                                  {sessao.admin_usuarios?.nome?.charAt(0) || '?'}
-                                </div>
-                                <span>{sessao.admin_usuarios?.nome || 'Desconhecido'}</span>
-                              </td>
-                              <td>{sessao.admin_usuarios?.email || '-'}</td>
-                              <td>
-                                <span className="ip-badge">{sessao.ip_address || 'N/A'}</span>
-                              </td>
-                              <td>{uaInfo.browser}</td>
-                              <td>{uaInfo.os}</td>
-                              <td>
-                                <span className={`device-badge ${uaInfo.device.toLowerCase()}`}>
-                                  {uaInfo.device}
-                                </span>
-                              </td>
-                              <td>{formatDate(sessao.created_at)}</td>
-                              <td>{calcularTempoSessao(sessao.created_at)}</td>
-                              <td>
-                                <button 
-                                  className="admin-btn-danger-sm"
-                                  onClick={() => handleEncerrarSessao(sessao.id, sessao.user_id)}
-                                  title="Encerrar sessão"
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                    <polyline points="16 17 21 12 16 7"></polyline>
-                                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                                  </svg>
-                                  Encerrar
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Tab Logs de Acesso */}
+            {/* Tab: Logs de Acesso */}
             {activeTab === 'logs' && (
-              <div className="admin-tab-content">
-                <div className="admin-section-header">
-                  <h3>Logs de Acesso</h3>
-                  <p>Histórico completo de atividades no sistema</p>
-                </div>
-                
-                {/* Filtros */}
-                <div className="admin-filters">
+              <div className="admin-auditoria-section">
+                <div className="admin-auditoria-filters">
                   <div className="admin-filter-group">
                     <label>Usuário</label>
-                    <input
-                      type="text"
-                      placeholder="Filtrar por email..."
+                    <input 
+                      type="text" 
+                      placeholder="Buscar por email..."
                       value={filtros.usuario}
                       onChange={(e) => setFiltros({...filtros, usuario: e.target.value})}
                     />
                   </div>
                   <div className="admin-filter-group">
                     <label>Tipo de Evento</label>
-                    <select
+                    <select 
                       value={filtros.tipoEvento}
                       onChange={(e) => setFiltros({...filtros, tipoEvento: e.target.value})}
                     >
@@ -471,22 +356,24 @@ const AdminAuditoria = () => {
                       <option value="LOGOUT">Logout</option>
                       <option value="TENTATIVA_LOGIN_FALHA">Tentativa Falha</option>
                       <option value="TENTATIVA_LOGIN_SENHA_INCORRETA">Senha Incorreta</option>
-                      <option value="LOGIN_BLOQUEADO_SESSAO_ATIVA">Bloqueado</option>
                       <option value="SENHA_ALTERADA">Senha Alterada</option>
+                      <option value="USUARIO_CRIADO">Usuário Criado</option>
+                      <option value="USUARIO_EDITADO">Usuário Editado</option>
+                      <option value="USUARIO_EXCLUIDO">Usuário Excluído</option>
                     </select>
                   </div>
                   <div className="admin-filter-group">
                     <label>Data Início</label>
-                    <input
-                      type="date"
+                    <input 
+                      type="date" 
                       value={filtros.dataInicio}
                       onChange={(e) => setFiltros({...filtros, dataInicio: e.target.value})}
                     />
                   </div>
                   <div className="admin-filter-group">
                     <label>Data Fim</label>
-                    <input
-                      type="date"
+                    <input 
+                      type="date" 
                       value={filtros.dataFim}
                       onChange={(e) => setFiltros({...filtros, dataFim: e.target.value})}
                     />
@@ -500,223 +387,239 @@ const AdminAuditoria = () => {
                   </button>
                 </div>
 
-                <div className="admin-table-container">
-                  <table className="admin-table">
+                <div className="admin-auditoria-table-container">
+                  <table className="admin-auditoria-table">
                     <thead>
                       <tr>
                         <th>Data/Hora</th>
-                        <th>Email</th>
+                        <th>Usuário</th>
                         <th>Evento</th>
-                        <th>IP</th>
                         <th>Navegador</th>
+                        <th>Sistema</th>
+                        <th>Dispositivo</th>
+                        <th>IP</th>
                         <th>Detalhes</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {logs.map((log) => {
-                        const badge = getEventBadge(log.tipo_evento);
-                        const uaInfo = parseUserAgent(log.user_agent);
-                        return (
-                          <tr key={log.id}>
-                            <td>{formatDate(log.created_at)}</td>
-                            <td>{log.email}</td>
-                            <td>
-                              <span className={`event-badge ${badge.class}`}>
-                                {badge.label}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="ip-badge">{log.ip_address || 'N/A'}</span>
-                            </td>
-                            <td>{uaInfo.browser} / {uaInfo.os}</td>
-                            <td className="details-cell">{log.detalhes || '-'}</td>
-                          </tr>
-                        );
-                      })}
+                      {logs.length === 0 ? (
+                        <tr>
+                          <td colSpan="8" className="admin-auditoria-empty">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                              <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <p>Nenhum log encontrado</p>
+                          </td>
+                        </tr>
+                      ) : (
+                        logs.map((log, index) => {
+                          const { browser, os, device } = parseUserAgent(log.user_agent);
+                          const badge = getEventBadge(log.tipo_evento);
+                          return (
+                            <tr key={log.id || index}>
+                              <td>{formatDate(log.created_at)}</td>
+                              <td>{log.email}</td>
+                              <td>
+                                <span className={`admin-badge ${badge.class}`}>{badge.label}</span>
+                              </td>
+                              <td>{browser}</td>
+                              <td>{os}</td>
+                              <td>{device}</td>
+                              <td>{log.ip_address || '-'}</td>
+                              <td className="admin-auditoria-details">{log.detalhes || '-'}</td>
+                            </tr>
+                          );
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>
               </div>
             )}
 
-            {/* Tab Tentativas de Acesso */}
+            {/* Tab: Tentativas Falhas */}
             {activeTab === 'tentativas' && (
-              <div className="admin-tab-content">
-                <div className="admin-section-header">
-                  <h3>Tentativas de Acesso</h3>
-                  <p>Tentativas de login falhas e bloqueadas</p>
-                </div>
-                
-                {tentativas.length === 0 ? (
-                  <div className="admin-empty-state success">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    <p>Nenhuma tentativa de acesso suspeita registrada</p>
+              <div className="admin-auditoria-section">
+                <div className="admin-auditoria-alert">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  <div>
+                    <strong>Monitoramento de Segurança</strong>
+                    <p>Esta seção exibe todas as tentativas de login que falharam, incluindo senhas incorretas e tentativas bloqueadas.</p>
                   </div>
-                ) : (
-                  <div className="admin-table-container">
-                    <table className="admin-table">
-                      <thead>
+                </div>
+
+                <div className="admin-auditoria-table-container">
+                  <table className="admin-auditoria-table">
+                    <thead>
+                      <tr>
+                        <th>Data/Hora</th>
+                        <th>Email Tentado</th>
+                        <th>Tipo</th>
+                        <th>Navegador</th>
+                        <th>Sistema</th>
+                        <th>IP</th>
+                        <th>Detalhes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tentativas.length === 0 ? (
                         <tr>
-                          <th>Data/Hora</th>
-                          <th>Email</th>
-                          <th>Tipo</th>
-                          <th>IP</th>
-                          <th>Navegador</th>
-                          <th>Detalhes</th>
+                          <td colSpan="7" className="admin-auditoria-empty">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <p>Nenhuma tentativa falha registrada</p>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {tentativas.map((tentativa) => {
+                      ) : (
+                        tentativas.map((tentativa, index) => {
+                          const { browser, os } = parseUserAgent(tentativa.user_agent);
                           const badge = getEventBadge(tentativa.tipo_evento);
-                          const uaInfo = parseUserAgent(tentativa.user_agent);
                           return (
-                            <tr key={tentativa.id} className="row-warning">
+                            <tr key={tentativa.id || index}>
                               <td>{formatDate(tentativa.created_at)}</td>
                               <td>{tentativa.email}</td>
                               <td>
-                                <span className={`event-badge ${badge.class}`}>
-                                  {badge.label}
-                                </span>
+                                <span className={`admin-badge ${badge.class}`}>{badge.label}</span>
                               </td>
-                              <td>
-                                <span className="ip-badge danger">{tentativa.ip_address || 'N/A'}</span>
-                              </td>
-                              <td>{uaInfo.browser} / {uaInfo.os}</td>
-                              <td className="details-cell">{tentativa.detalhes || '-'}</td>
+                              <td>{browser}</td>
+                              <td>{os}</td>
+                              <td>{tentativa.ip_address || '-'}</td>
+                              <td className="admin-auditoria-details">{tentativa.detalhes || '-'}</td>
                             </tr>
                           );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
 
-            {/* Tab Estatísticas */}
+            {/* Tab: Estatísticas */}
             {activeTab === 'estatisticas' && (
-              <div className="admin-tab-content">
-                <div className="admin-section-header">
-                  <h3>Estatísticas de Acesso</h3>
-                  <p>Análise de padrões de uso do sistema</p>
-                </div>
-                
-                <div className="admin-stats-grid">
-                  <div className="admin-stat-card">
-                    <h4>Logins por Período</h4>
-                    <div className="stat-items">
-                      <div className="stat-item">
-                        <span className="stat-label">Hoje</span>
-                        <span className="stat-value">{metricas.loginsHoje}</span>
-                      </div>
-                      <div className="stat-item">
-                        <span className="stat-label">Esta Semana</span>
-                        <span className="stat-value">
-                          {logs.filter(l => {
-                            const semanaAtras = new Date();
-                            semanaAtras.setDate(semanaAtras.getDate() - 7);
-                            return l.tipo_evento === 'LOGIN_SUCESSO' && new Date(l.created_at) >= semanaAtras;
-                          }).length}
+              <div className="admin-auditoria-section">
+                <div className="admin-auditoria-stats-grid">
+                  {/* Estatísticas por Navegador */}
+                  <div className="admin-stats-card">
+                    <h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <line x1="21.17" y1="8" x2="12" y2="8"></line>
+                        <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
+                        <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+                      </svg>
+                      Por Navegador
+                    </h3>
+                    <div className="admin-stats-list">
+                      {Object.entries(estatisticasBrowser).sort((a, b) => b[1] - a[1]).map(([browser, count]) => (
+                        <div key={browser} className="admin-stats-item">
+                          <span className="admin-stats-name">{browser}</span>
+                          <div className="admin-stats-bar-container">
+                            <div 
+                              className="admin-stats-bar" 
+                              style={{ width: `${(count / logs.length) * 100}%` }}
+                            ></div>
+                          </div>
+                          <span className="admin-stats-count">{count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Estatísticas por Sistema Operacional */}
+                  <div className="admin-stats-card">
+                    <h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                      Por Sistema Operacional
+                    </h3>
+                    <div className="admin-stats-list">
+                      {Object.entries(estatisticasOS).sort((a, b) => b[1] - a[1]).map(([os, count]) => (
+                        <div key={os} className="admin-stats-item">
+                          <span className="admin-stats-name">{os}</span>
+                          <div className="admin-stats-bar-container">
+                            <div 
+                              className="admin-stats-bar os" 
+                              style={{ width: `${(count / logs.length) * 100}%` }}
+                            ></div>
+                          </div>
+                          <span className="admin-stats-count">{count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Estatísticas por Dispositivo */}
+                  <div className="admin-stats-card">
+                    <h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                      </svg>
+                      Por Dispositivo
+                    </h3>
+                    <div className="admin-stats-list">
+                      {Object.entries(estatisticasDevice).sort((a, b) => b[1] - a[1]).map(([device, count]) => (
+                        <div key={device} className="admin-stats-item">
+                          <span className="admin-stats-name">{device}</span>
+                          <div className="admin-stats-bar-container">
+                            <div 
+                              className="admin-stats-bar device" 
+                              style={{ width: `${(count / logs.length) * 100}%` }}
+                            ></div>
+                          </div>
+                          <span className="admin-stats-count">{count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Resumo de Eventos */}
+                  <div className="admin-stats-card">
+                    <h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                      </svg>
+                      Resumo de Eventos
+                    </h3>
+                    <div className="admin-stats-summary">
+                      <div className="admin-stats-summary-item">
+                        <span className="admin-stats-summary-label">Total de Logins</span>
+                        <span className="admin-stats-summary-value success">
+                          {logs.filter(l => l.tipo_evento === 'LOGIN_SUCESSO').length}
                         </span>
                       </div>
-                      <div className="stat-item">
-                        <span className="stat-label">Este Mês</span>
-                        <span className="stat-value">
-                          {logs.filter(l => {
-                            const mesAtual = new Date().getMonth();
-                            return l.tipo_evento === 'LOGIN_SUCESSO' && new Date(l.created_at).getMonth() === mesAtual;
-                          }).length}
+                      <div className="admin-stats-summary-item">
+                        <span className="admin-stats-summary-label">Total de Logouts</span>
+                        <span className="admin-stats-summary-value info">
+                          {logs.filter(l => l.tipo_evento === 'LOGOUT').length}
                         </span>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="admin-stat-card">
-                    <h4>Navegadores Mais Usados</h4>
-                    <div className="stat-items">
-                      {(() => {
-                        const browsers = {};
-                        logs.forEach(l => {
-                          const browser = parseUserAgent(l.user_agent).browser;
-                          browsers[browser] = (browsers[browser] || 0) + 1;
-                        });
-                        return Object.entries(browsers)
-                          .sort((a, b) => b[1] - a[1])
-                          .slice(0, 5)
-                          .map(([browser, count]) => (
-                            <div className="stat-item" key={browser}>
-                              <span className="stat-label">{browser}</span>
-                              <span className="stat-value">{count}</span>
-                            </div>
-                          ));
-                      })()}
-                    </div>
-                  </div>
-
-                  <div className="admin-stat-card">
-                    <h4>Sistemas Operacionais</h4>
-                    <div className="stat-items">
-                      {(() => {
-                        const systems = {};
-                        logs.forEach(l => {
-                          const os = parseUserAgent(l.user_agent).os;
-                          systems[os] = (systems[os] || 0) + 1;
-                        });
-                        return Object.entries(systems)
-                          .sort((a, b) => b[1] - a[1])
-                          .slice(0, 5)
-                          .map(([os, count]) => (
-                            <div className="stat-item" key={os}>
-                              <span className="stat-label">{os}</span>
-                              <span className="stat-value">{count}</span>
-                            </div>
-                          ));
-                      })()}
-                    </div>
-                  </div>
-
-                  <div className="admin-stat-card">
-                    <h4>Dispositivos</h4>
-                    <div className="stat-items">
-                      {(() => {
-                        const devices = {};
-                        logs.forEach(l => {
-                          const device = parseUserAgent(l.user_agent).device;
-                          devices[device] = (devices[device] || 0) + 1;
-                        });
-                        return Object.entries(devices)
-                          .sort((a, b) => b[1] - a[1])
-                          .map(([device, count]) => (
-                            <div className="stat-item" key={device}>
-                              <span className="stat-label">{device}</span>
-                              <span className="stat-value">{count}</span>
-                            </div>
-                          ));
-                      })()}
-                    </div>
-                  </div>
-
-                  <div className="admin-stat-card full-width">
-                    <h4>Usuários Mais Ativos</h4>
-                    <div className="stat-items horizontal">
-                      {(() => {
-                        const users = {};
-                        logs.filter(l => l.tipo_evento === 'LOGIN_SUCESSO').forEach(l => {
-                          users[l.email] = (users[l.email] || 0) + 1;
-                        });
-                        return Object.entries(users)
-                          .sort((a, b) => b[1] - a[1])
-                          .slice(0, 10)
-                          .map(([email, count]) => (
-                            <div className="stat-item-horizontal" key={email}>
-                              <span className="stat-label">{email}</span>
-                              <span className="stat-value">{count} logins</span>
-                            </div>
-                          ));
-                      })()}
+                      <div className="admin-stats-summary-item">
+                        <span className="admin-stats-summary-label">Senhas Alteradas</span>
+                        <span className="admin-stats-summary-value warning">
+                          {logs.filter(l => l.tipo_evento === 'SENHA_ALTERADA').length}
+                        </span>
+                      </div>
+                      <div className="admin-stats-summary-item">
+                        <span className="admin-stats-summary-label">Tentativas Falhas</span>
+                        <span className="admin-stats-summary-value danger">
+                          {tentativas.length}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
