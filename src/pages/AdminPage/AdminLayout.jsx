@@ -10,6 +10,8 @@ const AdminLayout = () => {
   const { theme } = useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  const isDarkMode = theme === 'dark';
+
   // Loading state
   if (loading) {
     return (
@@ -29,7 +31,8 @@ const AdminLayout = () => {
     <div className={`admin-layout ${theme} ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <AdminSidebar 
         collapsed={sidebarCollapsed} 
-        setCollapsed={setSidebarCollapsed} 
+        setCollapsed={setSidebarCollapsed}
+        isDarkMode={isDarkMode}
       />
       <main className="admin-main">
         <Outlet />

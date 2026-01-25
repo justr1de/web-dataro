@@ -22,7 +22,7 @@ import {
   AdminLogin, 
   AdminLayout, 
   AdminDashboard, 
-  AdminGabinetes, 
+  AdminClientes,
   AdminPlaceholder 
 } from './pages/AdminPage';
 
@@ -93,13 +93,13 @@ const AdminProtectedRoute = ({ children }) => {
         justifyContent: 'center', 
         alignItems: 'center', 
         height: '100vh',
-        backgroundColor: '#0f172a'
+        background: 'linear-gradient(135deg, #064e3b 0%, #022c22 40%, #0a0f0d 100%)'
       }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{
             width: '40px',
             height: '40px',
-            border: '4px solid rgba(255,255,255,0.1)',
+            border: '4px solid rgba(16, 185, 129, 0.2)',
             borderTop: '4px solid #10b981',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite',
@@ -189,9 +189,9 @@ function App() {
                 </AdminProtectedRoute>
               }
             >
-              <Route index element={<Navigate to="/admin/demandas" replace />} />
+              <Route index element={<Navigate to="/admin/clientes" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="gabinetes" element={<AdminGabinetes />} />
+              <Route path="clientes" element={<AdminClientes />} />
               <Route path="demandas" element={<AdminDashboard />} />
               <Route path="relatorios" element={<AdminPlaceholder />} />
               <Route path="contatos" element={<AdminPlaceholder />} />

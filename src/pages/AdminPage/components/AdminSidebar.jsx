@@ -14,7 +14,7 @@ const Icons = {
       <rect x="3" y="14" width="7" height="7"></rect>
     </svg>
   ),
-  Gabinetes: () => (
+  Clientes: () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
       <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -122,7 +122,7 @@ const Icons = {
 
 const menuItems = [
   { path: '/admin/dashboard', icon: Icons.Dashboard, label: 'Dashboard' },
-  { path: '/admin/gabinetes', icon: Icons.Gabinetes, label: 'Gabinetes' },
+  { path: '/admin/clientes', icon: Icons.Clientes, label: 'Clientes' },
   { path: '/admin/demandas', icon: Icons.Demandas, label: 'Demandas' },
   { path: '/admin/relatorios', icon: Icons.Relatorios, label: 'Relatórios' },
   { path: '/admin/contatos', icon: Icons.Contatos, label: 'Contatos' },
@@ -135,7 +135,7 @@ const menuItems = [
   { path: '/admin/configuracoes', icon: Icons.Configuracoes, label: 'Configurações' },
 ];
 
-const AdminSidebar = ({ collapsed, setCollapsed }) => {
+const AdminSidebar = ({ collapsed, setCollapsed, isDarkMode }) => {
   const { adminUser, logoutAdmin, isSuperAdmin } = useAdminAuth();
   const navigate = useNavigate();
   const [notificationCount] = useState(0);
@@ -156,8 +156,10 @@ const AdminSidebar = ({ collapsed, setCollapsed }) => {
     return true;
   });
 
+  const themeClass = isDarkMode ? 'dark-theme' : 'light-theme';
+
   return (
-    <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <aside className={`admin-sidebar ${themeClass} ${collapsed ? 'collapsed' : ''}`}>
       {/* Header do Sidebar */}
       <div className="sidebar-header">
         <div className="sidebar-logo">
