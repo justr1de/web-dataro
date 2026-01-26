@@ -136,6 +136,13 @@
 }
 
 /* Responsividade */
+@media (max-width: 1024px) {
+  .admin-main {
+    margin-left: 70px;
+    padding: 1.25rem;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-main {
     margin-left: 70px;
@@ -144,8 +151,38 @@
 }
 
 @media (max-width: 480px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
   .admin-main {
     margin-left: 0;
     padding: 0.75rem;
+    padding-bottom: 80px; /* Espaço para menu inferior */
+    min-height: calc(100vh - 70px);
+  }
+
+  .admin-content-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .admin-content-header p {
+    font-size: 0.75rem;
+  }
+
+  .admin-card {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-main {
+    padding: 0.5rem;
+    padding-bottom: 75px;
+  }
+
+  .admin-content-header h1 {
+    font-size: 1.125rem;
   }
 }

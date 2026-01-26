@@ -4,6 +4,7 @@ import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import AdminSidebar from './components/AdminSidebar';
 import './AdminLayout.css';
+import './AdminResponsive.css';
 
 const AdminLayout = () => {
   const { adminUser, loading } = useAdminAuth();
