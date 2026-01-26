@@ -13,7 +13,7 @@ const AdminTrocarSenha = () => {
   const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { adminUser, trocarSenha } = useAdminAuth();
+  const { adminUser, atualizarSenha, logoutAdmin } = useAdminAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
 
@@ -48,15 +48,16 @@ const AdminTrocarSenha = () => {
 
     setLoading(true);
 
-    const result = await trocarSenha(novaSenha);
+    const result = await atualizarSenha(novaSenha);
 
     if (result.success) {
-      navigate('/admin/dashboard');
+      // Fazer logout para forçar novo login com a nova senha
+      await logoutAdmin(true); // silent logout
+      navigate('/admin/login');
     } else {
       setError(result.error || 'Erro ao trocar senha');
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
