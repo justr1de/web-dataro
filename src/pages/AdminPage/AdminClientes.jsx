@@ -457,16 +457,44 @@ const AdminClientes = () => {
   const validateForm = () => {
     const errors = {};
     
-    // Validar CPF
-    if (formData.responsavel_cpf && formData.responsavel_cpf.replace(/\D/g, '').length === 11) {
-      if (!validarCPF(formData.responsavel_cpf)) {
-        errors.responsavel_cpf = 'CPF inválido';
-      }
+    // Validar campos obrigatórios
+    if (!formData.tipo_cliente) {
+      errors.tipo_cliente = 'Tipo de cliente é obrigatório';
+    }
+    
+    if (!formData.nome || formData.nome.trim() === '') {
+      errors.nome = 'Nome/Razão Social é obrigatório';
+    }
+    
+    if (!formData.telefone || formData.telefone.replace(/\D/g, '').length < 10) {
+      errors.telefone = 'Telefone é obrigatório (mínimo 10 dígitos)';
+    }
+    
+    if (!formData.email || formData.email.trim() === '') {
+      errors.email = 'E-mail é obrigatório';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'E-mail inválido';
+    }
+    
+    if (!formData.responsavel_nome || formData.responsavel_nome.trim() === '') {
+      errors.responsavel_nome = 'Nome do responsável é obrigatório';
+    }
+    
+    if (!formData.responsavel_cargo || formData.responsavel_cargo.trim() === '') {
+      errors.responsavel_cargo = 'Cargo é obrigatório';
+    }
+    
+    if (!formData.responsavel_cpf || formData.responsavel_cpf.replace(/\D/g, '').length !== 11) {
+      errors.responsavel_cpf = 'CPF é obrigatório (11 dígitos)';
+    } else if (!validarCPF(formData.responsavel_cpf)) {
+      errors.responsavel_cpf = 'CPF inválido';
     }
     
     // Validar CNPJ (se preenchido)
-    if (formData.cnpj && formData.cnpj.replace(/\D/g, '').length === 14) {
-      if (!validarCNPJ(formData.cnpj)) {
+    if (formData.cnpj && formData.cnpj.replace(/\D/g, '').length > 0) {
+      if (formData.cnpj.replace(/\D/g, '').length !== 14) {
+        errors.cnpj = 'CNPJ incompleto (14 dígitos)';
+      } else if (!validarCNPJ(formData.cnpj)) {
         errors.cnpj = 'CNPJ inválido';
       }
     }
@@ -826,6 +854,7 @@ const AdminClientes = () => {
                       value={formData.tipo_cliente}
                       onChange={handleInputChange}
                       required
+                      className={validationErrors.tipo_cliente ? 'input-error' : ''}
                     >
                       <option value="">Selecione o tipo...</option>
                       {tiposCliente.map(tipo => (
@@ -834,6 +863,9 @@ const AdminClientes = () => {
                         </option>
                       ))}
                     </select>
+                    {validationErrors.tipo_cliente && (
+                      <span className="error-message">{validationErrors.tipo_cliente}</span>
+                    )}
                   </div>
                   
                   <div className="form-group">
@@ -871,7 +903,11 @@ const AdminClientes = () => {
                     onChange={handleInputChange}
                     required
                     placeholder="Ex: Prefeitura Municipal de Ji-Paraná"
+                    className={validationErrors.nome ? 'input-error' : ''}
                   />
+                  {validationErrors.nome && (
+                    <span className="error-message">{validationErrors.nome}</span>
+                  )}
                 </div>
 
                 <div className="form-row">
@@ -924,6 +960,7 @@ const AdminClientes = () => {
                         required
                         placeholder="(00) 00000-0000"
                         maxLength={15}
+                        className={validationErrors.telefone ? 'input-error' : ''}
                       />
                       <label className="checkbox-inline">
                         <input
@@ -936,6 +973,9 @@ const AdminClientes = () => {
                         <span>WhatsApp</span>
                       </label>
                     </div>
+                    {validationErrors.telefone && (
+                      <span className="error-message">{validationErrors.telefone}</span>
+                    )}
                   </div>
                   
                   <div className="form-group">
@@ -948,7 +988,11 @@ const AdminClientes = () => {
                       onChange={handleInputChange}
                       required
                       placeholder="contato@exemplo.gov.br"
+                      className={validationErrors.email ? 'input-error' : ''}
                     />
+                    {validationErrors.email && (
+                      <span className="error-message">{validationErrors.email}</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -974,7 +1018,11 @@ const AdminClientes = () => {
                       onChange={handleInputChange}
                       required
                       placeholder="Nome completo"
+                      className={validationErrors.responsavel_nome ? 'input-error' : ''}
                     />
+                    {validationErrors.responsavel_nome && (
+                      <span className="error-message">{validationErrors.responsavel_nome}</span>
+                    )}
                   </div>
                   
                   <div className="form-group">
@@ -987,7 +1035,11 @@ const AdminClientes = () => {
                       onChange={handleInputChange}
                       required
                       placeholder="Ex: Prefeito, Secretário, Diretor..."
+                      className={validationErrors.responsavel_cargo ? 'input-error' : ''}
                     />
+                    {validationErrors.responsavel_cargo && (
+                      <span className="error-message">{validationErrors.responsavel_cargo}</span>
+                    )}
                   </div>
                 </div>
 
