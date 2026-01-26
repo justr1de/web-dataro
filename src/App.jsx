@@ -259,8 +259,8 @@ function App() {
               <Route path="credenciais" element={<AdminPlaceholder />} />
               <Route path="financeiro" element={<AdminFinanceiro />} />
               <Route path="busca" element={<AdminPlaceholder />} />
-              <Route path="logs" element={<AdminPlaceholder />} />
-              <Route path="auditoria" element={<AdminAuditoria />} />
+              <Route path="logs" element={<AdminAuditoria />} />
+              <Route path="auditoria" element={<AdminPlaceholder />} />
               <Route path="excluidos" element={<AdminPlaceholder />} />
               <Route path="configuracoes" element={<AdminPlaceholder />} />
             </Route>
