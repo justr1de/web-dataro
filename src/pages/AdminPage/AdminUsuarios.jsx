@@ -164,7 +164,7 @@ const AdminUsuarios = () => {
             'apikey': SUPABASE_KEY,
             'Authorization': `Bearer ${SUPABASE_KEY}`,
             'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
+            'Prefer': 'return=representation'
           },
           body: JSON.stringify({
             nome: formData.nome,
@@ -176,12 +176,16 @@ const AdminUsuarios = () => {
           })
         });
 
-        if (response.ok) {
+        const result = await response.json();
+        
+        if (response.ok && result && result.length > 0) {
           setSuccess('Usuário atualizado com sucesso!');
           setShowModal(false);
           fetchUsuarios();
+        } else if (response.ok && (!result || result.length === 0)) {
+          setError('Nenhum usuário foi atualizado. Verifique se o usuário ainda existe.');
         } else {
-          setError('Erro ao atualizar usuário');
+          setError(result?.message || 'Erro ao atualizar usuário');
         }
       }
     } catch (err) {
