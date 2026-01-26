@@ -1127,3 +1127,314 @@
     font-size: 0.8rem;
   }
 }
+
+
+/* ============================================
+   TEMA CLARO (LIGHT MODE)
+   ============================================ */
+
+/* Container principal no modo claro */
+.admin-layout.light .admin-gabinetes {
+  color: #1f2937;
+}
+
+/* Título e subtítulo no modo claro */
+.admin-layout.light .header-title h1 {
+  color: #111827 !important;
+}
+
+.admin-layout.light .header-title .header-subtitle {
+  color: #6b7280;
+  border-left-color: #d1d5db;
+}
+
+/* Campo de busca no modo claro */
+.admin-layout.light .search-input {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #1f2937;
+}
+
+.admin-layout.light .search-input::placeholder {
+  color: #9ca3af;
+}
+
+.admin-layout.light .search-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.admin-layout.light .search-input-wrapper svg {
+  color: #6b7280;
+}
+
+/* Botão de filtro no modo claro */
+.admin-layout.light .btn-filter {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.admin-layout.light .btn-filter:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.admin-layout.light .btn-filter.active {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: #10b981;
+  color: #059669;
+}
+
+/* Painel de filtros no modo claro */
+.admin-layout.light .filters-panel {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .filter-group label {
+  color: #4b5563;
+}
+
+.admin-layout.light .filter-group select {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #1f2937;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.admin-layout.light .filter-group select option {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+/* Contador de resultados no modo claro */
+.admin-layout.light .results-count {
+  color: #6b7280;
+}
+
+/* Card de cliente no modo claro */
+.admin-layout.light .gabinete-card {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-layout.light .gabinete-card:hover {
+  background: #ffffff;
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge de tipo no modo claro */
+.admin-layout.light .gabinete-tipo-badge {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* IMPORTANTE: Nome do cliente no modo claro - COR ESCURA */
+.admin-layout.light .gabinete-nome {
+  color: #111827 !important;
+  text-shadow: none;
+}
+
+/* Botões de ação no modo claro */
+.admin-layout.light .btn-icon {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.admin-layout.light .btn-icon:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.admin-layout.light .btn-icon.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Info grid no modo claro */
+.admin-layout.light .gabinete-info-item {
+  color: #4b5563;
+}
+
+.admin-layout.light .gabinete-info-item svg {
+  color: #9ca3af;
+}
+
+/* Produtos no modo claro */
+.admin-layout.light .gabinete-produtos {
+  background: rgba(59, 130, 246, 0.08);
+  color: #2563eb;
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Footer do card no modo claro */
+.admin-layout.light .gabinete-footer {
+  color: #9ca3af;
+  border-top-color: #e5e7eb;
+}
+
+/* Estados de loading e vazio no modo claro */
+.admin-layout.light .loading-state,
+.admin-layout.light .empty-state {
+  color: #6b7280;
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .loading-state .spinner {
+  border-color: #e5e7eb;
+  border-top-color: #10b981;
+}
+
+/* Modal no modo claro */
+.admin-layout.light .modal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.admin-layout.light .modal-content {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .modal-header {
+  background: #ffffff;
+  border-bottom-color: #e5e7eb;
+}
+
+.admin-layout.light .modal-header h2 {
+  color: #111827;
+}
+
+.admin-layout.light .btn-close {
+  color: #6b7280;
+}
+
+.admin-layout.light .btn-close:hover {
+  color: #1f2937;
+}
+
+/* Formulário no modo claro */
+.admin-layout.light .section-title {
+  color: #111827;
+}
+
+.admin-layout.light .section-info {
+  color: #9ca3af;
+}
+
+.admin-layout.light .form-group label {
+  color: #374151;
+}
+
+.admin-layout.light .field-info {
+  color: #9ca3af;
+}
+
+.admin-layout.light .form-group input,
+.admin-layout.light .form-group textarea,
+.admin-layout.light .form-group select {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #1f2937;
+}
+
+.admin-layout.light .form-group input::placeholder,
+.admin-layout.light .form-group textarea::placeholder {
+  color: #9ca3af;
+}
+
+.admin-layout.light .form-group input:focus,
+.admin-layout.light .form-group textarea:focus,
+.admin-layout.light .form-group select:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.admin-layout.light .form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.admin-layout.light .form-group select option {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+/* Checkbox inline no modo claro */
+.admin-layout.light .checkbox-inline {
+  color: #4b5563;
+  background: #f3f4f6;
+}
+
+.admin-layout.light .checkbox-inline:hover {
+  background: #e5e7eb;
+}
+
+/* Cards de produtos no modo claro */
+.admin-layout.light .produto-card {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .produto-card:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.admin-layout.light .produto-card.selected {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: #10b981;
+}
+
+.admin-layout.light .produto-nome {
+  color: #111827;
+}
+
+.admin-layout.light .produto-descricao {
+  color: #6b7280;
+}
+
+/* Aviso LGPD no modo claro */
+.admin-layout.light .lgpd-notice {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.admin-layout.light .lgpd-notice p {
+  color: #1e40af;
+}
+
+/* Botões do modal no modo claro */
+.admin-layout.light .btn-cancel {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.admin-layout.light .btn-cancel:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+/* Modal de confirmação no modo claro */
+.admin-layout.light .confirm-modal-content {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .confirm-modal-content p {
+  color: #4b5563;
+}
+
+.admin-layout.light .btn-confirm-cancel {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.admin-layout.light .btn-confirm-cancel:hover {
+  background: #e5e7eb;
+}
