@@ -1,4 +1,4 @@
-/* Admin Gabinetes - Tema escuro com branding DATA-RO */
+/* Admin Clientes - Tema escuro com branding DATA-RO */
 
 .admin-gabinetes {
   color: #ffffff;
@@ -77,14 +77,14 @@
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
-/* Grid de Gabinetes */
+/* Grid de Clientes */
 .gabinetes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
-/* Card de Gabinete */
+/* Card de Cliente */
 .gabinete-card {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;

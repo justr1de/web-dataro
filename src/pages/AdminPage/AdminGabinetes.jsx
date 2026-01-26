@@ -40,10 +40,10 @@ const Icons = {
 
 const AdminGabinetes = () => {
   const { adminUser, isSuperAdmin } = useAdminAuth();
-  const [gabinetes, setGabinetes] = useState([]);
+  const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingGabinete, setEditingGabinete] = useState(null);
+  const [editingCliente, setEditingCliente] = useState(null);
   const [formData, setFormData] = useState({
     nome: '',
     descricao: '',
@@ -51,10 +51,10 @@ const AdminGabinetes = () => {
   });
 
   useEffect(() => {
-    fetchGabinetes();
+    fetchClientes();
   }, []);
 
-  const fetchGabinetes = async () => {
+  const fetchClientes = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -63,23 +63,23 @@ const AdminGabinetes = () => {
         .order('nome');
       
       if (error) throw error;
-      setGabinetes(data || []);
+      setClientes(data || []);
     } catch (error) {
-      console.error('Erro ao buscar gabinetes:', error);
+      console.error('Erro ao buscar clientes:', error);
     }
     setLoading(false);
   };
 
-  const handleOpenModal = (gabinete = null) => {
-    if (gabinete) {
-      setEditingGabinete(gabinete);
+  const handleOpenModal = (cliente = null) => {
+    if (cliente) {
+      setEditingCliente(cliente);
       setFormData({
-        nome: gabinete.nome,
-        descricao: gabinete.descricao || '',
-        municipio: gabinete.municipio || ''
+        nome: cliente.nome,
+        descricao: cliente.descricao || '',
+        municipio: cliente.municipio || ''
       });
     } else {
-      setEditingGabinete(null);
+      setEditingCliente(null);
       setFormData({ nome: '', descricao: '', municipio: '' });
     }
     setShowModal(true);
@@ -87,14 +87,14 @@ const AdminGabinetes = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setEditingGabinete(null);
+    setEditingCliente(null);
     setFormData({ nome: '', descricao: '', municipio: '' });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (editingGabinete) {
+      if (editingCliente) {
         const { error } = await supabase
           .from('admin_gabinetes')
           .update({
@@ -103,7 +103,7 @@ const AdminGabinetes = () => {
             municipio: formData.municipio,
             updated_at: new Date().toISOString()
           })
-          .eq('id', editingGabinete.id);
+          .eq('id', editingCliente.id);
         
         if (error) throw error;
       } else {
@@ -120,15 +120,15 @@ const AdminGabinetes = () => {
       }
       
       handleCloseModal();
-      fetchGabinetes();
+      fetchClientes();
     } catch (error) {
-      console.error('Erro ao salvar gabinete:', error);
-      alert('Erro ao salvar gabinete');
+      console.error('Erro ao salvar cliente:', error);
+      alert('Erro ao salvar cliente');
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Tem certeza que deseja excluir este gabinete?')) return;
+    if (!window.confirm('Tem certeza que deseja excluir este cliente?')) return;
     
     try {
       const { error } = await supabase
@@ -137,10 +137,10 @@ const AdminGabinetes = () => {
         .eq('id', id);
       
       if (error) throw error;
-      fetchGabinetes();
+      fetchClientes();
     } catch (error) {
-      console.error('Erro ao excluir gabinete:', error);
-      alert('Erro ao excluir gabinete');
+      console.error('Erro ao excluir cliente:', error);
+      alert('Erro ao excluir cliente');
     }
   };
 
@@ -155,52 +155,52 @@ const AdminGabinetes = () => {
       <div className="gabinetes-header">
         <div className="header-title">
           <Icons.Building />
-          <h1>Gabinetes</h1>
-          <span className="header-subtitle">Gerencie os gabinetes cadastrados no sistema</span>
+          <h1>Clientes</h1>
+          <span className="header-subtitle">Gerencie os clientes cadastrados no sistema</span>
         </div>
         {isSuperAdmin() && (
           <button className="btn-novo" onClick={() => handleOpenModal()}>
             <Icons.Plus />
-            Novo Gabinete
+            Novo Cliente
           </button>
         )}
       </div>
 
-      {/* Lista de Gabinetes */}
+      {/* Lista de Clientes */}
       <div className="gabinetes-grid">
         {loading ? (
           <div className="loading-state">
             <div className="spinner"></div>
-            <p>Carregando gabinetes...</p>
+            <p>Carregando clientes...</p>
           </div>
-        ) : gabinetes.filter(g => g.ativo).length === 0 ? (
+        ) : clientes.filter(c => c.ativo).length === 0 ? (
           <div className="empty-state">
             <Icons.Building />
-            <p>Nenhum gabinete cadastrado</p>
+            <p>Nenhum cliente cadastrado</p>
             {isSuperAdmin() && (
               <button className="btn-novo" onClick={() => handleOpenModal()}>
                 <Icons.Plus />
-                Criar primeiro gabinete
+                Criar primeiro cliente
               </button>
             )}
           </div>
         ) : (
-          gabinetes.filter(g => g.ativo).map(gabinete => (
-            <div key={gabinete.id} className="gabinete-card">
+          clientes.filter(c => c.ativo).map(cliente => (
+            <div key={cliente.id} className="gabinete-card">
               <div className="gabinete-header">
-                <h3>{gabinete.nome}</h3>
+                <h3>{cliente.nome}</h3>
                 {isSuperAdmin() && (
                   <div className="gabinete-actions">
                     <button 
                       className="btn-icon" 
-                      onClick={() => handleOpenModal(gabinete)}
+                      onClick={() => handleOpenModal(cliente)}
                       title="Editar"
                     >
                       <Icons.Edit />
                     </button>
                     <button 
                       className="btn-icon btn-danger" 
-                      onClick={() => handleDelete(gabinete.id)}
+                      onClick={() => handleDelete(cliente.id)}
                       title="Excluir"
                     >
                       <Icons.Trash />
@@ -208,11 +208,11 @@ const AdminGabinetes = () => {
                   </div>
                 )}
               </div>
-              <p className="gabinete-descricao">{gabinete.descricao || 'Sem descrição'}</p>
+              <p className="gabinete-descricao">{cliente.descricao || 'Sem descrição'}</p>
               <div className="gabinete-footer">
-                <span className="gabinete-municipio">{gabinete.municipio || 'Sem município'}</span>
+                <span className="gabinete-municipio">{cliente.municipio || 'Sem município'}</span>
                 <span className="gabinete-responsavel">
-                  {gabinete.admin_usuarios?.nome || 'Sem responsável'}
+                  {cliente.admin_usuarios?.nome || 'Sem responsável'}
                 </span>
               </div>
             </div>
@@ -225,21 +225,21 @@ const AdminGabinetes = () => {
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{editingGabinete ? 'Editar Gabinete' : 'Novo Gabinete'}</h2>
+              <h2>{editingCliente ? 'Editar Cliente' : 'Novo Cliente'}</h2>
               <button className="btn-close" onClick={handleCloseModal}>
                 <Icons.X />
               </button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="nome">Nome do Gabinete *</label>
+                <label htmlFor="nome">Nome do Cliente *</label>
                 <input
                   type="text"
                   id="nome"
                   value={formData.nome}
                   onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                   required
-                  placeholder="Ex: Gabinete Municipal de Ji-Paraná"
+                  placeholder="Ex: Prefeitura Municipal de Ji-Paraná"
                 />
               </div>
               <div className="form-group">
@@ -258,7 +258,7 @@ const AdminGabinetes = () => {
                   id="descricao"
                   value={formData.descricao}
                   onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-                  placeholder="Descrição do gabinete..."
+                  placeholder="Descrição do cliente..."
                   rows={4}
                 />
               </div>
@@ -267,7 +267,7 @@ const AdminGabinetes = () => {
                   Cancelar
                 </button>
                 <button type="submit" className="btn-submit">
-                  {editingGabinete ? 'Salvar Alterações' : 'Criar Gabinete'}
+                  {editingCliente ? 'Salvar Alterações' : 'Criar Cliente'}
                 </button>
               </div>
             </form>

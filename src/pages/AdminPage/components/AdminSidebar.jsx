@@ -131,7 +131,7 @@ const menuItems = [
   { path: '/admin/contatos', icon: Icons.Contatos, label: 'Contatos' },
   { path: '/admin/perfil', icon: Icons.Perfil, label: 'Meu Perfil' },
   { path: '/admin/usuarios', icon: Icons.Usuarios, label: 'Usuários', superAdminOnly: true },
-  { path: '/admin/credenciais', icon: Icons.Credenciais, label: 'Credenciais de Clientes', superAdminOnly: true },
+  { path: '/admin/credenciais', icon: Icons.Credenciais, label: 'Credenciais', superAdminOnly: true },
   { path: '/admin/financeiro', icon: Icons.Financeiro, label: 'Financeiro', superAdminOnly: true },
   { path: '/admin/busca', icon: Icons.Busca, label: 'Busca de Arquivos' },
   { path: '/admin/logs', icon: Icons.Logs, label: 'Logs de Acesso', superAdminOnly: true },

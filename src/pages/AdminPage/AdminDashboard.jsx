@@ -58,9 +58,9 @@ const AdminDashboard = () => {
     urgentes: 0
   });
   const [demandas, setDemandas] = useState([]);
-  const [gabinetes, setGabinetes] = useState([]);
+  const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedGabinete, setSelectedGabinete] = useState('');
+  const [selectedCliente, setSelectedCliente] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedUrgencia, setSelectedUrgencia] = useState('');
   const [selectedTipo, setSelectedTipo] = useState('');
@@ -73,12 +73,12 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Buscar gabinetes
-      const { data: gabData } = await supabase
+      // Buscar clientes
+      const { data: clienteData } = await supabase
         .from('admin_gabinetes')
         .select('*')
         .eq('ativo', true);
-      setGabinetes(gabData || []);
+      setClientes(clienteData || []);
 
       // Buscar demandas
       const { data: demData } = await supabase
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
   };
 
   const filteredDemandas = demandas.filter(demanda => {
-    if (selectedGabinete && demanda.gabinete_id !== selectedGabinete) return false;
+    if (selectedCliente && demanda.gabinete_id !== selectedCliente) return false;
     if (selectedStatus && demanda.status !== selectedStatus) return false;
     if (selectedUrgencia && demanda.urgencia !== selectedUrgencia) return false;
     if (selectedTipo && demanda.tipo !== selectedTipo) return false;
@@ -137,7 +137,7 @@ const AdminDashboard = () => {
         <div className="header-title">
           <Icons.Document />
           <h1>Gestão de Demandas</h1>
-          <span className="header-subtitle">Gerencie todas as demandas dos gabinetes</span>
+          <span className="header-subtitle">Gerencie todas as demandas dos clientes</span>
         </div>
         <button className="btn-nova-demanda" onClick={() => navigate('/admin/demandas/nova')}>
           <Icons.Plus />
@@ -201,14 +201,14 @@ const AdminDashboard = () => {
       {/* Filtros */}
       <div className="filters-section">
         <div className="filter-group">
-          <label>Gabinete</label>
+          <label>Cliente</label>
           <select 
-            value={selectedGabinete} 
-            onChange={(e) => setSelectedGabinete(e.target.value)}
+            value={selectedCliente} 
+            onChange={(e) => setSelectedCliente(e.target.value)}
           >
-            <option value="">Selecione um gabinete</option>
-            {gabinetes.map(gab => (
-              <option key={gab.id} value={gab.id}>{gab.nome}</option>
+            <option value="">Selecione um cliente</option>
+            {clientes.map(cliente => (
+              <option key={cliente.id} value={cliente.id}>{cliente.nome}</option>
             ))}
           </select>
         </div>
@@ -276,7 +276,7 @@ const AdminDashboard = () => {
         ) : filteredDemandas.length === 0 ? (
           <div className="empty-state">
             <Icons.Document />
-            <p>Selecione um gabinete para visualizar as demandas</p>
+            <p>Selecione um cliente para visualizar as demandas</p>
           </div>
         ) : (
           <div className="demandas-list">
@@ -295,8 +295,8 @@ const AdminDashboard = () => {
                 </div>
                 <p className="demanda-descricao">{demanda.descricao}</p>
                 <div className="demanda-footer">
-                  <span className="demanda-gabinete">
-                    {demanda.admin_gabinetes?.nome || 'Sem gabinete'}
+                  <span className="demanda-cliente">
+                    {demanda.admin_gabinetes?.nome || 'Sem cliente'}
                   </span>
                   <span className="demanda-data">
                     {new Date(demanda.created_at).toLocaleDateString('pt-BR')}
