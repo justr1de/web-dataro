@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import { supabase } from '../../utils/supabaseClient';
 import logo from '../../assets/logo.png';
@@ -72,6 +72,30 @@ const Icons = {
       <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
       <line x1="12" y1="22.08" x2="12" y2="12"></line>
     </svg>
+  ),
+  Search: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+  ),
+  Filter: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+    </svg>
+  ),
+  AlertCircle: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+  ),
+  CheckCircle: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
   )
 };
 
@@ -117,6 +141,58 @@ const municipiosRO = [
   'Vale do Paraíso', 'Vilhena'
 ];
 
+// Funções de validação
+const validarCPF = (cpf) => {
+  const numeros = cpf.replace(/\D/g, '');
+  if (numeros.length !== 11) return false;
+  if (/^(\d)\1+$/.test(numeros)) return false;
+  
+  let soma = 0;
+  for (let i = 0; i < 9; i++) {
+    soma += parseInt(numeros.charAt(i)) * (10 - i);
+  }
+  let resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(numeros.charAt(9))) return false;
+  
+  soma = 0;
+  for (let i = 0; i < 10; i++) {
+    soma += parseInt(numeros.charAt(i)) * (11 - i);
+  }
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(numeros.charAt(10))) return false;
+  
+  return true;
+};
+
+const validarCNPJ = (cnpj) => {
+  const numeros = cnpj.replace(/\D/g, '');
+  if (numeros.length !== 14) return false;
+  if (/^(\d)\1+$/.test(numeros)) return false;
+  
+  const pesos1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  const pesos2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  
+  let soma = 0;
+  for (let i = 0; i < 12; i++) {
+    soma += parseInt(numeros.charAt(i)) * pesos1[i];
+  }
+  let resto = soma % 11;
+  const digito1 = resto < 2 ? 0 : 11 - resto;
+  if (digito1 !== parseInt(numeros.charAt(12))) return false;
+  
+  soma = 0;
+  for (let i = 0; i < 13; i++) {
+    soma += parseInt(numeros.charAt(i)) * pesos2[i];
+  }
+  resto = soma % 11;
+  const digito2 = resto < 2 ? 0 : 11 - resto;
+  if (digito2 !== parseInt(numeros.charAt(13))) return false;
+  
+  return true;
+};
+
 const AdminClientes = () => {
   const { adminUser, isSuperAdmin } = useAdminAuth();
   const [clientes, setClientes] = useState([]);
@@ -124,34 +200,56 @@ const AdminClientes = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingCliente, setEditingCliente] = useState(null);
   const [saving, setSaving] = useState(false);
+  
+  // Estados para filtros e busca
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filtroTipo, setFiltroTipo] = useState('');
+  const [filtroProduto, setFiltroProduto] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  
+  // Estados para validação
+  const [validationErrors, setValidationErrors] = useState({});
+  
   const [formData, setFormData] = useState({
-    // Dados do Cliente
     tipo_cliente: '',
     nome: '',
     cnpj: '',
     municipio: '',
     endereco: '',
-    
-    // Dados de Contato
     telefone: '',
     telefone_whatsapp: false,
     email: '',
-    
-    // Dados do Responsável
     responsavel_nome: '',
     responsavel_cargo: '',
     responsavel_cpf: '',
-    
-    // Produtos Contratados
     produtos: [],
-    
-    // Observações
     observacoes: ''
   });
 
   useEffect(() => {
     fetchClientes();
   }, []);
+
+  // Filtrar clientes
+  const clientesFiltrados = useMemo(() => {
+    return clientes.filter(c => c.ativo).filter(cliente => {
+      // Filtro de busca
+      const matchSearch = !searchTerm || 
+        cliente.nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cliente.municipio?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cliente.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cliente.responsavel_nome?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // Filtro de tipo
+      const matchTipo = !filtroTipo || cliente.tipo_cliente === filtroTipo;
+      
+      // Filtro de produto
+      const matchProduto = !filtroProduto || 
+        (cliente.produtos && cliente.produtos.includes(filtroProduto));
+      
+      return matchSearch && matchTipo && matchProduto;
+    });
+  }, [clientes, searchTerm, filtroTipo, filtroProduto]);
 
   const fetchClientes = async () => {
     setLoading(true);
@@ -170,6 +268,7 @@ const AdminClientes = () => {
   };
 
   const handleOpenModal = (cliente = null) => {
+    setValidationErrors({});
     if (cliente) {
       setEditingCliente(cliente);
       setFormData({
@@ -211,6 +310,7 @@ const AdminClientes = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingCliente(null);
+    setValidationErrors({});
   };
 
   const handleInputChange = (e) => {
@@ -219,6 +319,11 @@ const AdminClientes = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // Limpar erro de validação ao editar
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleProdutoToggle = (produtoId) => {
@@ -249,7 +354,7 @@ const AdminClientes = () => {
 
   const formatTelefone = (value) => {
     const numbers = value.replace(/\D/g, '');
-    if (numbers.length <= 2) return `(${numbers}`;
+    if (numbers.length <= 2) return numbers ? `(${numbers}` : '';
     if (numbers.length <= 6) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
     if (numbers.length <= 10) return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 6)}-${numbers.slice(6)}`;
     return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
@@ -258,11 +363,33 @@ const AdminClientes = () => {
   const handleCPFChange = (e) => {
     const formatted = formatCPF(e.target.value);
     setFormData(prev => ({ ...prev, responsavel_cpf: formatted }));
+    
+    // Validar CPF em tempo real
+    if (formatted.replace(/\D/g, '').length === 11) {
+      if (!validarCPF(formatted)) {
+        setValidationErrors(prev => ({ ...prev, responsavel_cpf: 'CPF inválido' }));
+      } else {
+        setValidationErrors(prev => ({ ...prev, responsavel_cpf: null }));
+      }
+    } else {
+      setValidationErrors(prev => ({ ...prev, responsavel_cpf: null }));
+    }
   };
 
   const handleCNPJChange = (e) => {
     const formatted = formatCNPJ(e.target.value);
     setFormData(prev => ({ ...prev, cnpj: formatted }));
+    
+    // Validar CNPJ em tempo real
+    if (formatted.replace(/\D/g, '').length === 14) {
+      if (!validarCNPJ(formatted)) {
+        setValidationErrors(prev => ({ ...prev, cnpj: 'CNPJ inválido' }));
+      } else {
+        setValidationErrors(prev => ({ ...prev, cnpj: null }));
+      }
+    } else {
+      setValidationErrors(prev => ({ ...prev, cnpj: null }));
+    }
   };
 
   const handleTelefoneChange = (e) => {
@@ -270,8 +397,34 @@ const AdminClientes = () => {
     setFormData(prev => ({ ...prev, telefone: formatted }));
   };
 
+  const validateForm = () => {
+    const errors = {};
+    
+    // Validar CPF
+    if (formData.responsavel_cpf && formData.responsavel_cpf.replace(/\D/g, '').length === 11) {
+      if (!validarCPF(formData.responsavel_cpf)) {
+        errors.responsavel_cpf = 'CPF inválido';
+      }
+    }
+    
+    // Validar CNPJ (se preenchido)
+    if (formData.cnpj && formData.cnpj.replace(/\D/g, '').length === 14) {
+      if (!validarCNPJ(formData.cnpj)) {
+        errors.cnpj = 'CNPJ inválido';
+      }
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setSaving(true);
     
     try {
@@ -342,13 +495,13 @@ const AdminClientes = () => {
     return found ? found.label : tipo || 'Não informado';
   };
 
-  const getProdutosNomes = (produtosIds) => {
-    if (!produtosIds || produtosIds.length === 0) return 'Nenhum produto';
-    return produtosIds.map(id => {
-      const produto = produtosDisponiveis.find(p => p.id === id);
-      return produto ? produto.nome : id;
-    }).join(', ');
+  const limparFiltros = () => {
+    setSearchTerm('');
+    setFiltroTipo('');
+    setFiltroProduto('');
   };
+
+  const temFiltrosAtivos = searchTerm || filtroTipo || filtroProduto;
 
   return (
     <div className="admin-gabinetes">
@@ -372,6 +525,73 @@ const AdminClientes = () => {
         )}
       </div>
 
+      {/* Barra de Busca e Filtros */}
+      <div className="search-filter-bar">
+        <div className="search-input-wrapper">
+          <Icons.Search />
+          <input
+            type="text"
+            placeholder="Buscar por nome, município, e-mail ou responsável..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+        
+        <button 
+          className={`btn-filter ${showFilters ? 'active' : ''}`}
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <Icons.Filter />
+          <span>Filtros</span>
+          {temFiltrosAtivos && <span className="filter-badge">{[filtroTipo, filtroProduto].filter(Boolean).length}</span>}
+        </button>
+      </div>
+
+      {/* Painel de Filtros */}
+      {showFilters && (
+        <div className="filters-panel">
+          <div className="filter-group">
+            <label>Tipo de Cliente</label>
+            <select 
+              value={filtroTipo} 
+              onChange={(e) => setFiltroTipo(e.target.value)}
+            >
+              <option value="">Todos os tipos</option>
+              {tiposCliente.map(tipo => (
+                <option key={tipo.value} value={tipo.value}>{tipo.label}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="filter-group">
+            <label>Produto Contratado</label>
+            <select 
+              value={filtroProduto} 
+              onChange={(e) => setFiltroProduto(e.target.value)}
+            >
+              <option value="">Todos os produtos</option>
+              {produtosDisponiveis.map(produto => (
+                <option key={produto.id} value={produto.id}>{produto.nome}</option>
+              ))}
+            </select>
+          </div>
+          
+          {temFiltrosAtivos && (
+            <button className="btn-limpar-filtros" onClick={limparFiltros}>
+              Limpar filtros
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Contador de resultados */}
+      {temFiltrosAtivos && (
+        <div className="results-count">
+          {clientesFiltrados.length} cliente(s) encontrado(s)
+        </div>
+      )}
+
       {/* Lista de Clientes */}
       <div className="gabinetes-grid">
         {loading ? (
@@ -379,19 +599,30 @@ const AdminClientes = () => {
             <div className="spinner"></div>
             <p>Carregando clientes...</p>
           </div>
-        ) : clientes.filter(c => c.ativo).length === 0 ? (
+        ) : clientesFiltrados.length === 0 ? (
           <div className="empty-state">
             <Icons.Building />
-            <p>Nenhum cliente cadastrado</p>
-            {isSuperAdmin() && (
-              <button className="btn-novo" onClick={() => handleOpenModal()}>
-                <Icons.Plus />
-                Criar primeiro cliente
-              </button>
+            {temFiltrosAtivos ? (
+              <>
+                <p>Nenhum cliente encontrado com os filtros aplicados</p>
+                <button className="btn-novo" onClick={limparFiltros}>
+                  Limpar filtros
+                </button>
+              </>
+            ) : (
+              <>
+                <p>Nenhum cliente cadastrado</p>
+                {isSuperAdmin() && (
+                  <button className="btn-novo" onClick={() => handleOpenModal()}>
+                    <Icons.Plus />
+                    Criar primeiro cliente
+                  </button>
+                )}
+              </>
             )}
           </div>
         ) : (
-          clientes.filter(c => c.ativo).map(cliente => (
+          clientesFiltrados.map(cliente => (
             <div key={cliente.id} className="gabinete-card">
               <div className="gabinete-header">
                 <div className="gabinete-tipo-badge">
@@ -501,7 +732,14 @@ const AdminClientes = () => {
                   </div>
                   
                   <div className="form-group">
-                    <label htmlFor="cnpj">CNPJ</label>
+                    <label htmlFor="cnpj">
+                      CNPJ
+                      {formData.cnpj && formData.cnpj.replace(/\D/g, '').length === 14 && (
+                        <span className={`validation-icon ${validationErrors.cnpj ? 'error' : 'success'}`}>
+                          {validationErrors.cnpj ? <Icons.AlertCircle /> : <Icons.CheckCircle />}
+                        </span>
+                      )}
+                    </label>
                     <input
                       type="text"
                       id="cnpj"
@@ -510,7 +748,11 @@ const AdminClientes = () => {
                       onChange={handleCNPJChange}
                       placeholder="00.000.000/0000-00"
                       maxLength={18}
+                      className={validationErrors.cnpj ? 'input-error' : ''}
                     />
+                    {validationErrors.cnpj && (
+                      <span className="error-message">{validationErrors.cnpj}</span>
+                    )}
                   </div>
                 </div>
 
@@ -651,6 +893,11 @@ const AdminClientes = () => {
                       <span className="field-info" title="Dado sensível - protegido pela LGPD">
                         <Icons.Info />
                       </span>
+                      {formData.responsavel_cpf && formData.responsavel_cpf.replace(/\D/g, '').length === 11 && (
+                        <span className={`validation-icon ${validationErrors.responsavel_cpf ? 'error' : 'success'}`}>
+                          {validationErrors.responsavel_cpf ? <Icons.AlertCircle /> : <Icons.CheckCircle />}
+                        </span>
+                      )}
                     </label>
                     <input
                       type="text"
@@ -661,7 +908,11 @@ const AdminClientes = () => {
                       required
                       placeholder="000.000.000-00"
                       maxLength={14}
+                      className={validationErrors.responsavel_cpf ? 'input-error' : ''}
                     />
+                    {validationErrors.responsavel_cpf && (
+                      <span className="error-message">{validationErrors.responsavel_cpf}</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -722,7 +973,11 @@ const AdminClientes = () => {
                 <button type="button" className="btn-cancel" onClick={handleCloseModal}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn-submit" disabled={saving}>
+                <button 
+                  type="submit" 
+                  className="btn-submit" 
+                  disabled={saving || Object.values(validationErrors).some(e => e)}
+                >
                   {saving ? 'Salvando...' : (editingCliente ? 'Salvar Alterações' : 'Cadastrar Cliente')}
                 </button>
               </div>
