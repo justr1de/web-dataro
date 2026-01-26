@@ -242,11 +242,12 @@
   padding: 0.5rem 0;
 }
 
-/* Grid de Clientes */
+/* Grid de Clientes - 4 colunas x 3 linhas */
 .gabinetes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
+  min-height: 200px;
 }
 
 /* Card de Cliente */
@@ -1437,4 +1438,195 @@
 
 .admin-layout.light .btn-confirm-cancel:hover {
   background: #e5e7eb;
+}
+
+
+/* ============================================
+   PAGINAÇÃO
+   ============================================ */
+
+.pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-btn-nav {
+  min-width: 100px;
+}
+
+.pagination-btn-nav svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.pagination-btn-number {
+  min-width: 40px;
+  padding: 0.625rem 0.75rem;
+}
+
+.pagination-btn-number.active {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-color: #10b981;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.pagination-btn-number.active:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.pagination-ellipsis {
+  padding: 0.5rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+}
+
+/* Paginação no modo claro */
+.admin-layout.light .pagination-container {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .pagination-info {
+  color: #6b7280;
+}
+
+.admin-layout.light .pagination-btn {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.admin-layout.light .pagination-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.admin-layout.light .pagination-btn-number.active {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.admin-layout.light .pagination-ellipsis {
+  color: #9ca3af;
+}
+
+/* ============================================
+   RESPONSIVIDADE DO GRID E PAGINAÇÃO
+   ============================================ */
+
+/* Tablet grande - 3 colunas */
+@media (max-width: 1200px) {
+  .gabinetes-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablet - 2 colunas */
+@media (max-width: 900px) {
+  .gabinetes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .pagination-btn-nav {
+    min-width: auto;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .pagination-btn-nav span {
+    display: none;
+  }
+}
+
+/* Mobile - 1 coluna */
+@media (max-width: 600px) {
+  .gabinetes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pagination-container {
+    padding: 1rem;
+  }
+  
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .pagination-btn-number {
+    min-width: 36px;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8rem;
+  }
+  
+  .pagination-info {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 400px) {
+  .pagination-numbers {
+    gap: 0.25rem;
+  }
+  
+  .pagination-btn-number {
+    min-width: 32px;
+    padding: 0.5rem;
+  }
 }
