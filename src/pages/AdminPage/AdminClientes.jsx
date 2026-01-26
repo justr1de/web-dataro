@@ -210,6 +210,10 @@ const AdminClientes = () => {
   // Estados para validação
   const [validationErrors, setValidationErrors] = useState({});
   
+  // Estados para paginação
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12; // 4 colunas x 3 linhas
+  
   const [formData, setFormData] = useState({
     tipo_cliente: '',
     nome: '',
@@ -250,6 +254,59 @@ const AdminClientes = () => {
       return matchSearch && matchTipo && matchProduto;
     });
   }, [clientes, searchTerm, filtroTipo, filtroProduto]);
+
+  // Paginação
+  const totalPages = Math.ceil(clientesFiltrados.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const clientesPaginados = clientesFiltrados.slice(startIndex, endIndex);
+
+  // Resetar página quando filtros mudam
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filtroTipo, filtroProduto]);
+
+  // Funções de paginação
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      // Scroll suave para o topo da lista
+      document.querySelector('.gabinetes-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const goToPreviousPage = () => goToPage(currentPage - 1);
+  const goToNextPage = () => goToPage(currentPage + 1);
+
+  // Gerar números de página para exibição
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) pages.push(i);
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
 
   const fetchClientes = async () => {
     setLoading(true);
@@ -622,7 +679,7 @@ const AdminClientes = () => {
             )}
           </div>
         ) : (
-          clientesFiltrados.map(cliente => (
+          clientesPaginados.map(cliente => (
             <div key={cliente.id} className="gabinete-card">
               <div className="gabinete-header">
                 <div className="gabinete-tipo-badge">
@@ -692,6 +749,54 @@ const AdminClientes = () => {
           ))
         )}
       </div>
+
+      {/* Paginação */}
+      {!loading && clientesFiltrados.length > 0 && totalPages > 1 && (
+        <div className="pagination-container">
+          <div className="pagination-info">
+            Mostrando {startIndex + 1}-{Math.min(endIndex, clientesFiltrados.length)} de {clientesFiltrados.length} cliente(s)
+          </div>
+          <div className="pagination-controls">
+            <button 
+              className="pagination-btn pagination-btn-nav" 
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              Anterior
+            </button>
+            
+            <div className="pagination-numbers">
+              {getPageNumbers().map((page, index) => (
+                page === '...' ? (
+                  <span key={`ellipsis-${index}`} className="pagination-ellipsis">...</span>
+                ) : (
+                  <button
+                    key={page}
+                    className={`pagination-btn pagination-btn-number ${currentPage === page ? 'active' : ''}`}
+                    onClick={() => goToPage(page)}
+                  >
+                    {page}
+                  </button>
+                )
+              ))}
+            </div>
+            
+            <button 
+              className="pagination-btn pagination-btn-nav" 
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Próximo
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Modal de Criação/Edição */}
       {showModal && (
