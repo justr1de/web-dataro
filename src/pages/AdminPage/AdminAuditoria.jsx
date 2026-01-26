@@ -397,14 +397,13 @@ const AdminAuditoria = () => {
                         <th>Navegador</th>
                         <th>Sistema</th>
                         <th>Dispositivo</th>
-                        <th>IP</th>
                         <th>Detalhes</th>
                       </tr>
                     </thead>
                     <tbody>
                       {logs.length === 0 ? (
                         <tr>
-                          <td colSpan="8" className="admin-auditoria-empty">
+                          <td colSpan="7" className="admin-auditoria-empty">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                               <polyline points="14 2 14 8 20 8"></polyline>
@@ -426,7 +425,6 @@ const AdminAuditoria = () => {
                               <td>{browser}</td>
                               <td>{os}</td>
                               <td>{device}</td>
-                              <td>{log.ip_address || '-'}</td>
                               <td className="admin-auditoria-details">{log.detalhes || '-'}</td>
                             </tr>
                           );
@@ -462,14 +460,13 @@ const AdminAuditoria = () => {
                         <th>Tipo</th>
                         <th>Navegador</th>
                         <th>Sistema</th>
-                        <th>IP</th>
                         <th>Detalhes</th>
                       </tr>
                     </thead>
                     <tbody>
                       {tentativas.length === 0 ? (
                         <tr>
-                          <td colSpan="7" className="admin-auditoria-empty">
+                          <td colSpan="6" className="admin-auditoria-empty">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                               <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -490,7 +487,6 @@ const AdminAuditoria = () => {
                               </td>
                               <td>{browser}</td>
                               <td>{os}</td>
-                              <td>{tentativa.ip_address || '-'}</td>
                               <td className="admin-auditoria-details">{tentativa.detalhes || '-'}</td>
                             </tr>
                           );

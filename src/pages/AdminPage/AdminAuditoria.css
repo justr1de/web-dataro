@@ -358,6 +358,106 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
+/* Tabela de Auditoria */
+.admin-auditoria-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+
+.dark .admin-auditoria-table-container {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-auditoria-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-auditoria-table th,
+.admin-auditoria-table td {
+  padding: 0.75rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  font-size: 0.8rem;
+}
+
+.dark .admin-auditoria-table th,
+.dark .admin-auditoria-table td {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.admin-auditoria-table th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-secondary, #6b7280);
+  background: var(--bg-secondary, #f9fafb);
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border-color, #e5e7eb);
+}
+
+.dark .admin-auditoria-table th {
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-auditoria-table td {
+  font-size: 0.8rem;
+  color: var(--text-primary, #1f2937);
+}
+
+.dark .admin-auditoria-table td {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.admin-auditoria-table tbody tr {
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.dark .admin-auditoria-table tbody tr {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-auditoria-table tbody tr:nth-child(even) {
+  background: var(--bg-secondary, #f9fafb);
+}
+
+.dark .admin-auditoria-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.admin-auditoria-table tbody tr:hover {
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.dark .admin-auditoria-table tbody tr:hover {
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.admin-auditoria-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.admin-auditoria-empty {
+  text-align: center;
+  padding: 2rem !important;
+  color: var(--text-secondary, #6b7280);
+}
+
+.dark .admin-auditoria-empty {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.admin-auditoria-details {
+  max-width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+
 /* User Cell */
 .user-cell {
   display: flex;
