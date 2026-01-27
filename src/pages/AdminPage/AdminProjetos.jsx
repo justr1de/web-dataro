@@ -26,14 +26,14 @@ const Icons = {
     </svg>
   ),
   Globe: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10"></circle>
       <line x1="2" y1="12" x2="22" y2="12"></line>
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
     </svg>
   ),
   Users: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
       <circle cx="9" cy="7" r="4"></circle>
       <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -41,18 +41,11 @@ const Icons = {
     </svg>
   ),
   Calendar: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
       <line x1="16" y1="2" x2="16" y2="6"></line>
       <line x1="8" y1="2" x2="8" y2="6"></line>
       <line x1="3" y1="10" x2="21" y2="10"></line>
-    </svg>
-  ),
-  Info: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <line x1="12" y1="16" x2="12" y2="12"></line>
-      <line x1="12" y1="8" x2="12.01" y2="8"></line>
     </svg>
   ),
   Edit: () => (
@@ -67,11 +60,18 @@ const Icons = {
       <line x1="6" y1="6" x2="18" y2="18"></line>
     </svg>
   ),
-  Save: () => (
+  Search: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+  ),
+  Package: () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-      <polyline points="17 21 17 13 7 13 7 21"></polyline>
-      <polyline points="7 3 7 8 15 8"></polyline>
+      <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+      <line x1="12" y1="22.08" x2="12" y2="12"></line>
     </svg>
   )
 };
@@ -139,7 +139,6 @@ const AdminProjetos = () => {
           console.log('Tabela admin_projetos não encontrada, usando dados padrão');
           setProjetos([projetoPadrao]);
         } else if (data && data.length > 0) {
-          // Mapear dados do Supabase para o formato esperado
           const projetosMapeados = data.map(p => ({
             id: p.id,
             nome: p.nome || projetoPadrao.nome,
@@ -156,7 +155,6 @@ const AdminProjetos = () => {
           }));
           setProjetos(projetosMapeados);
         } else {
-          // Se não há dados, inserir o projeto padrão
           await inserirProjetoPadrao();
         }
       } catch (err) {
@@ -171,7 +169,6 @@ const AdminProjetos = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Inserir projeto padrão no Supabase
   const inserirProjetoPadrao = async () => {
     try {
       const { data, error } = await supabase
@@ -229,7 +226,6 @@ const AdminProjetos = () => {
   const handleSalvarProjeto = async () => {
     if (!editingProjeto) return;
 
-    // Validação
     if (!editingProjeto.nome || editingProjeto.nome.trim().length < 3) {
       setMessage({ type: 'error', text: 'O nome do projeto deve ter pelo menos 3 caracteres.' });
       return;
@@ -264,7 +260,6 @@ const AdminProjetos = () => {
         console.error('Erro ao atualizar projeto:', error);
         setMessage({ type: 'error', text: 'Erro ao salvar alterações. Tente novamente.' });
       } else {
-        // Atualizar estado local
         setProjetos(prev => prev.map(p => 
           p.id === editingProjeto.id 
             ? { 
@@ -283,116 +278,93 @@ const AdminProjetos = () => {
         }, 1500);
       }
     } catch (err) {
-      console.error('Erro ao salvar projeto:', err);
-      setMessage({ type: 'error', text: 'Erro ao salvar alterações. Tente novamente.' });
+      console.error('Erro ao salvar:', err);
+      setMessage({ type: 'error', text: 'Erro ao salvar alterações.' });
     } finally {
       setSaving(false);
-    }
-  };
-
-  const getIconComponent = (iconName) => {
-    switch (iconName) {
-      case 'BarChart':
-        return <Icons.BarChart />;
-      case 'Globe':
-        return <Icons.Globe />;
-      case 'Users':
-        return <Icons.Users />;
-      default:
-        return <Icons.Folder />;
     }
   };
 
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+    return date.toLocaleDateString('pt-BR');
   };
 
   const getStatusClass = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'ativo':
-        return 'ativo';
-      case 'em desenvolvimento':
-        return 'desenvolvimento';
-      case 'pausado':
-        return 'pausado';
-      case 'concluído':
-        return 'concluido';
-      case 'arquivado':
-        return 'arquivado';
-      default:
-        return 'ativo';
+    switch (status) {
+      case 'Ativo': return 'status-ativo';
+      case 'Em Desenvolvimento': return 'status-desenvolvimento';
+      case 'Pausado': return 'status-pausado';
+      case 'Concluído': return 'status-concluido';
+      case 'Arquivado': return 'status-arquivado';
+      default: return '';
     }
   };
 
   return (
     <div className="admin-projetos">
-      {/* Logo */}
+      {/* Header com Logo */}
       <div className="page-header-with-logo">
         <img src={logo} alt="DATA-RO" className="page-logo" />
       </div>
 
       {/* Header */}
       <div className="projetos-header">
-        <div className="header-content">
-          <div className="header-icon">
-            <Icons.Folder />
-          </div>
-          <div className="header-text">
-            <h1>Projetos</h1>
-            <p>Gerencie os projetos e painéis desenvolvidos pela DATA-RO</p>
-          </div>
+        <div className="header-title">
+          <Icons.Folder />
+          <h1>Projetos</h1>
+          <span className="header-subtitle">Gerencie os projetos e painéis desenvolvidos pela DATA-RO</span>
         </div>
       </div>
 
-      {/* Barra de busca */}
-      <div className="projetos-toolbar">
-        <div className="search-container">
+      {/* Barra de Busca */}
+      <div className="search-filter-bar">
+        <div className="search-input-wrapper">
+          <Icons.Search />
           <input
             type="text"
-            placeholder="Buscar projetos..."
+            placeholder="Buscar por nome, descrição ou tipo..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
         </div>
-        <div className="projetos-count">
-          {projetosFiltrados.length} projeto(s) encontrado(s)
-        </div>
+        <span className="results-count">{projetosFiltrados.length} projeto(s) encontrado(s)</span>
       </div>
 
-      {/* Loading */}
-      {loading && (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Carregando projetos...</p>
-        </div>
-      )}
-
-      {/* Grid de Projetos */}
-      {!loading && (
-        <div className="projetos-grid">
-          {projetosFiltrados.map((projeto) => (
+      {/* Lista de Projetos */}
+      <div className="projetos-grid">
+        {loading ? (
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Carregando projetos...</p>
+          </div>
+        ) : projetosFiltrados.length === 0 ? (
+          <div className="empty-state">
+            <Icons.Folder />
+            <p>Nenhum projeto encontrado</p>
+          </div>
+        ) : (
+          projetosFiltrados.map(projeto => (
             <div key={projeto.id} className="projeto-card">
-              <div className="projeto-card-header" style={{ borderColor: projeto.cor }}>
-                <div className="projeto-icon" style={{ backgroundColor: projeto.cor }}>
-                  {getIconComponent(projeto.icone)}
+              {/* Header do Card */}
+              <div className="card-header">
+                <div className="card-icon" style={{ backgroundColor: projeto.cor || '#10b981' }}>
+                  <Icons.BarChart />
                 </div>
-                <div className="projeto-status">
-                  <span className={`status-badge ${getStatusClass(projeto.status)}`}>
-                    {projeto.status}
-                  </span>
-                </div>
+                <span className={`status-badge ${getStatusClass(projeto.status)}`}>
+                  {projeto.status}
+                </span>
               </div>
 
-              <div className="projeto-card-body">
+              {/* Conteúdo do Card */}
+              <div className="card-content">
                 <h3 className="projeto-nome">{projeto.nome}</h3>
-                <span className="projeto-tipo">{projeto.tipo}</span>
+                <span className="projeto-tipo">
+                  <Icons.Package />
+                  {projeto.tipo}
+                </span>
                 <p className="projeto-descricao">{projeto.descricao}</p>
 
                 {/* Estatísticas */}
@@ -400,70 +372,64 @@ const AdminProjetos = () => {
                   <div className="projeto-stats">
                     <div className="stat-item">
                       <Icons.Globe />
-                      <span>{projeto.estatisticas.municipios} municípios</span>
+                      <span className="stat-value">{projeto.estatisticas.municipios}</span>
+                      <span className="stat-label">municípios</span>
                     </div>
                     <div className="stat-item">
-                      <Icons.BarChart />
-                      <span>{projeto.estatisticas.indicadores} indicadores</span>
+                      <Icons.Package />
+                      <span className="stat-value">{projeto.estatisticas.indicadores}</span>
+                      <span className="stat-label">indicadores</span>
                     </div>
                     <div className="stat-item">
                       <Icons.Users />
-                      <span>{projeto.estatisticas.acessos?.toLocaleString()} acessos</span>
+                      <span className="stat-value">{projeto.estatisticas.acessos?.toLocaleString()}</span>
+                      <span className="stat-label">acessos</span>
                     </div>
                   </div>
                 )}
 
                 {/* Datas */}
                 <div className="projeto-dates">
-                  <div className="date-item">
+                  <span className="date-item">
                     <Icons.Calendar />
-                    <span>Criado em: {formatDate(projeto.dataCriacao)}</span>
-                  </div>
-                  <div className="date-item">
-                    <Icons.Info />
-                    <span>Atualizado: {formatDate(projeto.ultimaAtualizacao)}</span>
-                  </div>
+                    Criado em: {formatDate(projeto.dataCriacao)}
+                  </span>
+                  <span className="date-item">
+                    <Icons.Calendar />
+                    Atualizado: {formatDate(projeto.ultimaAtualizacao)}
+                  </span>
                 </div>
               </div>
 
-              <div className="projeto-card-footer">
+              {/* Ações do Card */}
+              <div className="card-actions">
                 <button 
                   className="btn-editar"
                   onClick={() => handleEditarProjeto(projeto)}
                 >
                   <Icons.Edit />
-                  Editar Projeto
+                  Editar
                 </button>
                 <button 
                   className="btn-acessar"
                   onClick={() => handleAcessarProjeto(projeto)}
-                  style={{ backgroundColor: projeto.cor }}
                 >
                   Acessar Projeto
                   <Icons.ExternalLink />
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* Mensagem quando não há projetos */}
-      {!loading && projetosFiltrados.length === 0 && (
-        <div className="no-projetos">
-          <Icons.Folder />
-          <h3>Nenhum projeto encontrado</h3>
-          <p>Tente ajustar os termos de busca</p>
-        </div>
-      )}
+          ))
+        )}
+      </div>
 
       {/* Modal de Edição */}
       {showEditModal && editingProjeto && (
         <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Editar Projeto</h2>
-              <button className="modal-close" onClick={handleCloseModal}>
+              <button className="btn-close" onClick={handleCloseModal}>
                 <Icons.X />
               </button>
             </div>
@@ -483,7 +449,6 @@ const AdminProjetos = () => {
                   value={editingProjeto.nome}
                   onChange={(e) => setEditingProjeto({ ...editingProjeto, nome: e.target.value })}
                   placeholder="Nome do projeto"
-                  className="form-input"
                 />
               </div>
 
@@ -494,9 +459,8 @@ const AdminProjetos = () => {
                     id="tipo"
                     value={editingProjeto.tipo}
                     onChange={(e) => setEditingProjeto({ ...editingProjeto, tipo: e.target.value })}
-                    className="form-select"
                   >
-                    <option value="">Selecione o tipo</option>
+                    <option value="">Selecione...</option>
                     {tiposProjeto.map(tipo => (
                       <option key={tipo} value={tipo}>{tipo}</option>
                     ))}
@@ -509,9 +473,8 @@ const AdminProjetos = () => {
                     id="status"
                     value={editingProjeto.status}
                     onChange={(e) => setEditingProjeto({ ...editingProjeto, status: e.target.value })}
-                    className="form-select"
                   >
-                    <option value="">Selecione o status</option>
+                    <option value="">Selecione...</option>
                     {statusProjeto.map(status => (
                       <option key={status} value={status}>{status}</option>
                     ))}
@@ -525,40 +488,27 @@ const AdminProjetos = () => {
                   id="descricao"
                   value={editingProjeto.descricao}
                   onChange={(e) => setEditingProjeto({ ...editingProjeto, descricao: e.target.value })}
-                  placeholder="Descrição do projeto"
-                  className="form-textarea"
-                  rows="4"
+                  placeholder="Descrição do projeto..."
+                  rows={4}
                 />
               </div>
             </div>
 
-            <div className="modal-footer">
-              <button className="btn-cancelar" onClick={handleCloseModal} disabled={saving}>
+            <div className="modal-actions">
+              <button className="btn-cancel" onClick={handleCloseModal}>
                 Cancelar
               </button>
-              <button className="btn-salvar" onClick={handleSalvarProjeto} disabled={saving}>
-                {saving ? (
-                  <>
-                    <span className="btn-spinner"></span>
-                    Salvando...
-                  </>
-                ) : (
-                  <>
-                    <Icons.Save />
-                    Salvar Alterações
-                  </>
-                )}
+              <button 
+                className="btn-submit" 
+                onClick={handleSalvarProjeto}
+                disabled={saving}
+              >
+                {saving ? 'Salvando...' : 'Salvar Alterações'}
               </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Rodapé */}
-      <div className="projetos-footer">
-        <img src={logo} alt="DATA-RO" className="footer-logo" />
-        <p>Desenvolvido por DATA-RO Inteligência Territorial</p>
-      </div>
     </div>
   );
 };
