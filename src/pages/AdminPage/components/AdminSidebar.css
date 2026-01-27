@@ -98,23 +98,39 @@
 }
 
 .sidebar-logo img {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.sidebar-logo:hover img {
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
+  transform: scale(1.05);
 }
 
 .sidebar-brand {
   display: flex;
   flex-direction: column;
   gap: 0;
+  transition: all 0.3s ease;
+}
+
+.sidebar-logo:hover .sidebar-brand {
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
 .brand-name {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 700;
   white-space: nowrap;
   line-height: 1.2;
+  transition: all 0.3s ease;
+}
+
+.sidebar-logo:hover .brand-name {
+  color: #34d399 !important;
 }
 
 .brand-subtitle {

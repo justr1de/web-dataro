@@ -188,35 +188,36 @@
 }
 
 
-/* Botão Flutuante do Assistente de IA */
+/* Botão Flutuante do Assistente de IA - Compacto */
 .ai-assistant-fab {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 20px;
+  right: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 20px;
-  background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border: none;
-  border-radius: 50px;
+  border-radius: 30px;
   color: white;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(46, 125, 50, 0.4);
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
   transition: all 0.3s ease;
   z-index: 999;
 }
 
 .ai-assistant-fab:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 25px rgba(46, 125, 50, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45);
 }
 
 .ai-assistant-fab svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
 }
 
 .ai-assistant-fab span {
@@ -253,5 +254,68 @@
   .ai-assistant-fab svg {
     width: 24px;
     height: 24px;
+  }
+}
+
+
+/* Botão Global de Tema no Canto Superior Direito */
+.global-theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1.5rem;
+  z-index: 1001;
+}
+
+.global-theme-toggle .theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.global-theme-toggle .theme-toggle:hover {
+  background: rgba(16, 185, 129, 0.25);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Tema claro */
+.admin-layout.light .global-theme-toggle .theme-toggle {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #374151;
+}
+
+.admin-layout.light .global-theme-toggle .theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .global-theme-toggle {
+    top: 0.75rem;
+    right: 1rem;
+  }
+
+  .global-theme-toggle .theme-toggle {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .global-theme-toggle {
+    top: 0.5rem;
+    right: 0.75rem;
+  }
+
+  .global-theme-toggle .theme-toggle {
+    width: 32px;
+    height: 32px;
   }
 }

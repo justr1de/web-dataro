@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
+
 import { supabase } from '../../utils/supabaseClient';
+
 import logo from '../../assets/logo.png';
 import './AdminCalendario.css';
 
@@ -520,10 +522,7 @@ const AdminCalendario = () => {
       <div className="calendario-header">
         <div className="header-title">
           <Icons.Calendar />
-          <div className="header-text">
-            <h1>Calendário</h1>
-            <span className="header-subtitle">Gerencie tarefas, atividades, eventos e demandas</span>
-          </div>
+          <span className="header-subtitle">Gerencie tarefas, atividades, eventos e demandas</span>
         </div>
         <button className="btn-novo" onClick={() => handleOpenModal(selectedDate)}>
           <Icons.Plus />

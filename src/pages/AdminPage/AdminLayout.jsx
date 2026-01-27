@@ -4,6 +4,7 @@ import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import AdminSidebar from './components/AdminSidebar';
 import AIAssistant from '../../components/AIAssistant';
+import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import './AdminLayout.css';
 import './AdminResponsive.css';
 
@@ -32,6 +33,11 @@ const AdminLayout = () => {
 
   return (
     <div className={`admin-layout ${theme} ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      {/* Botão de tema no canto superior direito */}
+      <div className="global-theme-toggle">
+        <ThemeToggle />
+      </div>
+
       <AdminSidebar 
         collapsed={sidebarCollapsed} 
         setCollapsed={setSidebarCollapsed}

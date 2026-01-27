@@ -6,6 +6,15 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+/* Botão de tema no canto superior direito */
+.page-theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
 }
 
 /* Logo no header */
@@ -44,24 +53,15 @@
   flex-shrink: 0;
 }
 
-.header-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
+/* Header text removido - layout simplificado */
 
-.header-title h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  color: #ffffff;
-  line-height: 1.2;
-}
+/* Removido h1 - layout horizontal */
 
 .header-title .header-subtitle {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
   margin: 0;
+  font-weight: 500;
 }
 
 .btn-novo {
@@ -1469,4 +1469,25 @@
 
 .admin-layout.light .calendario-footer small {
   color: #6b7280;
+}
+
+
+/* Header subtitle no modo claro */
+.admin-layout.light .header-title .header-subtitle {
+  color: #374151;
+}
+
+/* Page theme toggle no modo claro */
+.admin-layout.light .page-theme-toggle .theme-toggle {
+  background: rgba(0, 0, 0, 0.05);
+  color: #374151;
+}
+
+.admin-layout.light .page-theme-toggle .theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Header title icon no modo claro */
+.admin-layout.light .header-title svg {
+  color: #059669 !important;
 }
