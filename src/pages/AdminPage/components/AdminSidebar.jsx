@@ -195,7 +195,12 @@ const AdminSidebar = ({ collapsed, setCollapsed, isDarkMode }) => {
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <img src={logo} alt="DATA-RO" />
-          {!collapsed && <span>DATA-RO</span>}
+          {!collapsed && (
+            <div className="sidebar-brand">
+              <span className="brand-name">DATA-RO</span>
+              <span className="brand-subtitle">INTELIGÊNCIA TERRITORIAL</span>
+            </div>
+          )}
         </div>
       </div>
 

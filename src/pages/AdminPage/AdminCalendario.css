@@ -35,29 +35,33 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex-wrap: wrap;
 }
 
 .header-title svg {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   color: #10b981 !important;
   flex-shrink: 0;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
 }
 
 .header-title h1 {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
-  color: #ffffff !important;
+  color: #ffffff;
+  line-height: 1.2;
 }
 
 .header-title .header-subtitle {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
   margin: 0;
-  padding-left: 0.75rem;
-  border-left: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-novo {
@@ -1188,7 +1192,6 @@
 
 .admin-layout.light .header-title .header-subtitle {
   color: #6b7280;
-  border-left-color: #d1d5db;
 }
 
 /* Barra de sincronização Google no modo claro */

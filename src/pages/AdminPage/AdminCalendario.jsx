@@ -520,8 +520,10 @@ const AdminCalendario = () => {
       <div className="calendario-header">
         <div className="header-title">
           <Icons.Calendar />
-          <h1>Calendário</h1>
-          <span className="header-subtitle">Gerencie tarefas, atividades, eventos e demandas</span>
+          <div className="header-text">
+            <h1>Calendário</h1>
+            <span className="header-subtitle">Gerencie tarefas, atividades, eventos e demandas</span>
+          </div>
         </div>
         <button className="btn-novo" onClick={() => handleOpenModal(selectedDate)}>
           <Icons.Plus />
