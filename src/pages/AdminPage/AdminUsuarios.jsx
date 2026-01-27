@@ -25,15 +25,16 @@ const AdminUsuarios = () => {
   const [success, setSuccess] = useState('');
 
   const SUPABASE_URL = 'https://csuzmlajnhfauxqgczmu.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzdXptbGFqbmhmYXV4cWdjem11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU3MzExMzcsImV4cCI6MjA4MTMwNzEzN30.eATRbvz2klesZnV3iGBk6sgrvZMbk_1YscW5oi9etfA';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzdXptbGFqbmhmYXV4cWdjem11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU3MzExMzcsImV4cCI6MjA4MTMwNzEzN30.eATRbvz2klesZnV3iGBk6sgrvZMbk_1YscW5oi9etfA';
+  const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzdXptbGFqbmhmYXV4cWdjem11Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTczMTEzNywiZXhwIjoyMDgxMzA3MTM3fQ._3P1m4h0NGqZu8pUb3DYuqGDUYOMMoe7ysTCr1kRB_0';
 
   // Carregar usuários
   const fetchUsuarios = async () => {
     try {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/admin_usuarios?select=*&order=nome.asc`, {
         headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
         }
       });
       const data = await response.json();
@@ -92,8 +93,8 @@ const AdminUsuarios = () => {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/admin_usuarios?id=eq.${userToDelete.id}`, {
         method: 'DELETE',
         headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
         }
       });
 
@@ -127,10 +128,10 @@ const AdminUsuarios = () => {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/admin_usuarios`, {
           method: 'POST',
           headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'apikey': SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
             'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
+            'Prefer': 'return=representation'
           },
           body: JSON.stringify({
             nome: formData.nome,
@@ -143,6 +144,31 @@ const AdminUsuarios = () => {
             is_super_admin: false
           })
         });
+
+        // Criar usuário no Auth do Supabase
+        if (response.ok) {
+          try {
+            await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+              method: 'POST',
+              headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                email: formData.email,
+                password: 'DataRO@2026',
+                email_confirm: true,
+                user_metadata: {
+                  nome: formData.nome,
+                  role: formData.role
+                }
+              })
+            });
+          } catch (authErr) {
+            console.warn('Erro ao criar usuário no Auth:', authErr);
+          }
+        }
 
         if (response.ok) {
           setSuccess('Usuário criado com sucesso! Senha padrão: 123456');
@@ -157,12 +183,12 @@ const AdminUsuarios = () => {
           }
         }
       } else {
-        // Editar usuário existente
+        // Editar usuário existente na tabela admin_usuarios
         const response = await fetch(`${SUPABASE_URL}/rest/v1/admin_usuarios?id=eq.${selectedUser.id}`, {
           method: 'PATCH',
           headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'apikey': SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': 'return=representation'
           },
@@ -179,6 +205,57 @@ const AdminUsuarios = () => {
         const result = await response.json();
         
         if (response.ok && result && result.length > 0) {
+          // Atualizar também na tabela user_profiles
+          try {
+            await fetch(`${SUPABASE_URL}/rest/v1/user_profiles?email=eq.${encodeURIComponent(selectedUser.email)}`, {
+              method: 'PATCH',
+              headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                nome_completo: formData.nome,
+                email: formData.email,
+                updated_at: new Date().toISOString()
+              })
+            });
+          } catch (profileErr) {
+            console.warn('Erro ao atualizar user_profiles:', profileErr);
+          }
+
+          // Buscar o ID do usuário no Auth pelo email e atualizar
+          try {
+            const authUsersResponse = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+              headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
+              }
+            });
+            const authUsers = await authUsersResponse.json();
+            const authUser = authUsers?.users?.find(u => u.email === selectedUser.email);
+            
+            if (authUser) {
+              await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${authUser.id}`, {
+                method: 'PUT',
+                headers: {
+                  'apikey': SUPABASE_SERVICE_KEY,
+                  'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  email: formData.email,
+                  user_metadata: {
+                    nome: formData.nome,
+                    role: formData.role
+                  }
+                })
+              });
+            }
+          } catch (authErr) {
+            console.warn('Erro ao atualizar Auth:', authErr);
+          }
+
           setSuccess('Usuário atualizado com sucesso!');
           setShowModal(false);
           fetchUsuarios();
@@ -199,8 +276,8 @@ const AdminUsuarios = () => {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/admin_usuarios?id=eq.${user.id}`, {
         method: 'PATCH',
         headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal'
         },
@@ -210,6 +287,36 @@ const AdminUsuarios = () => {
           updated_at: new Date().toISOString()
         })
       });
+
+      // Resetar senha também no Auth do Supabase
+      if (response.ok) {
+        try {
+          const authUsersResponse = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+            headers: {
+              'apikey': SUPABASE_SERVICE_KEY,
+              'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
+            }
+          });
+          const authUsers = await authUsersResponse.json();
+          const authUser = authUsers?.users?.find(u => u.email === user.email);
+          
+          if (authUser) {
+            await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${authUser.id}`, {
+              method: 'PUT',
+              headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                password: 'DataRO@2026'
+              })
+            });
+          }
+        } catch (authErr) {
+          console.warn('Erro ao resetar senha no Auth:', authErr);
+        }
+      }
 
       if (response.ok) {
         setSuccess(`Senha de ${user.nome} resetada para 123456`);
