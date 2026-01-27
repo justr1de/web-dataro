@@ -123,7 +123,7 @@
 
 .last-sync {
   font-size: 0.8rem;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .events-count {
@@ -143,7 +143,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: #475569;
+  color: #4b5563;
   cursor: pointer;
 }
 
@@ -216,13 +216,13 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: #64748b;
+  color: #6b7280;
   transition: all 0.2s ease;
 }
 
 .btn-nav:hover {
   background: #e2e8f0;
-  color: #1e293b;
+  color: #1f2937;
 }
 
 .btn-nav svg {
@@ -249,7 +249,7 @@
 .mes-ano {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #1f2937;
   text-transform: capitalize;
   margin: 0;
 }
@@ -289,7 +289,7 @@
   text-align: center;
   font-size: 0.7rem;
   font-weight: 600;
-  color: #64748b;
+  color: #6b7280;
   text-transform: uppercase;
 }
 
@@ -343,19 +343,19 @@
 }
 
 .dia-cell-compact.selecionado {
-  background: #dbeafe;
-  border-color: #3b82f6;
+  background: rgba(16, 185, 129, 0.15);
+  border-color: #10b981;
 }
 
 .dia-cell-compact.selecionado .dia-numero-compact {
-  color: #1e40af;
+  color: #059669;
   font-weight: 700;
 }
 
 .dia-numero-compact {
   font-size: 0.8rem;
   font-weight: 500;
-  color: #1e293b;
+  color: #1f2937;
 }
 
 .eventos-indicador {
@@ -387,7 +387,7 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.7rem;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .legenda-cor-compact {
@@ -422,7 +422,7 @@
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #1f2937;
   margin: 0;
 }
 
@@ -435,7 +435,7 @@
 .btn-ver-todos {
   padding: 0.4rem 0.75rem;
   background: #f1f5f9;
-  color: #475569;
+  color: #4b5563;
   border: none;
   border-radius: 6px;
   font-size: 0.8rem;
@@ -461,7 +461,7 @@
   justify-content: center;
   min-height: 200px;
   gap: 1rem;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .lista-vazia svg {
@@ -544,7 +544,7 @@
 .evento-card-header h4 {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #1f2937;
   margin: 0;
   line-height: 1.3;
 }
@@ -622,7 +622,7 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.8rem;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .meta-item svg {
@@ -633,7 +633,7 @@
 
 .evento-card-descricao {
   font-size: 0.85rem;
-  color: #475569;
+  color: #4b5563;
   margin: 0.5rem 0;
   line-height: 1.5;
   display: -webkit-box;
@@ -647,7 +647,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8rem;
-  color: #64748b;
+  color: #6b7280;
   margin-top: 0.5rem;
   padding-top: 0.5rem;
   border-top: 1px solid #e2e8f0;
@@ -673,13 +673,13 @@
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   cursor: pointer;
-  color: #64748b;
+  color: #6b7280;
   transition: all 0.2s ease;
 }
 
 .btn-icon-small:hover {
   background: #f1f5f9;
-  color: #1e293b;
+  color: #1f2937;
 }
 
 .btn-icon-small.btn-danger:hover {
@@ -729,7 +729,7 @@
 .modal-header h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #1f2937;
   margin: 0;
 }
 
@@ -739,13 +739,13 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: #64748b;
+  color: #6b7280;
   transition: all 0.2s ease;
 }
 
 .btn-close:hover {
   background: #f1f5f9;
-  color: #1e293b;
+  color: #1f2937;
 }
 
 .btn-close svg {
@@ -792,7 +792,7 @@
 
 .form-group small {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .form-row {
@@ -825,7 +825,7 @@
 .btn-cancelar {
   padding: 0.75rem 1.5rem;
   background: #f1f5f9;
-  color: #475569;
+  color: #4b5563;
   border: none;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -878,13 +878,13 @@
 .calendario-footer p {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #1f2937;
   margin: 0;
 }
 
 .calendario-footer small {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #6b7280;
 }
 
 /* Responsivo */
@@ -941,240 +941,8 @@
   }
 }
 
-/* Modo Escuro */
-@media (prefers-color-scheme: dark) {
-  .admin-calendario {
-    background: #0f172a;
-  }
-  
-  .calendario-header {
-    border-color: #334155;
-  }
-  
-  .header-text h1 {
-    color: #f1f5f9;
-  }
-  
-  .header-text p {
-    color: #94a3b8;
-  }
-  
-  .google-sync-bar {
-    background: #1e3a2f;
-    border-color: #166534;
-  }
-  
-  .sync-label {
-    color: #86efac;
-  }
-  
-  .toggle-google-events {
-    color: #94a3b8;
-  }
-  
-  .calendario-nav {
-    background: #1e293b;
-    border-color: #334155;
-  }
-  
-  .mes-ano {
-    color: #f1f5f9;
-  }
-  
-  .btn-nav {
-    background: #334155;
-    color: #94a3b8;
-  }
-  
-  .btn-nav:hover {
-    background: #475569;
-    color: #f1f5f9;
-  }
-  
-  .calendario-grid-compact,
-  .legenda-compact,
-  .calendario-coluna-direita {
-    background: #1e293b;
-    border-color: #334155;
-  }
-  
-  .dias-semana-compact {
-    background: #0f172a;
-    border-color: #334155;
-  }
-  
-  .dia-semana-compact {
-    color: #94a3b8;
-  }
-  
-  .dia-cell-compact {
-    border-color: #334155;
-  }
-  
-  .dia-cell-compact:hover {
-    background: #1e3a2f;
-  }
-  
-  .dia-cell-compact.outro-mes {
-    background: #0f172a;
-  }
-  
-  .dia-cell-compact.outro-mes .dia-numero-compact {
-    color: #475569;
-  }
-  
-  .dia-cell-compact.hoje {
-    background: #1e3a2f;
-  }
-  
-  .dia-cell-compact.selecionado {
-    background: #1e3a5f;
-    border-color: #3b82f6;
-  }
-  
-  .dia-cell-compact.selecionado .dia-numero-compact {
-    color: #93c5fd;
-  }
-  
-  .dia-numero-compact {
-    color: #f1f5f9;
-  }
-  
-  .legenda-item-compact {
-    color: #94a3b8;
-  }
-  
-  .lista-header {
-    background: #0f172a;
-    border-color: #334155;
-  }
-  
-  .lista-header h3 {
-    color: #f1f5f9;
-  }
-  
-  .btn-ver-todos {
-    background: #334155;
-    color: #94a3b8;
-  }
-  
-  .btn-ver-todos:hover {
-    background: #475569;
-  }
-  
-  .lista-vazia {
-    color: #94a3b8;
-  }
-  
-  .lista-evento-card {
-    background: #0f172a;
-    border-color: #334155;
-  }
-  
-  .evento-card-header h4 {
-    color: #f1f5f9;
-  }
-  
-  .meta-item {
-    color: #94a3b8;
-  }
-  
-  .meta-item svg {
-    color: #64748b;
-  }
-  
-  .evento-card-descricao {
-    color: #94a3b8;
-  }
-  
-  .evento-card-responsaveis {
-    color: #94a3b8;
-    border-color: #334155;
-  }
-  
-  .evento-card-acoes {
-    border-color: #334155;
-  }
-  
-  .btn-icon-small {
-    background: #1e293b;
-    border-color: #334155;
-    color: #94a3b8;
-  }
-  
-  .btn-icon-small:hover {
-    background: #334155;
-    color: #f1f5f9;
-  }
-  
-  .modal-content {
-    background: #1e293b;
-  }
-  
-  .modal-header {
-    border-color: #334155;
-  }
-  
-  .modal-header h3 {
-    color: #f1f5f9;
-  }
-  
-  .btn-close {
-    color: #94a3b8;
-  }
-  
-  .btn-close:hover {
-    background: #334155;
-    color: #f1f5f9;
-  }
-  
-  .form-group label {
-    color: #e2e8f0;
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    background: #0f172a;
-    border-color: #334155;
-    color: #f1f5f9;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    border-color: #10b981;
-  }
-  
-  .form-group small {
-    color: #64748b;
-  }
-  
-  .modal-footer {
-    border-color: #334155;
-  }
-  
-  .btn-cancelar {
-    background: #334155;
-    color: #94a3b8;
-  }
-  
-  .btn-cancelar:hover {
-    background: #475569;
-  }
-  
-  .calendario-footer {
-    border-color: #334155;
-  }
-  
-  .calendario-footer p {
-    color: #f1f5f9;
-  }
-  
-  .calendario-footer small {
-    color: #64748b;
-  }
-}
+/* Modo Escuro - REMOVIDO: Agora controlado por .admin-layout.dark */
+/* Os estilos de modo escuro estão definidos abaixo usando a classe .admin-layout.dark */
 
 
 /* ============================================
@@ -1215,7 +983,7 @@
 }
 
 .admin-layout.light .btn-sync:hover {
-  background: #f3f4f6;
+  background: rgba(16, 185, 129, 0.15);
   border-color: #10b981;
   color: #059669;
 }

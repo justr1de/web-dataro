@@ -302,45 +302,66 @@ const AdminCalendario = () => {
         prioridade: formData.prioridade,
         cor: tiposEvento.find(t => t.id === formData.tipo)?.cor || '#3b82f6',
         status: 'pendente',
-        created_by: adminUser?.id
+        created_by: adminUser?.id || null,
+        enviar_lembrete: formData.enviar_lembrete || false
       };
 
-      if (selectedEvento) {
-        // Atualizar evento existente
-        const { error } = await supabase
-          .from('calendario_eventos')
-          .update(eventoData)
-          .eq('id', selectedEvento.id);
+      let savedEvento = null;
+      let supabaseSuccess = false;
 
-        if (error) throw error;
-      } else {
-        // Criar novo evento
-        const { data, error } = await supabase
-          .from('calendario_eventos')
-          .insert(eventoData)
-          .select()
-          .single();
+      // Tentar salvar no Supabase primeiro
+      try {
+        if (selectedEvento) {
+          // Atualizar evento existente
+          const { data, error } = await supabase
+            .from('calendario_eventos')
+            .update(eventoData)
+            .eq('id', selectedEvento.id)
+            .select()
+            .single();
 
-        if (error) throw error;
+          if (error) throw error;
+          savedEvento = data;
+          supabaseSuccess = true;
+        } else {
+          // Criar novo evento
+          const { data, error } = await supabase
+            .from('calendario_eventos')
+            .insert(eventoData)
+            .select()
+            .single();
 
-        // Adicionar responsáveis
-        if (formData.responsaveis.length > 0 && data) {
-          const responsaveisData = formData.responsaveis.map(resp => ({
-            evento_id: data.id,
-            usuario_id: resp.id,
-            usuario_email: resp.email,
-            usuario_nome: resp.nome
-          }));
+          if (error) throw error;
+          savedEvento = data;
+          supabaseSuccess = true;
 
-          await supabase
-            .from('calendario_responsaveis')
-            .insert(responsaveisData);
+          // Adicionar responsáveis
+          if (formData.responsaveis.length > 0 && data) {
+            const responsaveisData = formData.responsaveis.map(resp => ({
+              evento_id: data.id,
+              usuario_id: resp.id,
+              usuario_email: resp.email,
+              usuario_nome: resp.nome
+            }));
+
+            await supabase
+              .from('calendario_responsaveis')
+              .insert(responsaveisData);
+          }
         }
+      } catch (supabaseError) {
+        console.warn('Erro ao salvar no Supabase, usando localStorage:', supabaseError);
+        // Fallback para localStorage se Supabase falhar
+        supabaseSuccess = false;
       }
 
-      // Salvar também no localStorage como backup
+      // Salvar no localStorage (como backup ou fallback)
       const eventosAtualizados = [...eventos];
-      const novoEvento = { ...eventoData, id: selectedEvento?.id || Date.now().toString() };
+      const novoEvento = savedEvento || { 
+        ...eventoData, 
+        id: selectedEvento?.id || `local_${Date.now()}`,
+        created_at: new Date().toISOString()
+      };
       
       if (selectedEvento) {
         const index = eventosAtualizados.findIndex(e => e.id === selectedEvento.id);
@@ -353,7 +374,14 @@ const AdminCalendario = () => {
 
       setShowModal(false);
       resetForm();
-      loadEventos();
+      
+      // Recarregar eventos
+      if (supabaseSuccess) {
+        loadEventos();
+      } else {
+        // Se salvou apenas no localStorage, atualizar estado diretamente
+        setEventos(eventosAtualizados);
+      }
     } catch (error) {
       console.error('Erro ao salvar evento:', error);
       alert('Erro ao salvar evento. Tente novamente.');
