@@ -1,10 +1,24 @@
 .admin-calendario {
-  padding: 1.5rem;
+  color: #ffffff;
+  padding: 0 1rem;
   max-width: 1400px;
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Logo no header */
+.page-header-with-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-logo {
+  height: 60px;
+  width: auto;
+  opacity: 0.9;
 }
 
 /* Header */
@@ -13,63 +27,64 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
-.header-content > svg {
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.header-title svg {
   width: 32px;
   height: 32px;
-  color: #10b981;
+  color: #10b981 !important;
+  flex-shrink: 0;
 }
 
-.header-text h1 {
-  font-size: 1.75rem;
+.header-title h1 {
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #1e293b;
   margin: 0;
+  color: #ffffff !important;
 }
 
-.header-text p {
-  font-size: 0.9rem;
-  color: #64748b;
-  margin: 0.25rem 0 0;
+.header-title .header-subtitle {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.btn-novo-evento {
+.btn-novo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  background: #10b981;
-  color: white;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
   border: none;
   border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
-.btn-novo-evento:hover {
-  background: #059669;
+.btn-novo:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
-.btn-novo-evento svg {
-  width: 18px;
-  height: 18px;
+.btn-novo svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* Barra de Sincronização Google */
@@ -1155,4 +1170,300 @@
   .calendario-footer small {
     color: #64748b;
   }
+}
+
+
+/* ============================================
+   MODO CLARO
+   ============================================ */
+
+.admin-layout.light .admin-calendario {
+  color: #1f2937;
+}
+
+/* Título e subtítulo no modo claro */
+.admin-layout.light .header-title h1 {
+  color: #111827 !important;
+}
+
+.admin-layout.light .header-title .header-subtitle {
+  color: #6b7280;
+  border-left-color: #d1d5db;
+}
+
+/* Barra de sincronização Google no modo claro */
+.admin-layout.light .google-sync-bar {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.admin-layout.light .sync-label {
+  color: #059669;
+}
+
+.admin-layout.light .sync-status {
+  color: #6b7280;
+}
+
+.admin-layout.light .btn-sync {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.admin-layout.light .btn-sync:hover {
+  background: #f3f4f6;
+  border-color: #10b981;
+  color: #059669;
+}
+
+.admin-layout.light .toggle-label {
+  color: #374151;
+}
+
+/* Calendário no modo claro */
+.admin-layout.light .calendario-container {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-layout.light .calendario-nav h2 {
+  color: #111827;
+}
+
+.admin-layout.light .btn-nav {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.admin-layout.light .btn-nav:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.admin-layout.light .calendario-weekdays span {
+  color: #6b7280;
+}
+
+.admin-layout.light .calendario-grid .dia {
+  background: #ffffff;
+  color: #374151;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .calendario-grid .dia:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.admin-layout.light .calendario-grid .dia.outro-mes {
+  color: #9ca3af;
+  background: #f9fafb;
+}
+
+.admin-layout.light .calendario-grid .dia.hoje {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: #10b981;
+}
+
+.admin-layout.light .calendario-grid .dia.selecionado {
+  background: #10b981;
+  color: #ffffff;
+}
+
+/* Legenda no modo claro */
+.admin-layout.light .calendario-legenda {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .legenda-item span {
+  color: #374151;
+}
+
+/* Lista de eventos no modo claro */
+.admin-layout.light .eventos-container {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-layout.light .eventos-header h3 {
+  color: #111827;
+}
+
+.admin-layout.light .btn-ver-todos {
+  color: #10b981;
+}
+
+.admin-layout.light .btn-ver-todos:hover {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* Cards de evento no modo claro */
+.admin-layout.light .evento-card {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.admin-layout.light .evento-card:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.admin-layout.light .evento-titulo {
+  color: #111827;
+}
+
+.admin-layout.light .evento-meta span {
+  color: #6b7280;
+}
+
+.admin-layout.light .evento-descricao {
+  color: #4b5563;
+}
+
+.admin-layout.light .evento-responsaveis span {
+  color: #6b7280;
+}
+
+.admin-layout.light .responsavel-tag {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.admin-layout.light .btn-evento-action {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.admin-layout.light .btn-evento-action:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.admin-layout.light .btn-evento-action.delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Estado vazio no modo claro */
+.admin-layout.light .eventos-empty {
+  color: #6b7280;
+}
+
+.admin-layout.light .eventos-empty svg {
+  color: #9ca3af;
+}
+
+/* Modal no modo claro */
+.admin-layout.light .modal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.admin-layout.light .modal-content {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .modal-header {
+  background: #ffffff;
+  border-bottom-color: #e5e7eb;
+}
+
+.admin-layout.light .modal-header h2 {
+  color: #111827;
+}
+
+.admin-layout.light .btn-close {
+  color: #6b7280;
+}
+
+.admin-layout.light .btn-close:hover {
+  color: #1f2937;
+  background: #f3f4f6;
+}
+
+/* Formulário no modo claro */
+.admin-layout.light .form-group label {
+  color: #374151;
+}
+
+.admin-layout.light .form-group input,
+.admin-layout.light .form-group textarea,
+.admin-layout.light .form-group select {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #1f2937;
+}
+
+.admin-layout.light .form-group input::placeholder,
+.admin-layout.light .form-group textarea::placeholder {
+  color: #9ca3af;
+}
+
+.admin-layout.light .form-group input:focus,
+.admin-layout.light .form-group textarea:focus,
+.admin-layout.light .form-group select:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.admin-layout.light .form-group small {
+  color: #6b7280;
+}
+
+/* Checkbox no modo claro */
+.admin-layout.light .checkbox-group label {
+  color: #374151;
+}
+
+/* Responsáveis no modo claro */
+.admin-layout.light .responsaveis-list {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .responsavel-item {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  color: #374151;
+}
+
+.admin-layout.light .responsavel-item.selected {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: #10b981;
+  color: #059669;
+}
+
+/* Footer do modal no modo claro */
+.admin-layout.light .modal-footer {
+  border-top-color: #e5e7eb;
+}
+
+.admin-layout.light .btn-cancelar {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.admin-layout.light .btn-cancelar:hover {
+  background: #e5e7eb;
+}
+
+/* Footer da página no modo claro */
+.admin-layout.light .calendario-footer {
+  border-top-color: #e5e7eb;
+}
+
+.admin-layout.light .calendario-footer p {
+  color: #111827;
+}
+
+.admin-layout.light .calendario-footer small {
+  color: #6b7280;
 }
