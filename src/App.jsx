@@ -23,6 +23,7 @@ import {
   AdminLayout, 
   AdminDashboard, 
   AdminClientes,
+  AdminProjetos,
   AdminUsuarios,
   AdminTrocarSenha,
   AdminPlaceholder,
@@ -251,6 +252,7 @@ function App() {
               <Route index element={<Navigate to="/admin/clientes" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="clientes" element={<AdminClientes />} />
+              <Route path="projetos" element={<AdminProjetos />} />
               <Route path="demandas" element={<AdminDashboard />} />
               <Route path="relatorios" element={<AdminPlaceholder />} />
               <Route path="contatos" element={<AdminPlaceholder />} />

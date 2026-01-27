@@ -1,0 +1,498 @@
+/* AdminProjetos.css */
+
+.admin-projetos {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header */
+.projetos-header {
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.header-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.header-text h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.header-text p {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Toolbar */
+.projetos-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background-color: #fff;
+  color: #111827;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
+}
+
+.projetos-count {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Grid de Projetos */
+.projetos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card de Projeto */
+.projeto-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+}
+
+.projeto-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.projeto-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  border-bottom: 3px solid #10b981;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+.projeto-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.projeto-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.ativo {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.inativo {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge.desenvolvimento {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.projeto-card-body {
+  padding: 1.5rem;
+}
+
+.projeto-nome {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.projeto-tipo {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.projeto-descricao {
+  font-size: 0.9rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+/* Estatísticas */
+.projeto-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.stat-item svg {
+  width: 16px;
+  height: 16px;
+  color: #10b981;
+}
+
+/* Datas */
+.projeto-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.date-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.date-item svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+}
+
+/* Footer do Card */
+.projeto-card-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.btn-acessar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-acessar:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-acessar svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Mensagem quando não há projetos */
+.no-projetos {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+}
+
+.no-projetos svg {
+  width: 64px;
+  height: 64px;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.no-projetos h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.5rem 0;
+}
+
+.no-projetos p {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Rodapé */
+.projetos-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.footer-logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+}
+
+.projetos-footer p {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* ==================== MODO ESCURO ==================== */
+.admin-layout.dark .admin-projetos {
+  background-color: transparent;
+}
+
+.admin-layout.dark .header-text h1 {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .header-text p {
+  color: #9ca3af;
+}
+
+.admin-layout.dark .search-input {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #f9fafb;
+}
+
+.admin-layout.dark .search-input::placeholder {
+  color: #6b7280;
+}
+
+.admin-layout.dark .search-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.admin-layout.dark .projetos-count {
+  color: #9ca3af;
+}
+
+.admin-layout.dark .projeto-card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.admin-layout.dark .projeto-card-header {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+}
+
+.admin-layout.dark .projeto-nome {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .projeto-descricao {
+  color: #d1d5db;
+}
+
+.admin-layout.dark .projeto-stats {
+  background-color: #111827;
+}
+
+.admin-layout.dark .stat-item {
+  color: #d1d5db;
+}
+
+.admin-layout.dark .date-item {
+  color: #9ca3af;
+}
+
+.admin-layout.dark .projeto-card-footer {
+  background-color: #111827;
+  border-color: #374151;
+}
+
+.admin-layout.dark .no-projetos h3 {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .no-projetos p {
+  color: #9ca3af;
+}
+
+.admin-layout.dark .projetos-footer {
+  border-color: #374151;
+}
+
+.admin-layout.dark .projetos-footer p {
+  color: #6b7280;
+}
+
+/* ==================== MODO CLARO ==================== */
+.admin-layout.light .header-text h1 {
+  color: #111827;
+}
+
+.admin-layout.light .header-text p {
+  color: #6b7280;
+}
+
+.admin-layout.light .search-input {
+  background-color: #fff;
+  border-color: #e5e7eb;
+  color: #111827;
+}
+
+.admin-layout.light .projeto-card {
+  background-color: #fff;
+  border-color: #e5e7eb;
+}
+
+.admin-layout.light .projeto-nome {
+  color: #111827;
+}
+
+.admin-layout.light .projeto-descricao {
+  color: #4b5563;
+}
+
+/* ==================== RESPONSIVIDADE ==================== */
+@media (max-width: 768px) {
+  .admin-projetos {
+    padding: 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .projetos-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-container {
+    max-width: 100%;
+  }
+
+  .projetos-count {
+    text-align: center;
+  }
+
+  .projetos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .projeto-stats {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-projetos {
+    padding: 0.75rem;
+  }
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header-text h1 {
+    font-size: 1.25rem;
+  }
+
+  .header-text p {
+    font-size: 0.85rem;
+  }
+
+  .projeto-card-body {
+    padding: 1rem;
+  }
+
+  .projeto-nome {
+    font-size: 1.1rem;
+  }
+
+  .projeto-descricao {
+    font-size: 0.85rem;
+  }
+
+  .btn-acessar {
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+  }
+}
