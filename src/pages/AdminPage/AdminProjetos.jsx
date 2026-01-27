@@ -350,12 +350,23 @@ const AdminProjetos = () => {
             <div key={projeto.id} className="projeto-card">
               {/* Header do Card */}
               <div className="card-header">
-                <div className="card-icon" style={{ backgroundColor: projeto.cor || '#10b981' }}>
-                  <Icons.BarChart />
+                <div className="header-left">
+                  <div className="card-icon" style={{ backgroundColor: projeto.cor || '#10b981' }}>
+                    <Icons.BarChart />
+                  </div>
+                  <span className={`status-badge ${getStatusClass(projeto.status)}`}>
+                    {projeto.status}
+                  </span>
                 </div>
-                <span className={`status-badge ${getStatusClass(projeto.status)}`}>
-                  {projeto.status}
-                </span>
+                <div className="header-actions">
+                  <button 
+                    className="btn-icon"
+                    onClick={() => handleEditarProjeto(projeto)}
+                    title="Editar"
+                  >
+                    <Icons.Edit />
+                  </button>
+                </div>
               </div>
 
               {/* Conteúdo do Card */}
@@ -403,13 +414,6 @@ const AdminProjetos = () => {
 
               {/* Ações do Card */}
               <div className="card-actions">
-                <button 
-                  className="btn-editar"
-                  onClick={() => handleEditarProjeto(projeto)}
-                >
-                  <Icons.Edit />
-                  Editar
-                </button>
                 <button 
                   className="btn-acessar"
                   onClick={() => handleAcessarProjeto(projeto)}

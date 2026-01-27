@@ -140,6 +140,43 @@
   border-bottom: 1px solid #d1fae5;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: #f3f4f6;
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.btn-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
 .card-icon {
   width: 40px;
   height: 40px;
@@ -704,15 +741,16 @@
   border-top-color: #374151;
 }
 
-.admin-layout.dark .btn-editar {
-  background: transparent;
-  border-color: #10b981;
-  color: #10b981;
+.admin-layout.dark .btn-icon {
+  background: #1f2937;
+  border-color: #374151;
+  color: #9ca3af;
 }
 
-.admin-layout.dark .btn-editar:hover {
-  background: #10b981;
-  color: #fff;
+.admin-layout.dark .btn-icon:hover {
+  background: #374151;
+  border-color: #10b981;
+  color: #10b981;
 }
 
 .admin-layout.dark .modal-content {
