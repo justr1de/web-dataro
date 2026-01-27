@@ -248,6 +248,37 @@ const formasPagamento = [
   'Cheque'
 ];
 
+// Funções de formatação monetária
+const formatarMoeda = (valor) => {
+  if (!valor && valor !== 0) return '';
+  const numero = typeof valor === 'string' ? parseFloat(valor.replace(/\D/g, '')) / 100 : valor;
+  if (isNaN(numero)) return '';
+  return numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+const parseMoeda = (valorFormatado) => {
+  if (!valorFormatado) return 0;
+  // Remove tudo exceto números e vírgula
+  const limpo = valorFormatado.toString().replace(/[^\d,]/g, '');
+  // Substitui vírgula por ponto para conversão
+  const numero = parseFloat(limpo.replace(',', '.'));
+  return isNaN(numero) ? 0 : numero;
+};
+
+const handleValorChange = (e, setter, field) => {
+  // Remove tudo que não é número
+  let valor = e.target.value.replace(/\D/g, '');
+  
+  // Converte para centavos e formata
+  if (valor) {
+    const numero = parseInt(valor) / 100;
+    const formatado = numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    setter(prev => ({ ...prev, [field]: formatado }));
+  } else {
+    setter(prev => ({ ...prev, [field]: '' }));
+  }
+};
+
 // Tabelas de impostos Simples Nacional 2024
 const tabelasSimples = {
   anexoIII: { // Serviços
@@ -740,7 +771,7 @@ const AdminFinanceiro = () => {
 
     const novaTransacao = {
       ...formData,
-      valor: parseFloat(formData.valor),
+      valor: parseMoeda(formData.valor),
       id: modalMode === 'edit' ? selectedTransacao.id : Date.now().toString(),
       created_at: modalMode === 'edit' ? selectedTransacao.created_at : new Date().toISOString().split('T')[0]
     };
@@ -784,6 +815,7 @@ const AdminFinanceiro = () => {
 
     const novoDocumento = {
       ...documentoForm,
+      valor: parseMoeda(documentoForm.valor),
       id: Date.now().toString(),
       transacao_id: selectedTransacao?.id || null,
       created_at: new Date().toISOString().split('T')[0]
@@ -810,7 +842,7 @@ const AdminFinanceiro = () => {
 
     const novoContrato = {
       ...contratoForm,
-      valor_mensal: parseFloat(contratoForm.valor_mensal),
+      valor_mensal: parseMoeda(contratoForm.valor_mensal),
       id: modalMode === 'edit' ? selectedContrato.id : Date.now().toString(),
       created_at: modalMode === 'edit' ? selectedContrato.created_at : new Date().toISOString().split('T')[0]
     };
@@ -836,8 +868,8 @@ const AdminFinanceiro = () => {
 
   // Calculadora de Impostos
   const calcularImpostos = () => {
-    const faturamento12 = parseFloat(calcImpostos.faturamento12Meses) || 0;
-    const faturamentoMes = parseFloat(calcImpostos.faturamentoMes) || 0;
+    const faturamento12 = parseMoeda(calcImpostos.faturamento12Meses) || 0;
+    const faturamentoMes = parseMoeda(calcImpostos.faturamentoMes) || 0;
     
     if (faturamento12 <= 0 || faturamentoMes <= 0) {
       alert('Preencha os valores de faturamento');
@@ -1401,19 +1433,21 @@ const AdminFinanceiro = () => {
                   <div className="calc-field">
                     <label>Faturamento dos Últimos 12 Meses (R$)</label>
                     <input 
-                      type="number"
-                      placeholder="Ex: 500000"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Ex: 500.000,00"
                       value={calcImpostos.faturamento12Meses}
-                      onChange={(e) => setCalcImpostos({...calcImpostos, faturamento12Meses: e.target.value})}
+                      onChange={(e) => handleValorChange(e, setCalcImpostos, 'faturamento12Meses')}
                     />
                   </div>
                   <div className="calc-field">
                     <label>Faturamento do Mês Atual (R$)</label>
                     <input 
-                      type="number"
-                      placeholder="Ex: 50000"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Ex: 50.000,00"
                       value={calcImpostos.faturamentoMes}
-                      onChange={(e) => setCalcImpostos({...calcImpostos, faturamentoMes: e.target.value})}
+                      onChange={(e) => handleValorChange(e, setCalcImpostos, 'faturamentoMes')}
                     />
                   </div>
                 </div>
@@ -2146,9 +2180,10 @@ const AdminFinanceiro = () => {
                 <div className="form-group">
                   <label>Valor (R$) *</label>
                   <input 
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     value={formData.valor}
-                    onChange={(e) => setFormData({...formData, valor: e.target.value})}
+                    onChange={(e) => handleValorChange(e, setFormData, 'valor')}
                     placeholder="0,00"
                   />
                 </div>
@@ -2299,9 +2334,10 @@ const AdminFinanceiro = () => {
               <div className="form-group">
                 <label>Valor (R$)</label>
                 <input 
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   value={documentoForm.valor}
-                  onChange={(e) => setDocumentoForm({...documentoForm, valor: e.target.value})}
+                  onChange={(e) => handleValorChange(e, setDocumentoForm, 'valor')}
                   placeholder="0,00"
                 />
               </div>
@@ -2368,9 +2404,10 @@ const AdminFinanceiro = () => {
                 <div className="form-group">
                   <label>Valor Mensal (R$) *</label>
                   <input 
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     value={contratoForm.valor_mensal}
-                    onChange={(e) => setContratoForm({...contratoForm, valor_mensal: e.target.value})}
+                    onChange={(e) => handleValorChange(e, setContratoForm, 'valor_mensal')}
                     placeholder="0,00"
                   />
                 </div>
