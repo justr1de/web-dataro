@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { processarConsulta } from '../../services/aiService';
 import './AIAssistant.css';
 
 const AIAssistant = ({ municipios = [], onClose }) => {
@@ -8,12 +7,13 @@ const AIAssistant = ({ municipios = [], onClose }) => {
     {
       id: 1,
       type: 'assistant',
-      content: 'Olá! Sou o assistente de IA do DATA-RO. Posso ajudá-lo a:\n\n• Cruzar dados entre diferentes municípios\n• Buscar informações sobre editais e recursos federais\n• Analisar indicadores dos painéis de BI\n• Identificar oportunidades de captação de recursos\n\nComo posso ajudá-lo hoje?',
+      content: 'Olá! Sou o Assistente DATA-RO. Posso ajudá-lo a:\n\n• Cruzar dados entre diferentes municípios\n• Buscar informações sobre editais e recursos federais\n• Analisar indicadores dos painéis de BI\n• Identificar oportunidades de captação de recursos\n• Responder dúvidas sobre o sistema\n\nComo posso ajudá-lo hoje?',
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('chatgpt');
   const messagesEndRef = useRef(null);
   const { user } = useAuth();
 
@@ -36,51 +36,55 @@ const AIAssistant = ({ municipios = [], onClose }) => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = inputValue;
     setInputValue('');
     setIsLoading(true);
 
     try {
-      const response = await processAIRequest(inputValue, municipios);
-      
-      const assistantMessage = {
-        id: Date.now() + 1,
-        type: 'assistant',
-        content: response,
-        timestamp: new Date()
-      };
+      // Preparar histórico para a API
+      const history = messages.slice(1).map(m => ({
+        role: m.type === 'assistant' ? 'assistant' : 'user',
+        content: m.content
+      }));
 
-      setMessages(prev => [...prev, assistantMessage]);
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: currentInput,
+          model: selectedModel,
+          history: history
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const assistantMessage = {
+          id: Date.now() + 1,
+          type: 'assistant',
+          content: data.response,
+          timestamp: new Date(),
+          model: data.model
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        throw new Error(data.error || 'Erro ao processar mensagem');
+      }
     } catch (error) {
       console.error('Erro ao processar mensagem:', error);
       const errorMessage = {
         id: Date.now() + 1,
         type: 'assistant',
-        content: 'Desculpe, ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.',
+        content: `Desculpe, ocorreu um erro: ${error.message}. Por favor, tente novamente.`,
         timestamp: new Date(),
         isError: true
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const processAIRequest = async (query, municipiosData) => {
-    try {
-      const response = await processarConsulta(query, { municipios: municipiosData });
-      return response;
-    } catch (error) {
-      console.error('Erro no processamento:', error);
-      return `Entendi sua pergunta sobre "${query}". 
-
-Para fornecer uma análise mais precisa, você pode:
-
-1. **Comparar municípios**: Digite "comparar [município1] com [município2]"
-2. **Buscar editais**: Digite "editais de [área/ministério]"
-3. **Ver recursos disponíveis**: Digite "recursos para [área]"
-4. **Analisar indicadores**: Digite "indicadores de [município]"
-
-Consulte também a barra lateral de Ministérios para ver informações sobre editais e programas federais disponíveis.`;
     }
   };
 
@@ -93,6 +97,17 @@ Consulte também a barra lateral de Ministérios para ver informações sobre ed
 
   const handleQuickAction = (action) => {
     setInputValue(action);
+  };
+
+  const handleClearChat = () => {
+    setMessages([
+      {
+        id: Date.now(),
+        type: 'assistant',
+        content: 'Conversa limpa! Como posso ajudá-lo?',
+        timestamp: new Date()
+      }
+    ]);
   };
 
   const formatTimestamp = (date) => {
@@ -113,10 +128,22 @@ Consulte também a barra lateral de Ministérios para ver informações sobre ed
             </div>
             <div className="header-info">
               <h3>Assistente DATA-RO</h3>
-              <span className="status-online">● Online</span>
+              <span className="status-online">
+                {selectedModel === 'chatgpt' ? '🟢 ChatGPT' : '🔵 Gemini'}
+              </span>
             </div>
           </div>
           <div className="header-actions">
+            <button 
+              className="header-btn clear-btn" 
+              onClick={handleClearChat} 
+              title="Limpar conversa"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
             <button className="close-button" onClick={onClose} title="Fechar">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="18" y1="6" x2="6" y2="18"/>
@@ -124,6 +151,24 @@ Consulte também a barra lateral de Ministérios para ver informações sobre ed
               </svg>
             </button>
           </div>
+        </div>
+
+        {/* Model Selector */}
+        <div className="model-selector">
+          <button 
+            className={`model-btn ${selectedModel === 'chatgpt' ? 'active' : ''}`}
+            onClick={() => setSelectedModel('chatgpt')}
+          >
+            <span className="model-icon">🟢</span>
+            ChatGPT
+          </button>
+          <button 
+            className={`model-btn ${selectedModel === 'gemini' ? 'active' : ''}`}
+            onClick={() => setSelectedModel('gemini')}
+          >
+            <span className="model-icon">🔵</span>
+            Gemini
+          </button>
         </div>
 
         {/* Messages Area */}
@@ -135,9 +180,20 @@ Consulte também a barra lateral de Ministérios para ver informações sobre ed
             >
               <div className="message-content">
                 <div className="message-text" dangerouslySetInnerHTML={{ 
-                  __html: message.content.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  __html: message.content
+                    .replace(/\n/g, '<br/>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
                 }} />
-                <span className="message-time">{formatTimestamp(message.timestamp)}</span>
+                <div className="message-meta">
+                  <span className="message-time">{formatTimestamp(message.timestamp)}</span>
+                  {message.model && (
+                    <span className="message-model">
+                      {message.model === 'chatgpt' ? '🟢' : '🔵'}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -166,8 +222,8 @@ Consulte também a barra lateral de Ministérios para ver informações sobre ed
           <button onClick={() => handleQuickAction('Recursos do FNDE')}>
             💰 Recursos FNDE
           </button>
-          <button onClick={() => handleQuickAction('Programas do Ministério da Saúde')}>
-            🏥 Programas MS
+          <button onClick={() => handleQuickAction('Como funciona o sistema?')}>
+            ❓ Ajuda
           </button>
         </div>
 
