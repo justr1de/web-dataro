@@ -233,6 +233,7 @@ const categoriasPadrao = {
     { id: 'equipamentos', nome: 'Equipamentos', cor: '#a855f7' },
     { id: 'licenca_mensal', nome: 'Licença Mensal', cor: '#0ea5e9' },
     { id: 'licenca_anual', nome: 'Licença Anual', cor: '#6366f1' },
+    { id: 'licenca_avulsa', nome: 'Licença Avulsa', cor: '#8b5cf6' },
     { id: 'outros_pagamentos', nome: 'Outros Pagamentos', cor: '#6b7280' }
   ]
 };
