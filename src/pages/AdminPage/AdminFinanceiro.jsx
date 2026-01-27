@@ -231,6 +231,8 @@ const categoriasPadrao = {
     { id: 'administrativo', nome: 'Administrativo', cor: '#64748b' },
     { id: 'viagens', nome: 'Viagens', cor: '#14b8a6' },
     { id: 'equipamentos', nome: 'Equipamentos', cor: '#a855f7' },
+    { id: 'licenca_mensal', nome: 'Licença Mensal', cor: '#0ea5e9' },
+    { id: 'licenca_anual', nome: 'Licença Anual', cor: '#6366f1' },
     { id: 'outros_pagamentos', nome: 'Outros Pagamentos', cor: '#6b7280' }
   ]
 };
