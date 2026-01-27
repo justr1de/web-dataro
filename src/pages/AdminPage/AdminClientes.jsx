@@ -484,10 +484,13 @@ const AdminClientes = () => {
       errors.responsavel_cargo = 'Cargo é obrigatório';
     }
     
-    if (!formData.responsavel_cpf || formData.responsavel_cpf.replace(/\D/g, '').length !== 11) {
-      errors.responsavel_cpf = 'CPF é obrigatório (11 dígitos)';
-    } else if (!validarCPF(formData.responsavel_cpf)) {
-      errors.responsavel_cpf = 'CPF inválido';
+    // CPF é opcional - validar apenas se preenchido
+    if (formData.responsavel_cpf && formData.responsavel_cpf.replace(/\D/g, '').length > 0) {
+      if (formData.responsavel_cpf.replace(/\D/g, '').length !== 11) {
+        errors.responsavel_cpf = 'CPF deve ter 11 dígitos';
+      } else if (!validarCPF(formData.responsavel_cpf)) {
+        errors.responsavel_cpf = 'CPF inválido';
+      }
     }
     
     // Validar CNPJ (se preenchido)
@@ -1046,7 +1049,7 @@ const AdminClientes = () => {
                 <div className="form-row">
                   <div className="form-group form-group-half">
                     <label htmlFor="responsavel_cpf">
-                      CPF do Responsável *
+                      CPF do Responsável
                       <span className="field-info" title="Dado sensível - protegido pela LGPD">
                         <Icons.Info />
                       </span>
@@ -1062,8 +1065,7 @@ const AdminClientes = () => {
                       name="responsavel_cpf"
                       value={formData.responsavel_cpf}
                       onChange={handleCPFChange}
-                      required
-                      placeholder="000.000.000-00"
+                      placeholder="000.000.000-00 (opcional)"
                       maxLength={14}
                       className={validationErrors.responsavel_cpf ? 'input-error' : ''}
                     />
