@@ -30,7 +30,14 @@ import {
   AdminFinanceiro,
   AdminAuditoria,
   AdminPerfil,
-  AdminCalendario 
+  AdminCalendario,
+  AdminRelatorios,
+  AdminContatos,
+  AdminCredenciais,
+  AdminDocumentos,
+  AdminLogs,
+  AdminArquivosExcluidos,
+  AdminConfiguracoes
 } from './pages/AdminPage';
 
 // Contexto de autenticação
@@ -256,18 +263,18 @@ function App() {
               <Route path="clientes" element={<AdminClientes />} />
               <Route path="projetos" element={<AdminProjetos />} />
               <Route path="demandas" element={<AdminDashboard />} />
-              <Route path="relatorios" element={<AdminPlaceholder />} />
-              <Route path="contatos" element={<AdminPlaceholder />} />
+              <Route path="relatorios" element={<AdminRelatorios />} />
+              <Route path="contatos" element={<AdminContatos />} />
               <Route path="perfil" element={<AdminPerfil />} />
               <Route path="usuarios" element={<AdminUsuarios />} />
-              <Route path="credenciais" element={<AdminPlaceholder />} />
+              <Route path="credenciais" element={<AdminCredenciais />} />
               <Route path="financeiro" element={<AdminFinanceiro />} />
               <Route path="calendario" element={<AdminCalendario />} />
               <Route path="busca" element={<AdminPlaceholder />} />
-              <Route path="logs" element={<AdminPlaceholder />} />
+              <Route path="logs" element={<AdminLogs />} />
               <Route path="auditoria" element={<AdminAuditoria />} />
-              <Route path="excluidos" element={<AdminPlaceholder />} />
-              <Route path="configuracoes" element={<AdminPlaceholder />} />
+              <Route path="excluidos" element={<AdminArquivosExcluidos />} />
+              <Route path="configuracoes" element={<AdminConfiguracoes />} />
             </Route>
 
             {/* Rota padrão - redireciona para home */}

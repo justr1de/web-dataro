@@ -254,10 +254,90 @@
   margin: 0;
 }
 
+/* Container de Mês e Ano */
+.mes-ano-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.btn-mes-ano {
+  padding: 0.5rem 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #10b981;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+}
+
+.btn-mes-ano:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+}
+
+/* Picker Dropdown */
+.picker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.mes-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 280px;
+  padding: 0.5rem;
+  gap: 0.25rem;
+}
+
+.ano-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 200px;
+  padding: 0.5rem;
+  gap: 0.25rem;
+}
+
+.picker-item {
+  padding: 0.75rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.picker-item:hover {
+  background: #f0fdf4;
+  color: #10b981;
+}
+
+.picker-item.ativo {
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+}
+
 /* Layout de duas colunas */
 .calendario-content {
   display: grid;
-  grid-template-columns: 380px 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   flex: 1;
 }
@@ -1516,4 +1596,128 @@
 
 .admin-layout.dark .calendario-footer small {
   color: rgba(255, 255, 255, 0.5);
+}
+
+/* Seletores de mês e ano no modo claro */
+.admin-layout.light .btn-mes-ano {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #059669;
+}
+
+.admin-layout.light .btn-mes-ano:hover {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: #10b981;
+  color: #047857;
+}
+
+.admin-layout.light .picker-dropdown {
+  background: #ffffff;
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+}
+
+.admin-layout.light .picker-item {
+  color: #065f46;
+}
+
+.admin-layout.light .picker-item:hover {
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
+}
+
+.admin-layout.light .picker-item.ativo {
+  background: #10b981;
+  color: #ffffff;
+}
+
+/* Calendário compacto no modo claro */
+.admin-layout.light .calendario-grid-compact {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.admin-layout.light .dias-semana-compact {
+  background: rgba(16, 185, 129, 0.1);
+  border-bottom-color: rgba(16, 185, 129, 0.2);
+}
+
+.admin-layout.light .dia-semana-compact {
+  color: #047857;
+}
+
+.admin-layout.light .dia-cell-compact {
+  border-color: rgba(16, 185, 129, 0.1);
+}
+
+.admin-layout.light .dia-cell-compact:hover {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.admin-layout.light .dia-numero-compact {
+  color: #065f46;
+}
+
+.admin-layout.light .dia-cell-compact.outro-mes .dia-numero-compact {
+  color: #6b7280;
+}
+
+/* Lista de eventos no modo claro */
+.admin-layout.light .lista-header h3 {
+  color: #065f46;
+}
+
+.admin-layout.light .lista-eventos-container {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.admin-layout.light .lista-vazia p {
+  color: #047857;
+}
+
+.admin-layout.light .lista-vazia svg {
+  color: #10b981;
+}
+
+.admin-layout.light .evento-card-titulo {
+  color: #065f46;
+}
+
+.admin-layout.light .evento-card-info .meta-item {
+  color: #047857;
+}
+
+.admin-layout.light .evento-card-descricao {
+  color: #065f46;
+}
+
+.admin-layout.light .evento-card-responsaveis {
+  color: #047857;
+  border-top-color: rgba(16, 185, 129, 0.2);
+}
+
+.admin-layout.light .evento-card-acoes {
+  border-left-color: rgba(16, 185, 129, 0.2);
+}
+
+.admin-layout.light .btn-icon-small {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.2);
+  color: #065f46;
+}
+
+.admin-layout.light .btn-icon-small:hover {
+  background: rgba(16, 185, 129, 0.2);
+  color: #047857;
+}
+
+/* Legenda compacta no modo claro */
+.admin-layout.light .legenda-compact {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.admin-layout.light .legenda-item-compact {
+  color: #065f46;
 }

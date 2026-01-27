@@ -154,6 +154,8 @@ const AdminCalendario = () => {
   const [syncStatus, setSyncStatus] = useState('idle'); // idle, syncing, success, error
   const [lastSync, setLastSync] = useState(null);
   const [showGoogleEvents, setShowGoogleEvents] = useState(true);
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [showYearPicker, setShowYearPicker] = useState(false);
   
   const [formData, setFormData] = useState({
     titulo: '',
@@ -472,6 +474,38 @@ const AdminCalendario = () => {
     setCurrentDate(new Date());
   };
 
+  const goToMonth = (month) => {
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setMonth(month);
+      return newDate;
+    });
+    setShowMonthPicker(false);
+  };
+
+  const goToYear = (year) => {
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setFullYear(year);
+      return newDate;
+    });
+    setShowYearPicker(false);
+  };
+
+  const meses = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+
+  const getYearRange = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let i = currentYear - 5; i <= currentYear + 5; i++) {
+      years.push(i);
+    }
+    return years;
+  };
+
   // Gerar dias do mês
   const getDaysInMonth = () => {
     const year = currentDate.getFullYear();
@@ -610,8 +644,50 @@ const AdminCalendario = () => {
             <Icons.ChevronRight />
           </button>
         </div>
-        <h2 className="mes-ano">{formatMonthYear(currentDate)}</h2>
-
+        <div className="mes-ano-container">
+          <button 
+            className="btn-mes-ano" 
+            onClick={() => { setShowMonthPicker(!showMonthPicker); setShowYearPicker(false); }}
+          >
+            {meses[currentDate.getMonth()]}
+          </button>
+          <button 
+            className="btn-mes-ano" 
+            onClick={() => { setShowYearPicker(!showYearPicker); setShowMonthPicker(false); }}
+          >
+            {currentDate.getFullYear()}
+          </button>
+          
+          {/* Picker de Mês */}
+          {showMonthPicker && (
+            <div className="picker-dropdown mes-picker">
+              {meses.map((mes, index) => (
+                <button 
+                  key={mes} 
+                  className={`picker-item ${currentDate.getMonth() === index ? 'ativo' : ''}`}
+                  onClick={() => goToMonth(index)}
+                >
+                  {mes}
+                </button>
+              ))}
+            </div>
+          )}
+          
+          {/* Picker de Ano */}
+          {showYearPicker && (
+            <div className="picker-dropdown ano-picker">
+              {getYearRange().map(year => (
+                <button 
+                  key={year} 
+                  className={`picker-item ${currentDate.getFullYear() === year ? 'ativo' : ''}`}
+                  onClick={() => goToYear(year)}
+                >
+                  {year}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Conteúdo Principal - Layout de duas colunas */}
