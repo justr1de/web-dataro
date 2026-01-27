@@ -117,12 +117,18 @@ const tiposCliente = [
 
 // Produtos disponíveis
 const produtosDisponiveis = [
-  { id: 'painel_bi', nome: 'Painel de BI - Rondônia em Números', descricao: 'Dashboard interativo com indicadores socioeconômicos' },
-  { id: 'consultoria', nome: 'Consultoria em Dados', descricao: 'Análise e interpretação de dados territoriais' },
-  { id: 'plataforma_gestao', nome: 'Plataforma de Gestão', descricao: 'Sistema completo de gestão municipal' },
-  { id: 'api_dados', nome: 'API de Dados', descricao: 'Acesso programático aos dados territoriais' },
-  { id: 'relatorios', nome: 'Relatórios Personalizados', descricao: 'Relatórios sob demanda com análises específicas' },
-  { id: 'treinamento', nome: 'Treinamento', descricao: 'Capacitação em análise de dados e uso das ferramentas' }
+  { id: 'dte', nome: 'DTE', descricao: 'Documento de Transferência Eletrônica' },
+  { id: 'providata', nome: 'ProviDATA (SaaS)', descricao: 'Plataforma de gestão de dados como serviço' },
+  { id: 'rondonia_numeros', nome: 'Rondônia em Números (SaaS)', descricao: 'Dashboard interativo com indicadores socioeconômicos de Rondônia' },
+  { id: 'emendas', nome: 'Emendas (SaaS)', descricao: 'Sistema de gestão de emendas parlamentares' },
+  { id: 'lucrofy', nome: 'Lucrofy', descricao: 'Plataforma de gestão financeira e lucratividade' },
+  { id: 'eleitoralflow', nome: 'EleitoralFlow (SaaS)', descricao: 'Sistema de gestão de campanhas eleitorais' },
+  { id: 'plataforma_propria', nome: 'Desenvolvimento de Plataforma Própria', descricao: 'Desenvolvimento de plataforma personalizada sob demanda' },
+  { id: 'suporte_dev', nome: 'Suporte em Desenvolvimento', descricao: 'Suporte técnico especializado em desenvolvimento de software' },
+  { id: 'painel_bi_especifico', nome: 'Desenvolvimento de Painel de BI Específico', descricao: 'Criação de painéis de Business Intelligence personalizados' },
+  { id: 'assessoria_ti', nome: 'Assessoria em TI', descricao: 'Consultoria e assessoria em tecnologia da informação' },
+  { id: 'assessoria_dados', nome: 'Assessoria em Gestão de Dados', descricao: 'Consultoria especializada em gestão e governança de dados' },
+  { id: 'suporte_tecnico', nome: 'Suporte Técnico', descricao: 'Suporte técnico geral para sistemas e infraestrutura' }
 ];
 
 // Municípios de Rondônia
