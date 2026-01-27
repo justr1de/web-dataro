@@ -520,23 +520,7 @@ const AdminCalendario = () => {
           </div>
         </div>
         <div className="header-actions">
-          <div className="view-toggle">
-            <button 
-              className={viewMode === 'month' ? 'active' : ''} 
-              onClick={() => setViewMode('month')}
-              title="Visualização mensal"
-            >
-              <Icons.Grid />
-            </button>
-            <button 
-              className={viewMode === 'list' ? 'active' : ''} 
-              onClick={() => setViewMode('list')}
-              title="Visualização em lista"
-            >
-              <Icons.List />
-            </button>
-          </div>
-          <button className="btn-novo-evento" onClick={() => handleOpenModal()}>
+          <button className="btn-novo-evento" onClick={() => handleOpenModal(selectedDate)}>
             <Icons.Plus />
             <span>Novo Evento</span>
           </button>
@@ -596,114 +580,175 @@ const AdminCalendario = () => {
           </button>
         </div>
         <h2 className="mes-ano">{formatMonthYear(currentDate)}</h2>
-        <div className="legenda">
-          {tiposEvento.map(tipo => (
-            <span key={tipo.id} className="legenda-item">
-              <span className="legenda-cor" style={{ background: tipo.cor }}></span>
-              {tipo.nome}
-            </span>
-          ))}
-        </div>
+
       </div>
 
-      {/* Conteúdo do Calendário */}
-      {viewMode === 'month' ? (
-        <div className="calendario-grid">
-          {/* Cabeçalho dos dias da semana */}
-          <div className="dias-semana">
-            {diasSemana.map(dia => (
-              <div key={dia} className="dia-semana">{dia}</div>
-            ))}
-          </div>
-
-          {/* Grid de dias */}
-          <div className="dias-grid">
-            {getDaysInMonth().map((day, index) => {
-              const eventosDay = getEventosForDate(day.date);
-              return (
-                <div 
-                  key={index}
-                  className={`dia-cell ${!day.isCurrentMonth ? 'outro-mes' : ''} ${isToday(day.date) ? 'hoje' : ''}`}
-                  onClick={() => handleOpenModal(day.date)}
-                >
-                  <span className="dia-numero">{day.date.getDate()}</span>
-                  <div className="eventos-dia">
-                    {eventosDay.slice(0, 3).map(evento => (
-                      <div 
-                        key={evento.id}
-                        className="evento-item"
-                        style={{ background: evento.cor || tiposEvento.find(t => t.id === evento.tipo)?.cor }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenModal(null, evento);
-                        }}
-                      >
-                        {evento.titulo}
-                      </div>
-                    ))}
-                    {eventosDay.length > 3 && (
-                      <span className="mais-eventos">+{eventosDay.length - 3} mais</span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ) : (
-        <div className="calendario-lista">
-          {loading ? (
-            <div className="lista-loading">
-              <div className="loading-spinner"></div>
-              <p>Carregando eventos...</p>
-            </div>
-          ) : eventos.length === 0 ? (
-            <div className="lista-vazia">
-              <Icons.Calendar />
-              <p>Nenhum evento neste mês</p>
-              <button onClick={() => handleOpenModal()}>Criar primeiro evento</button>
-            </div>
-          ) : (
-            <div className="lista-eventos">
-              {eventos.map(evento => (
-                <div key={evento.id} className="lista-evento-item">
-                  <div className="evento-cor" style={{ background: evento.cor || tiposEvento.find(t => t.id === evento.tipo)?.cor }}></div>
-                  <div className="evento-info">
-                    <h4>{evento.titulo}</h4>
-                    <div className="evento-meta">
-                      <span className="evento-data">
-                        <Icons.Calendar />
-                        {new Date(evento.data_inicio).toLocaleDateString('pt-BR')}
-                      </span>
-                      {!evento.dia_inteiro && (
-                        <span className="evento-hora">
-                          <Icons.Clock />
-                          {new Date(evento.data_inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      )}
-                      {evento.local && (
-                        <span className="evento-local">
-                          <Icons.MapPin />
-                          {evento.local}
-                        </span>
-                      )}
-                    </div>
-                    {evento.descricao && <p className="evento-descricao">{evento.descricao}</p>}
-                  </div>
-                  <div className="evento-acoes">
-                    <button className="btn-icon" onClick={() => handleOpenModal(null, evento)}>
-                      <Icons.Edit />
-                    </button>
-                    <button className="btn-icon btn-danger" onClick={() => handleDeleteEvento(evento.id)}>
-                      <Icons.Trash />
-                    </button>
-                  </div>
-                </div>
+      {/* Conteúdo Principal - Layout de duas colunas */}
+      <div className="calendario-content">
+        {/* Coluna Esquerda - Calendário Compacto */}
+        <div className="calendario-coluna-esquerda">
+          <div className="calendario-grid-compact">
+            {/* Cabeçalho dos dias da semana */}
+            <div className="dias-semana-compact">
+              {diasSemana.map(dia => (
+                <div key={dia} className="dia-semana-compact">{dia}</div>
               ))}
             </div>
-          )}
+
+            {/* Grid de dias compacto */}
+            <div className="dias-grid-compact">
+              {getDaysInMonth().map((day, index) => {
+                const eventosDay = getEventosForDate(day.date);
+                const isSelected = selectedDate && day.date.toDateString() === selectedDate.toDateString();
+                return (
+                  <div 
+                    key={index}
+                    className={`dia-cell-compact ${!day.isCurrentMonth ? 'outro-mes' : ''} ${isToday(day.date) ? 'hoje' : ''} ${isSelected ? 'selecionado' : ''} ${eventosDay.length > 0 ? 'tem-eventos' : ''}`}
+                    onClick={() => setSelectedDate(day.date)}
+                  >
+                    <span className="dia-numero-compact">{day.date.getDate()}</span>
+                    {eventosDay.length > 0 && (
+                      <div className="eventos-indicador">
+                        {eventosDay.slice(0, 3).map((evento, i) => (
+                          <span 
+                            key={i} 
+                            className="evento-dot"
+                            style={{ background: evento.cor || tiposEvento.find(t => t.id === evento.tipo)?.cor }}
+                          ></span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Legenda abaixo do calendário */}
+          <div className="legenda-compact">
+            {tiposEvento.map(tipo => (
+              <span key={tipo.id} className="legenda-item-compact">
+                <span className="legenda-cor-compact" style={{ background: tipo.cor }}></span>
+                {tipo.nome}
+              </span>
+            ))}
+          </div>
         </div>
-      )}
+
+        {/* Coluna Direita - Lista de Eventos */}
+        <div className="calendario-coluna-direita">
+          <div className="lista-header">
+            <h3>
+              <Icons.List />
+              {selectedDate ? (
+                <span>Eventos de {selectedDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              ) : (
+                <span>Todos os Eventos do Mês</span>
+              )}
+            </h3>
+            {selectedDate && (
+              <button className="btn-ver-todos" onClick={() => setSelectedDate(null)}>
+                Ver todos do mês
+              </button>
+            )}
+          </div>
+
+          <div className="lista-eventos-container">
+            {loading ? (
+              <div className="lista-loading">
+                <div className="loading-spinner"></div>
+                <p>Carregando eventos...</p>
+              </div>
+            ) : (() => {
+              const eventosFiltrados = selectedDate 
+                ? getEventosForDate(selectedDate)
+                : [...eventos, ...(showGoogleEvents ? googleEvents : [])].sort((a, b) => new Date(a.data_inicio) - new Date(b.data_inicio));
+              
+              return eventosFiltrados.length === 0 ? (
+                <div className="lista-vazia">
+                  <Icons.Calendar />
+                  <p>{selectedDate ? 'Nenhum evento neste dia' : 'Nenhum evento neste mês'}</p>
+                  <button onClick={() => handleOpenModal(selectedDate)}>Criar evento</button>
+                </div>
+              ) : (
+                <div className="lista-eventos">
+                  {eventosFiltrados.map(evento => {
+                    const tipoEvento = tiposEvento.find(t => t.id === evento.tipo);
+                    const prioridadeEvento = prioridades.find(p => p.id === evento.prioridade);
+                    return (
+                      <div key={evento.id} className={`lista-evento-card ${evento.isGoogleEvent ? 'google-event' : ''}`}>
+                        <div className="evento-cor-barra" style={{ background: evento.cor || tipoEvento?.cor }}></div>
+                        <div className="evento-card-content">
+                          <div className="evento-card-header">
+                            <h4>{evento.titulo}</h4>
+                            <div className="evento-badges">
+                              <span className="badge-tipo" style={{ background: tipoEvento?.cor }}>
+                                {tipoEvento?.nome || evento.tipo}
+                              </span>
+                              {prioridadeEvento && (
+                                <span className={`badge-prioridade ${evento.prioridade}`}>
+                                  {prioridadeEvento.nome}
+                                </span>
+                              )}
+                              {evento.isGoogleEvent && (
+                                <span className="badge-google">
+                                  <Icons.Google /> Google
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="evento-card-meta">
+                            <span className="meta-item">
+                              <Icons.Calendar />
+                              {new Date(evento.data_inicio).toLocaleDateString('pt-BR')}
+                            </span>
+                            {!evento.dia_inteiro && (
+                              <span className="meta-item">
+                                <Icons.Clock />
+                                {new Date(evento.data_inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                {evento.data_fim && ` - ${new Date(evento.data_fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`}
+                              </span>
+                            )}
+                            {evento.local && (
+                              <span className="meta-item">
+                                <Icons.MapPin />
+                                {evento.local}
+                              </span>
+                            )}
+                          </div>
+
+                          {evento.descricao && (
+                            <p className="evento-card-descricao">{evento.descricao}</p>
+                          )}
+
+                          {evento.responsaveis && evento.responsaveis.length > 0 && (
+                            <div className="evento-card-responsaveis">
+                              <Icons.Users />
+                              <span>{evento.responsaveis.map(r => r.nome).join(', ')}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {!evento.isGoogleEvent && (
+                          <div className="evento-card-acoes">
+                            <button className="btn-icon-small" onClick={() => handleOpenModal(null, evento)} title="Editar">
+                              <Icons.Edit />
+                            </button>
+                            <button className="btn-icon-small btn-danger" onClick={() => handleDeleteEvento(evento.id)} title="Excluir">
+                              <Icons.Trash />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      </div>
 
       {/* Modal de Evento */}
       {showModal && (
