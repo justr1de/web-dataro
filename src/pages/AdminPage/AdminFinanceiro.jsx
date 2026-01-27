@@ -351,7 +351,9 @@ const AdminFinanceiro = () => {
     conta: '',
     numero_documento: '',
     observacoes: '',
-    entidade_nome: ''
+    entidade_nome: '',
+    anexo: null,
+    anexo_nome: ''
   });
   const [documentoForm, setDocumentoForm] = useState({
     tipo: 'nota_fiscal',
@@ -801,7 +803,9 @@ const AdminFinanceiro = () => {
         conta: transacao.conta || '',
         numero_documento: transacao.numero_documento || '',
         observacoes: transacao.observacoes || '',
-        entidade_nome: transacao.entidade_nome || ''
+        entidade_nome: transacao.entidade_nome || '',
+        anexo: transacao.anexo || null,
+        anexo_nome: transacao.anexo_nome || ''
       });
     } else {
       setSelectedTransacao(null);
@@ -819,7 +823,9 @@ const AdminFinanceiro = () => {
         conta: '',
         numero_documento: '',
         observacoes: '',
-        entidade_nome: ''
+        entidade_nome: '',
+        anexo: null,
+        anexo_nome: ''
       });
     }
     setShowModal(true);
@@ -1334,7 +1340,23 @@ const AdminFinanceiro = () => {
                       <tr key={transacao.id}>
                         <td>
                           <div className="transacao-descricao-cell">
-                            <span>{transacao.descricao}</span>
+                            <div className="descricao-com-anexo">
+                              <span>{transacao.descricao}</span>
+                              {transacao.anexo && (
+                                <button 
+                                  className="btn-anexo-indicador"
+                                  onClick={() => {
+                                    const link = document.createElement('a');
+                                    link.href = transacao.anexo;
+                                    link.download = transacao.anexo_nome || 'anexo';
+                                    link.click();
+                                  }}
+                                  title={`Baixar: ${transacao.anexo_nome}`}
+                                >
+                                  <Icons.Download />
+                                </button>
+                              )}
+                            </div>
                             {transacao.numero_documento && (
                               <small>{transacao.numero_documento}</small>
                             )}
@@ -2423,6 +2445,49 @@ const AdminFinanceiro = () => {
                   placeholder="Observações adicionais..."
                   rows="3"
                 />
+              </div>
+
+              <div className="form-group">
+                <label>{formData.tipo === 'receita' ? 'Comprovante (opcional)' : 'Nota Fiscal (opcional)'}</label>
+                <div className="upload-area">
+                  {formData.anexo ? (
+                    <div className="arquivo-anexado">
+                      <Icons.FileText />
+                      <span className="arquivo-nome">{formData.anexo_nome}</span>
+                      <button 
+                        type="button" 
+                        className="btn-remover-anexo"
+                        onClick={() => setFormData({...formData, anexo: null, anexo_nome: ''})}
+                      >
+                        <Icons.X />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="upload-label">
+                      <input 
+                        type="file" 
+                        accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setFormData({
+                                ...formData, 
+                                anexo: reader.result,
+                                anexo_nome: file.name
+                              });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                      <Icons.Upload />
+                      <span>Clique para anexar arquivo</span>
+                      <small>PDF, JPG, PNG, DOC (máx. 5MB)</small>
+                    </label>
+                  )}
+                </div>
               </div>
             </div>
             <div className="modal-footer">
