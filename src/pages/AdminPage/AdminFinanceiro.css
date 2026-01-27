@@ -1637,3 +1637,589 @@
     padding: 1rem;
   }
 }
+
+
+/* ==================== SEÇÃO DE BACKUPS ==================== */
+
+.financeiro-backups {
+  padding: 1rem;
+}
+
+.backups-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.backups-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.backups-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-backup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-backup:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-zerar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: white;
+  color: #ef4444;
+  border: 2px solid #ef4444;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-zerar:hover {
+  background: #fef2f2;
+}
+
+/* Resumo dos Dados Atuais */
+.dados-atuais-resumo {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.dados-atuais-resumo h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+}
+
+.resumo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.resumo-item {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.resumo-item.receita {
+  background: #f0fdf4;
+}
+
+.resumo-item.despesa {
+  background: #fef2f2;
+}
+
+.resumo-numero {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.resumo-item.receita .resumo-numero {
+  color: #10b981;
+}
+
+.resumo-item.despesa .resumo-numero {
+  color: #ef4444;
+}
+
+.resumo-label {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* Lista de Backups */
+.backups-lista {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.backups-lista h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+}
+
+.backups-lista .empty-state {
+  padding: 3rem;
+  text-align: center;
+}
+
+.backups-lista .empty-state svg {
+  width: 48px;
+  height: 48px;
+  color: #94a3b8;
+  margin-bottom: 1rem;
+}
+
+.backups-lista .empty-state p {
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.backups-lista .empty-state small {
+  color: #94a3b8;
+}
+
+.backups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.backup-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.backup-card:hover {
+  border-color: #10b981;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.backup-card .backup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.backup-card .backup-header svg {
+  width: 24px;
+  height: 24px;
+  color: #10b981;
+}
+
+.backup-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.backup-data {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.backup-resumo {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+}
+
+.backup-stat {
+  flex: 1;
+  text-align: center;
+}
+
+.backup-stat .stat-valor {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.backup-stat.receita .stat-valor {
+  color: #10b981;
+}
+
+.backup-stat.despesa .stat-valor {
+  color: #ef4444;
+}
+
+.backup-stat .stat-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-restaurar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-restaurar:hover {
+  background: #059669;
+}
+
+.btn-exportar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-exportar:hover {
+  background: #eff6ff;
+}
+
+.btn-excluir-backup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: white;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-excluir-backup:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+/* Modal de Backup */
+.modal-backup {
+  max-width: 480px;
+}
+
+.backup-info-text {
+  color: #64748b;
+  margin-bottom: 1rem;
+}
+
+.backup-info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.backup-info-list li {
+  padding: 0.5rem 0;
+  color: #1e293b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.backup-info-list li:last-child {
+  border-bottom: none;
+}
+
+/* Modal de Confirmar Zerar */
+.modal-confirmar-zerar {
+  max-width: 500px;
+}
+
+.modal-header-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.modal-header-danger h2 {
+  color: white;
+}
+
+.modal-header-danger .btn-fechar {
+  color: white;
+}
+
+.warning-icon {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.warning-icon svg {
+  width: 64px;
+  height: 64px;
+  color: #ef4444;
+}
+
+.warning-text {
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.dados-a-excluir {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  background: #fef2f2;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.dados-a-excluir li {
+  padding: 0.5rem 0;
+  color: #991b1b;
+  border-bottom: 1px solid #fecaca;
+}
+
+.dados-a-excluir li:last-child {
+  border-bottom: none;
+}
+
+.recomendacao {
+  color: #64748b;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.modal-confirmar-zerar .modal-footer {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.btn-backup-antes {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-backup-antes:hover {
+  background: #2563eb;
+}
+
+.btn-confirmar-zerar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-confirmar-zerar:hover {
+  background: #dc2626;
+}
+
+/* Dark Mode para Backups */
+.admin-layout.dark .financeiro-backups .backups-header h2 {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .dados-atuais-resumo,
+.admin-layout.dark .backups-lista {
+  background: #1f2937;
+}
+
+.admin-layout.dark .dados-atuais-resumo h3,
+.admin-layout.dark .backups-lista h3 {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .resumo-item {
+  background: #111827;
+}
+
+.admin-layout.dark .resumo-item.receita {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.admin-layout.dark .resumo-item.despesa {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.admin-layout.dark .resumo-numero {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .resumo-label {
+  color: #9ca3af;
+}
+
+.admin-layout.dark .backup-card {
+  background: #111827;
+  border-color: #374151;
+}
+
+.admin-layout.dark .backup-card:hover {
+  border-color: #10b981;
+}
+
+.admin-layout.dark .backup-info h4 {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .backup-data {
+  color: #9ca3af;
+}
+
+.admin-layout.dark .backup-resumo {
+  background: #1f2937;
+}
+
+.admin-layout.dark .backup-stat .stat-valor {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .backup-stat .stat-label {
+  color: #6b7280;
+}
+
+.admin-layout.dark .btn-zerar {
+  background: #1f2937;
+  border-color: #ef4444;
+}
+
+.admin-layout.dark .btn-exportar {
+  background: #1f2937;
+}
+
+.admin-layout.dark .btn-excluir-backup {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.admin-layout.dark .modal-backup .modal-body,
+.admin-layout.dark .modal-confirmar-zerar .modal-body {
+  background: #1f2937;
+}
+
+.admin-layout.dark .backup-info-text {
+  color: #9ca3af;
+}
+
+.admin-layout.dark .backup-info-list li {
+  color: #f9fafb;
+  border-bottom-color: #374151;
+}
+
+.admin-layout.dark .dados-a-excluir {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.admin-layout.dark .dados-a-excluir li {
+  color: #fca5a5;
+  border-bottom-color: rgba(239, 68, 68, 0.2);
+}
+
+.admin-layout.dark .warning-text {
+  color: #f9fafb;
+}
+
+.admin-layout.dark .recomendacao {
+  color: #9ca3af;
+}
+
+/* Responsividade para Backups */
+@media (max-width: 768px) {
+  .backups-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .backups-actions {
+    width: 100%;
+  }
+  
+  .btn-backup,
+  .btn-zerar {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .backups-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .backup-resumo {
+    flex-wrap: wrap;
+  }
+  
+  .backup-stat {
+    min-width: calc(50% - 0.5rem);
+  }
+  
+  .backup-actions {
+    flex-wrap: wrap;
+  }
+  
+  .btn-restaurar,
+  .btn-exportar {
+    flex: 1 1 calc(50% - 0.25rem);
+  }
+  
+  .modal-confirmar-zerar .modal-footer {
+    flex-direction: column;
+  }
+  
+  .modal-confirmar-zerar .modal-footer button {
+    width: 100%;
+    justify-content: center;
+  }
+}
