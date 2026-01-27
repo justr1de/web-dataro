@@ -332,6 +332,9 @@ const AdminFinanceiro = () => {
     status: 'pendente',
     categoria: '',
     forma_pagamento: '',
+    banco: '',
+    final_cartao: '',
+    conta: '',
     numero_documento: '',
     observacoes: '',
     entidade_nome: ''
@@ -740,6 +743,9 @@ const AdminFinanceiro = () => {
         status: transacao.status,
         categoria: transacao.categoria,
         forma_pagamento: transacao.forma_pagamento || '',
+        banco: transacao.banco || '',
+        final_cartao: transacao.final_cartao || '',
+        conta: transacao.conta || '',
         numero_documento: transacao.numero_documento || '',
         observacoes: transacao.observacoes || '',
         entidade_nome: transacao.entidade_nome || ''
@@ -755,6 +761,9 @@ const AdminFinanceiro = () => {
         status: 'pendente',
         categoria: '',
         forma_pagamento: '',
+        banco: '',
+        final_cartao: '',
+        conta: '',
         numero_documento: '',
         observacoes: '',
         entidade_nome: ''
@@ -2235,7 +2244,7 @@ const AdminFinanceiro = () => {
                   <label>Forma de Pagamento</label>
                   <select 
                     value={formData.forma_pagamento}
-                    onChange={(e) => setFormData({...formData, forma_pagamento: e.target.value})}
+                    onChange={(e) => setFormData({...formData, forma_pagamento: e.target.value, banco: '', final_cartao: '', conta: ''})}
                   >
                     <option value="">Selecione...</option>
                     {formasPagamento.map(fp => (
@@ -2253,6 +2262,80 @@ const AdminFinanceiro = () => {
                   />
                 </div>
               </div>
+
+              {/* Campos condicionais para Cartão de Crédito/Débito */}
+              {(formData.forma_pagamento === 'Cartão de Crédito' || formData.forma_pagamento === 'Cartão de Débito') && (
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Banco</label>
+                    <select 
+                      value={formData.banco}
+                      onChange={(e) => setFormData({...formData, banco: e.target.value})}
+                    >
+                      <option value="">Selecione o banco...</option>
+                      <option value="Banco do Brasil">Banco do Brasil</option>
+                      <option value="Bradesco">Bradesco</option>
+                      <option value="Caixa Econômica">Caixa Econômica</option>
+                      <option value="Itaú">Itaú</option>
+                      <option value="Santander">Santander</option>
+                      <option value="Nubank">Nubank</option>
+                      <option value="Inter">Inter</option>
+                      <option value="C6 Bank">C6 Bank</option>
+                      <option value="Sicoob">Sicoob</option>
+                      <option value="Sicredi">Sicredi</option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Final do Cartão</label>
+                    <input 
+                      type="text"
+                      value={formData.final_cartao}
+                      onChange={(e) => {
+                        const valor = e.target.value.replace(/\D/g, '').slice(0, 4);
+                        setFormData({...formData, final_cartao: valor});
+                      }}
+                      placeholder="Ex: 1234"
+                      maxLength="4"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Campos condicionais para PIX, Boleto ou Transferência */}
+              {(formData.forma_pagamento === 'PIX' || formData.forma_pagamento === 'Boleto' || formData.forma_pagamento === 'Transferência Bancária') && (
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Banco</label>
+                    <select 
+                      value={formData.banco}
+                      onChange={(e) => setFormData({...formData, banco: e.target.value})}
+                    >
+                      <option value="">Selecione o banco...</option>
+                      <option value="Banco do Brasil">Banco do Brasil</option>
+                      <option value="Bradesco">Bradesco</option>
+                      <option value="Caixa Econômica">Caixa Econômica</option>
+                      <option value="Itaú">Itaú</option>
+                      <option value="Santander">Santander</option>
+                      <option value="Nubank">Nubank</option>
+                      <option value="Inter">Inter</option>
+                      <option value="C6 Bank">C6 Bank</option>
+                      <option value="Sicoob">Sicoob</option>
+                      <option value="Sicredi">Sicredi</option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Conta</label>
+                    <input 
+                      type="text"
+                      value={formData.conta}
+                      onChange={(e) => setFormData({...formData, conta: e.target.value})}
+                      placeholder="Ex: 12345-6"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="form-group">
                 <label>Observações</label>
