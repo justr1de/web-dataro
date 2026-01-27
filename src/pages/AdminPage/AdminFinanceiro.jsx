@@ -182,6 +182,33 @@ const Icons = {
       <polyline points="1 20 1 14 7 14"></polyline>
       <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
     </svg>
+  ),
+  Database: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+    </svg>
+  ),
+  Save: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+      <polyline points="17 21 17 13 7 13 7 21"></polyline>
+      <polyline points="7 3 7 8 15 8"></polyline>
+    </svg>
+  ),
+  RotateCcw: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="1 4 1 10 7 10"></polyline>
+      <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+    </svg>
+  ),
+  Archive: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="21 8 21 21 3 21 3 8"></polyline>
+      <rect x="1" y="3" width="22" height="5"></rect>
+      <line x1="10" y1="12" x2="14" y2="12"></line>
+    </svg>
   )
 };
 
@@ -308,6 +335,12 @@ const AdminFinanceiro = () => {
     ano: new Date().getFullYear()
   });
   
+  // Estados para backups
+  const [backups, setBackups] = useState([]);
+  const [showBackupModal, setShowBackupModal] = useState(false);
+  const [backupNome, setBackupNome] = useState('');
+  const [showConfirmZerar, setShowConfirmZerar] = useState(false);
+  
   const fileInputRef = useRef(null);
 
   // Carregar dados do localStorage
@@ -360,6 +393,12 @@ const AdminFinanceiro = () => {
           ];
           setContratos(exemploContratos);
           localStorage.setItem('fin_contratos', JSON.stringify(exemploContratos));
+        }
+        
+        // Carregar backups salvos
+        const savedBackups = localStorage.getItem('fin_backups');
+        if (savedBackups) {
+          setBackups(JSON.parse(savedBackups));
         }
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
@@ -466,6 +505,73 @@ const AdminFinanceiro = () => {
   const saveContratos = (newContratos) => {
     setContratos(newContratos);
     localStorage.setItem('fin_contratos', JSON.stringify(newContratos));
+  };
+
+  // Funções de Backup
+  const criarBackup = (nome) => {
+    const novoBackup = {
+      id: Date.now().toString(),
+      nome: nome || `Backup ${new Date().toLocaleDateString('pt-BR')}`,
+      data: new Date().toISOString(),
+      dados: {
+        transacoes: [...transacoes],
+        documentos: [...documentos],
+        contratos: [...contratos]
+      },
+      resumo: {
+        totalTransacoes: transacoes.length,
+        totalReceitas: transacoes.filter(t => t.tipo === 'receita').reduce((acc, t) => acc + t.valor, 0),
+        totalDespesas: transacoes.filter(t => t.tipo === 'despesa').reduce((acc, t) => acc + t.valor, 0),
+        totalDocumentos: documentos.length,
+        totalContratos: contratos.length
+      }
+    };
+    
+    const novosBackups = [...backups, novoBackup];
+    setBackups(novosBackups);
+    localStorage.setItem('fin_backups', JSON.stringify(novosBackups));
+    
+    return novoBackup;
+  };
+
+  const restaurarBackup = (backupId) => {
+    const backup = backups.find(b => b.id === backupId);
+    if (!backup) return false;
+    
+    // Restaurar dados
+    saveTransacoes(backup.dados.transacoes);
+    saveDocumentos(backup.dados.documentos);
+    saveContratos(backup.dados.contratos);
+    
+    return true;
+  };
+
+  const excluirBackup = (backupId) => {
+    const novosBackups = backups.filter(b => b.id !== backupId);
+    setBackups(novosBackups);
+    localStorage.setItem('fin_backups', JSON.stringify(novosBackups));
+  };
+
+  const zerarDados = () => {
+    saveTransacoes([]);
+    saveDocumentos([]);
+    saveContratos([]);
+  };
+
+  const exportarBackupJSON = (backupId) => {
+    const backup = backups.find(b => b.id === backupId);
+    if (!backup) return;
+    
+    const dataStr = JSON.stringify(backup, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${backup.nome.replace(/\s+/g, '_')}_${new Date(backup.data).toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   // Funções auxiliares
@@ -901,7 +1007,8 @@ const AdminFinanceiro = () => {
     { id: 'balancos', icon: <Icons.BarChart />, label: 'Balanços' },
     { id: 'relatorios', icon: <Icons.Clipboard />, label: 'Relatórios' },
     { id: 'fluxo_caixa', icon: <Icons.Activity />, label: 'Fluxo de Caixa' },
-    { id: 'contratos', icon: <Icons.Briefcase />, label: 'Contratos' }
+    { id: 'contratos', icon: <Icons.Briefcase />, label: 'Contratos' },
+    { id: 'backups', icon: <Icons.Database />, label: 'Backups' }
   ];
 
   return (
@@ -1736,8 +1843,256 @@ const AdminFinanceiro = () => {
               </div>
             </div>
           )}
+
+          {/* Backups */}
+          {activeTab === 'backups' && (
+            <div className="financeiro-backups">
+              <div className="backups-header">
+                <h2>Gerenciamento de Dados</h2>
+                <div className="backups-actions">
+                  <button 
+                    className="btn-backup"
+                    onClick={() => {
+                      setBackupNome('');
+                      setShowBackupModal(true);
+                    }}
+                  >
+                    <Icons.Save />
+                    Criar Backup
+                  </button>
+                  <button 
+                    className="btn-zerar"
+                    onClick={() => setShowConfirmZerar(true)}
+                  >
+                    <Icons.Trash />
+                    Zerar Dados
+                  </button>
+                </div>
+              </div>
+
+              {/* Resumo dos Dados Atuais */}
+              <div className="dados-atuais-resumo">
+                <h3>Dados Atuais</h3>
+                <div className="resumo-grid">
+                  <div className="resumo-item">
+                    <span className="resumo-numero">{transacoes.length}</span>
+                    <span className="resumo-label">Transações</span>
+                  </div>
+                  <div className="resumo-item receita">
+                    <span className="resumo-numero">{formatarMoeda(transacoes.filter(t => t.tipo === 'receita').reduce((acc, t) => acc + t.valor, 0))}</span>
+                    <span className="resumo-label">Total Receitas</span>
+                  </div>
+                  <div className="resumo-item despesa">
+                    <span className="resumo-numero">{formatarMoeda(transacoes.filter(t => t.tipo === 'despesa').reduce((acc, t) => acc + t.valor, 0))}</span>
+                    <span className="resumo-label">Total Despesas</span>
+                  </div>
+                  <div className="resumo-item">
+                    <span className="resumo-numero">{documentos.length}</span>
+                    <span className="resumo-label">Documentos</span>
+                  </div>
+                  <div className="resumo-item">
+                    <span className="resumo-numero">{contratos.length}</span>
+                    <span className="resumo-label">Contratos</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Lista de Backups */}
+              <div className="backups-lista">
+                <h3>Backups Salvos ({backups.length})</h3>
+                {backups.length === 0 ? (
+                  <div className="empty-state">
+                    <Icons.Database />
+                    <p>Nenhum backup salvo</p>
+                    <small>Crie um backup para guardar seus dados financeiros</small>
+                  </div>
+                ) : (
+                  <div className="backups-grid">
+                    {backups.sort((a, b) => new Date(b.data) - new Date(a.data)).map(backup => (
+                      <div key={backup.id} className="backup-card">
+                        <div className="backup-header">
+                          <div className="backup-info">
+                            <h4>{backup.nome}</h4>
+                            <span className="backup-data">
+                              {new Date(backup.data).toLocaleDateString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                          <Icons.Archive />
+                        </div>
+                        <div className="backup-resumo">
+                          <div className="backup-stat">
+                            <span className="stat-valor">{backup.resumo.totalTransacoes}</span>
+                            <span className="stat-label">Transações</span>
+                          </div>
+                          <div className="backup-stat receita">
+                            <span className="stat-valor">{formatarMoeda(backup.resumo.totalReceitas)}</span>
+                            <span className="stat-label">Receitas</span>
+                          </div>
+                          <div className="backup-stat despesa">
+                            <span className="stat-valor">{formatarMoeda(backup.resumo.totalDespesas)}</span>
+                            <span className="stat-label">Despesas</span>
+                          </div>
+                        </div>
+                        <div className="backup-actions">
+                          <button 
+                            className="btn-restaurar"
+                            onClick={() => {
+                              if (window.confirm(`Deseja restaurar o backup "${backup.nome}"? Os dados atuais serão substituídos.`)) {
+                                restaurarBackup(backup.id);
+                                alert('Backup restaurado com sucesso!');
+                              }
+                            }}
+                            title="Restaurar este backup"
+                          >
+                            <Icons.RotateCcw />
+                            Restaurar
+                          </button>
+                          <button 
+                            className="btn-exportar"
+                            onClick={() => exportarBackupJSON(backup.id)}
+                            title="Exportar como JSON"
+                          >
+                            <Icons.Download />
+                            Exportar
+                          </button>
+                          <button 
+                            className="btn-excluir-backup"
+                            onClick={() => {
+                              if (window.confirm(`Deseja excluir o backup "${backup.nome}"?`)) {
+                                excluirBackup(backup.id);
+                              }
+                            }}
+                            title="Excluir backup"
+                          >
+                            <Icons.Trash />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </main>
       </div>
+
+      {/* Modal de Criar Backup */}
+      {showBackupModal && (
+        <div className="modal-overlay" onClick={() => setShowBackupModal(false)}>
+          <div className="modal-content modal-backup" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Criar Backup</h2>
+              <button className="btn-fechar" onClick={() => setShowBackupModal(false)}>
+                <Icons.X />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p className="backup-info-text">
+                Será criado um backup com todos os dados financeiros atuais:
+              </p>
+              <ul className="backup-info-list">
+                <li><strong>{transacoes.length}</strong> transações</li>
+                <li><strong>{documentos.length}</strong> documentos</li>
+                <li><strong>{contratos.length}</strong> contratos</li>
+              </ul>
+              <div className="form-group">
+                <label>Nome do Backup *</label>
+                <input 
+                  type="text"
+                  value={backupNome}
+                  onChange={(e) => setBackupNome(e.target.value)}
+                  placeholder="Ex: Contabilidade Teste, Fechamento Janeiro..."
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancelar" onClick={() => setShowBackupModal(false)}>
+                Cancelar
+              </button>
+              <button 
+                className="btn-salvar"
+                onClick={() => {
+                  if (!backupNome.trim()) {
+                    alert('Digite um nome para o backup');
+                    return;
+                  }
+                  criarBackup(backupNome.trim());
+                  setShowBackupModal(false);
+                  alert('Backup criado com sucesso!');
+                }}
+              >
+                <Icons.Save />
+                Criar Backup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmação para Zerar Dados */}
+      {showConfirmZerar && (
+        <div className="modal-overlay" onClick={() => setShowConfirmZerar(false)}>
+          <div className="modal-content modal-confirmar-zerar" onClick={e => e.stopPropagation()}>
+            <div className="modal-header modal-header-danger">
+              <h2>Zerar Todos os Dados</h2>
+              <button className="btn-fechar" onClick={() => setShowConfirmZerar(false)}>
+                <Icons.X />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="warning-icon">
+                <Icons.AlertCircle />
+              </div>
+              <p className="warning-text">
+                <strong>Atenção!</strong> Esta ação irá excluir permanentemente:
+              </p>
+              <ul className="dados-a-excluir">
+                <li><strong>{transacoes.length}</strong> transações (receitas e despesas)</li>
+                <li><strong>{documentos.length}</strong> documentos</li>
+                <li><strong>{contratos.length}</strong> contratos</li>
+              </ul>
+              <p className="recomendacao">
+                Recomendamos criar um backup antes de prosseguir.
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancelar" onClick={() => setShowConfirmZerar(false)}>
+                Cancelar
+              </button>
+              <button 
+                className="btn-backup-antes"
+                onClick={() => {
+                  setShowConfirmZerar(false);
+                  setBackupNome('Backup antes de zerar - ' + new Date().toLocaleDateString('pt-BR'));
+                  setShowBackupModal(true);
+                }}
+              >
+                <Icons.Save />
+                Criar Backup Primeiro
+              </button>
+              <button 
+                className="btn-confirmar-zerar"
+                onClick={() => {
+                  zerarDados();
+                  setShowConfirmZerar(false);
+                  alert('Todos os dados foram zerados com sucesso!');
+                }}
+              >
+                <Icons.Trash />
+                Zerar Mesmo Assim
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal de Transação */}
       {showModal && (
