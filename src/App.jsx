@@ -28,7 +28,9 @@ import {
   AdminTrocarSenha,
   AdminPlaceholder,
   AdminFinanceiro,
-  AdminAuditoria 
+  AdminAuditoria,
+  AdminPerfil,
+  AdminCalendario 
 } from './pages/AdminPage';
 
 // Contexto de autenticação
@@ -256,10 +258,11 @@ function App() {
               <Route path="demandas" element={<AdminDashboard />} />
               <Route path="relatorios" element={<AdminPlaceholder />} />
               <Route path="contatos" element={<AdminPlaceholder />} />
-              <Route path="perfil" element={<AdminPlaceholder />} />
+              <Route path="perfil" element={<AdminPerfil />} />
               <Route path="usuarios" element={<AdminUsuarios />} />
               <Route path="credenciais" element={<AdminPlaceholder />} />
               <Route path="financeiro" element={<AdminFinanceiro />} />
+              <Route path="calendario" element={<AdminCalendario />} />
               <Route path="busca" element={<AdminPlaceholder />} />
               <Route path="logs" element={<AdminPlaceholder />} />
               <Route path="auditoria" element={<AdminAuditoria />} />

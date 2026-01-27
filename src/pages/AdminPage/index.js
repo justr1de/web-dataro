@@ -9,3 +9,5 @@ export { default as AdminTrocarSenha } from './AdminTrocarSenha';
 export { default as AdminPlaceholder } from './AdminPlaceholder';
 export { default as AdminFinanceiro } from './AdminFinanceiro';
 export { default as AdminAuditoria } from './AdminAuditoria';
+export { default as AdminPerfil } from './AdminPerfil';
+export { default as AdminCalendario } from './AdminCalendario';
