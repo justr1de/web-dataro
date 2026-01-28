@@ -128,7 +128,8 @@ const produtosDisponiveis = [
   { id: 'painel_bi_especifico', nome: 'Desenvolvimento de Painel de BI Específico', descricao: 'Criação de painéis de Business Intelligence personalizados' },
   { id: 'assessoria_ti', nome: 'Assessoria em TI', descricao: 'Consultoria e assessoria em tecnologia da informação' },
   { id: 'assessoria_dados', nome: 'Assessoria em Gestão de Dados', descricao: 'Consultoria especializada em gestão e governança de dados' },
-  { id: 'suporte_tecnico', nome: 'Suporte Técnico', descricao: 'Suporte técnico geral para sistemas e infraestrutura' }
+  { id: 'suporte_tecnico', nome: 'Suporte Técnico', descricao: 'Suporte técnico geral para sistemas e infraestrutura' },
+  { id: 'eprocdata', nome: 'eProcDATA', descricao: 'Sistema de gestão e acompanhamento de processos eletrônicos' }
 ];
 
 // Municípios de Rondônia
