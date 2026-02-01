@@ -139,7 +139,7 @@ const AdminDashboard = () => {
           <h1>Gestão de Demandas</h1>
           <span className="header-subtitle">Gerencie todas as demandas dos clientes</span>
         </div>
-        <button className="btn-nova-demanda" onClick={() => navigate('/admin/demandas/nova')}>
+        <button className="btn-nova-demanda" onClick={() => navigate('/admin/demandas?action=nova')}>
           <Icons.Plus />
           Nova Demanda
         </button>
