@@ -446,8 +446,12 @@ const AdminFinanceiro = () => {
   // Estado para o ano selecionado no fluxo de caixa
   const [anoFluxoCaixa, setAnoFluxoCaixa] = useState(new Date().getFullYear());
   
-  // Estado para filtro de período dos cards de métricas (mes, ano, total)
+  // Estado para filtro de período dos cards de métricas (mes, mes_anterior, ano, total, personalizado)
   const [periodoMetricas, setPeriodoMetricas] = useState('mes');
+  
+  // Estados para filtro personalizado de mês/ano na Visão Geral
+  const [mesSelecionado, setMesSelecionado] = useState(new Date().getMonth());
+  const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear());
   
   const fileInputRef = useRef(null);
 
@@ -981,37 +985,73 @@ const AdminFinanceiro = () => {
     return 'Pendente';
   };
 
-  // Calcular métricas com base no período selecionado (mes, ano, total)
+  // Calcular métricas com base no período selecionado (mes, mes_anterior, ano, total, personalizado)
   const calcularMetricas = () => {
     const hoje = new Date();
     const mesAtual = hoje.getMonth();
     const anoAtual = hoje.getFullYear();
+    
+    // Calcular mês anterior
+    const mesAnterior = mesAtual === 0 ? 11 : mesAtual - 1;
+    const anoMesAnterior = mesAtual === 0 ? anoAtual - 1 : anoAtual;
 
     // Filtrar transações com base no período selecionado
     let transacoesFiltradas = transacoes.filter(t => t && t.id && t.descricao);
     let pagamentosFiltrados = pagamentos;
+    
+    // Determinar mês e ano de referência para filtragem
+    let mesRef, anoRef;
 
     if (periodoMetricas === 'mes') {
+      mesRef = mesAtual;
+      anoRef = anoAtual;
       transacoesFiltradas = transacoesFiltradas.filter(t => {
         if (!t.data_vencimento) return false;
         const dataVenc = new Date(t.data_vencimento + 'T00:00:00');
-        return dataVenc.getMonth() === mesAtual && dataVenc.getFullYear() === anoAtual;
+        return dataVenc.getMonth() === mesRef && dataVenc.getFullYear() === anoRef;
       });
       pagamentosFiltrados = pagamentos.filter(p => {
         if (!p.data_pagamento) return false;
         const dataPag = new Date(p.data_pagamento + 'T00:00:00');
-        return dataPag.getMonth() === mesAtual && dataPag.getFullYear() === anoAtual;
+        return dataPag.getMonth() === mesRef && dataPag.getFullYear() === anoRef;
+      });
+    } else if (periodoMetricas === 'mes_anterior') {
+      mesRef = mesAnterior;
+      anoRef = anoMesAnterior;
+      transacoesFiltradas = transacoesFiltradas.filter(t => {
+        if (!t.data_vencimento) return false;
+        const dataVenc = new Date(t.data_vencimento + 'T00:00:00');
+        return dataVenc.getMonth() === mesRef && dataVenc.getFullYear() === anoRef;
+      });
+      pagamentosFiltrados = pagamentos.filter(p => {
+        if (!p.data_pagamento) return false;
+        const dataPag = new Date(p.data_pagamento + 'T00:00:00');
+        return dataPag.getMonth() === mesRef && dataPag.getFullYear() === anoRef;
+      });
+    } else if (periodoMetricas === 'personalizado') {
+      mesRef = mesSelecionado;
+      anoRef = anoSelecionado;
+      transacoesFiltradas = transacoesFiltradas.filter(t => {
+        if (!t.data_vencimento) return false;
+        const dataVenc = new Date(t.data_vencimento + 'T00:00:00');
+        return dataVenc.getMonth() === mesRef && dataVenc.getFullYear() === anoRef;
+      });
+      pagamentosFiltrados = pagamentos.filter(p => {
+        if (!p.data_pagamento) return false;
+        const dataPag = new Date(p.data_pagamento + 'T00:00:00');
+        return dataPag.getMonth() === mesRef && dataPag.getFullYear() === anoRef;
       });
     } else if (periodoMetricas === 'ano') {
+      anoRef = anoAtual;
       transacoesFiltradas = transacoesFiltradas.filter(t => {
         if (!t.data_vencimento) return false;
         const dataVenc = new Date(t.data_vencimento + 'T00:00:00');
-        return dataVenc.getFullYear() === anoAtual;
+        return dataVenc.getFullYear() === anoRef;
       });
       pagamentosFiltrados = pagamentos.filter(p => {
         if (!p.data_pagamento) return false;
         const dataPag = new Date(p.data_pagamento + 'T00:00:00');
-        return dataPag.getFullYear() === anoAtual;
+        return dataPag.getFullYear() === anoRef;
       });
     }
     // Se periodoMetricas === 'total', usa todas as transações e pagamentos
@@ -1061,6 +1101,10 @@ const AdminFinanceiro = () => {
     let periodoLabel = '';
     if (periodoMetricas === 'mes') {
       periodoLabel = `${meses[mesAtual]}/${anoAtual}`;
+    } else if (periodoMetricas === 'mes_anterior') {
+      periodoLabel = `${meses[mesAnterior]}/${anoMesAnterior}`;
+    } else if (periodoMetricas === 'personalizado') {
+      periodoLabel = `${meses[mesSelecionado]}/${anoSelecionado}`;
     } else if (periodoMetricas === 'ano') {
       periodoLabel = `${anoAtual}`;
     } else {
@@ -1437,29 +1481,57 @@ const AdminFinanceiro = () => {
   };
 
   // Fluxo de Caixa Anual - Mostra todos os 12 meses do ano selecionado
+  // Inclui valores de transações lançadas, contratos ativos e pagamentos de colaboradores
   const calcularFluxoCaixa = () => {
     const meses = [];
     const nomesMeses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     
     for (let i = 0; i < 12; i++) {
       const mes = new Date(anoFluxoCaixa, i, 1);
+      
+      // Filtrar transações do mês (garantindo que têm dados válidos)
       const transacoesMes = transacoes.filter(t => {
+        if (!t || !t.data_vencimento) return false;
         const data = new Date(t.data_vencimento + 'T00:00:00');
+        return data.getMonth() === mes.getMonth() && data.getFullYear() === mes.getFullYear();
+      });
+      
+      // Filtrar pagamentos de colaboradores do mês
+      const pagamentosMes = pagamentos.filter(p => {
+        if (!p || !p.data_pagamento) return false;
+        const data = new Date(p.data_pagamento + 'T00:00:00');
         return data.getMonth() === mes.getMonth() && data.getFullYear() === mes.getFullYear();
       });
 
       // Adicionar receitas de contratos ativos
       const receitasContratos = contratos
-        .filter(c => c.status === 'ativo')
+        .filter(c => c && c.status === 'ativo')
         .filter(c => {
           const inicio = new Date(c.data_inicio + 'T00:00:00');
           const fim = c.data_fim ? new Date(c.data_fim + 'T00:00:00') : new Date(2099, 11, 31);
           return mes >= inicio && mes <= fim;
         })
-        .reduce((acc, c) => acc + c.valor_mensal, 0);
+        .reduce((acc, c) => acc + (parseFloat(c.valor_mensal) || 0), 0);
 
-      const receitas = transacoesMes.filter(t => t.tipo === 'receita').reduce((acc, t) => acc + t.valor, 0) + receitasContratos;
-      const despesas = transacoesMes.filter(t => t.tipo === 'despesa').reduce((acc, t) => acc + t.valor, 0);
+      // Calcular receitas de transações lançadas (usando parseFloat para garantir número)
+      const receitasTransacoes = transacoesMes
+        .filter(t => t.tipo === 'receita')
+        .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
+      
+      // Total de receitas = transações + contratos
+      const receitas = receitasTransacoes + receitasContratos;
+      
+      // Calcular despesas de transações lançadas (usando parseFloat para garantir número)
+      const despesasTransacoes = transacoesMes
+        .filter(t => t.tipo === 'despesa')
+        .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
+      
+      // Calcular pagamentos de colaboradores do mês
+      const despesasPagamentos = pagamentosMes
+        .reduce((acc, p) => acc + (parseFloat(p.valor) || 0), 0);
+      
+      // Total de despesas = transações + pagamentos de colaboradores
+      const despesas = despesasTransacoes + despesasPagamentos;
 
       meses.push({
         mes: nomesMeses[i],
@@ -1467,6 +1539,10 @@ const AdminFinanceiro = () => {
         ano: anoFluxoCaixa,
         receitas,
         despesas,
+        receitasTransacoes,
+        receitasContratos,
+        despesasTransacoes,
+        despesasPagamentos,
         saldo: receitas - despesas
       });
     }
@@ -1556,10 +1632,16 @@ const AdminFinanceiro = () => {
                   <span className="periodo-label">Período:</span>
                   <div className="periodo-buttons">
                     <button 
+                      className={`periodo-btn ${periodoMetricas === 'mes_anterior' ? 'active' : ''}`}
+                      onClick={() => setPeriodoMetricas('mes_anterior')}
+                    >
+                      Mês Anterior
+                    </button>
+                    <button 
                       className={`periodo-btn ${periodoMetricas === 'mes' ? 'active' : ''}`}
                       onClick={() => setPeriodoMetricas('mes')}
                     >
-                      Mês
+                      Mês Atual
                     </button>
                     <button 
                       className={`periodo-btn ${periodoMetricas === 'ano' ? 'active' : ''}`}
@@ -1574,6 +1656,44 @@ const AdminFinanceiro = () => {
                       Total
                     </button>
                   </div>
+                  
+                  {/* Seletores de Mês e Ano Personalizados */}
+                  <div className="periodo-selectors">
+                    <select 
+                      className="periodo-select"
+                      value={mesSelecionado}
+                      onChange={(e) => {
+                        setMesSelecionado(parseInt(e.target.value));
+                        setPeriodoMetricas('personalizado');
+                      }}
+                    >
+                      <option value={0}>Janeiro</option>
+                      <option value={1}>Fevereiro</option>
+                      <option value={2}>Março</option>
+                      <option value={3}>Abril</option>
+                      <option value={4}>Maio</option>
+                      <option value={5}>Junho</option>
+                      <option value={6}>Julho</option>
+                      <option value={7}>Agosto</option>
+                      <option value={8}>Setembro</option>
+                      <option value={9}>Outubro</option>
+                      <option value={10}>Novembro</option>
+                      <option value={11}>Dezembro</option>
+                    </select>
+                    <select 
+                      className="periodo-select"
+                      value={anoSelecionado}
+                      onChange={(e) => {
+                        setAnoSelecionado(parseInt(e.target.value));
+                        setPeriodoMetricas('personalizado');
+                      }}
+                    >
+                      {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - 5 + i).map(ano => (
+                        <option key={ano} value={ano}>{ano}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
                   <span className="periodo-atual">{metricas.periodoLabel}</span>
                 </div>
               </div>
@@ -2309,31 +2429,40 @@ const AdminFinanceiro = () => {
                 </div>
               </div>
 
-              {/* Grade de 12 meses */}
-              <div className="fluxo-grid-anual">
-                {fluxoCaixa.map((mes, idx) => (
-                  <div key={idx} className={`fluxo-card-mes ${mes.saldo >= 0 ? 'positivo' : 'negativo'}`}>
-                    <div className="fluxo-mes-header">
-                      <span className="fluxo-mes-nome">{mes.mes}</span>
-                    </div>
-                    <div className="fluxo-mes-valores">
-                      <div className="fluxo-valor-linha receita">
-                        <span className="label">Receitas</span>
-                        <span className="valor">+{formatarMoeda(mes.receitas)}</span>
-                      </div>
-                      <div className="fluxo-valor-linha despesa">
-                        <span className="label">Despesas</span>
-                        <span className="valor">-{formatarMoeda(mes.despesas)}</span>
-                      </div>
-                      <div className="fluxo-valor-linha saldo">
-                        <span className="label">Saldo</span>
-                        <span className={`valor ${mes.saldo >= 0 ? 'positivo' : 'negativo'}`}>
+              {/* Tabela de Fluxo de Caixa */}
+              <div className="fluxo-caixa-tabela-container">
+                <table className="fluxo-caixa-tabela">
+                  <thead>
+                    <tr>
+                      <th>Mês</th>
+                      <th>Receitas</th>
+                      <th>Despesas</th>
+                      <th>Saldo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {fluxoCaixa.map((mes, idx) => (
+                      <tr key={idx}>
+                        <td className="mes-nome">{mes.mes}</td>
+                        <td className="receita">+{formatarMoeda(mes.receitas)}</td>
+                        <td className="despesa">-{formatarMoeda(mes.despesas)}</td>
+                        <td className={mes.saldo >= 0 ? 'saldo-positivo' : 'saldo-negativo'}>
                           {formatarMoeda(mes.saldo)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td className="mes-nome">Total Anual</td>
+                      <td className="receita">+{formatarMoeda(fluxoCaixa.reduce((acc, m) => acc + m.receitas, 0))}</td>
+                      <td className="despesa">-{formatarMoeda(fluxoCaixa.reduce((acc, m) => acc + m.despesas, 0))}</td>
+                      <td className={fluxoCaixa.reduce((acc, m) => acc + m.saldo, 0) >= 0 ? 'saldo-positivo' : 'saldo-negativo'}>
+                        {formatarMoeda(fluxoCaixa.reduce((acc, m) => acc + m.saldo, 0))}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
               </div>
 
               <div className="fluxo-acoes">
