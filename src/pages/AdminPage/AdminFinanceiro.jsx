@@ -642,19 +642,28 @@ const AdminFinanceiro = () => {
     try {
       // Criar cópia sem anexos grandes para localStorage
       const transacoesParaLocalStorage = newTransacoes.map(t => {
-        // Se o anexo for muito grande, não salvar no localStorage
-        if (t.anexo && t.anexo.length > 500000) {
+        // Se o anexo for muito grande (base64), não salvar no localStorage
+        if (t.anexo && typeof t.anexo === 'string' && t.anexo.startsWith('data:') && t.anexo.length > 500000) {
           return { ...t, anexo: null, anexo_nome: t.anexo_nome ? `[Arquivo grande - salvo apenas no servidor] ${t.anexo_nome}` : '' };
+        }
+        // Se for uma URL (do Supabase Storage), manter
+        if (t.anexo && typeof t.anexo === 'string' && (t.anexo.startsWith('http') || t.anexo.startsWith('https'))) {
+          return t;
         }
         return t;
       });
       localStorage.setItem('fin_transacoes', JSON.stringify(transacoesParaLocalStorage));
     } catch (localStorageError) {
       console.error('Erro ao salvar no localStorage (possível limite de tamanho):', localStorageError);
-      // Tentar salvar sem anexos
+      // Tentar salvar sem anexos base64
       try {
-        const transacoesSemAnexos = newTransacoes.map(t => ({ ...t, anexo: null }));
-        localStorage.setItem('fin_transacoes', JSON.stringify(transacoesSemAnexos));
+        const transacoesSemAnexosBase64 = newTransacoes.map(t => {
+          if (t.anexo && typeof t.anexo === 'string' && t.anexo.startsWith('data:')) {
+            return { ...t, anexo: null };
+          }
+          return t;
+        });
+        localStorage.setItem('fin_transacoes', JSON.stringify(transacoesSemAnexosBase64));
       } catch (e) {
         console.error('Erro crítico ao salvar no localStorage:', e);
       }
@@ -684,12 +693,12 @@ const AdminFinanceiro = () => {
           .upsert(transacaoParaSupabase, { onConflict: 'id' });
         if (error) {
           console.error('Erro ao salvar transação no Supabase:', error);
-          throw error;
+          // Não lançar erro - dados já estão salvos localmente
         }
       }
     } catch (error) {
       console.error('Erro ao sincronizar transações com Supabase:', error);
-      throw error;
+      // Não lançar erro - dados já estão salvos localmente
     }
   };
 
@@ -1264,24 +1273,67 @@ const AdminFinanceiro = () => {
     }
 
     try {
-      // Verificar se o anexo é muito grande (mais de 1MB em base64)
-      let anexoFinal = formData.anexo;
-      let anexoNomeFinal = formData.anexo_nome;
+      let anexoUrl = null;
+      let anexoNomeFinal = formData.anexo_nome || '';
       
-      if (anexoFinal && anexoFinal.length > 1000000) {
-        // Anexo muito grande, comprimir ou remover
-        const confirmar = window.confirm('O arquivo anexado é muito grande e pode causar problemas de salvamento. Deseja continuar sem o anexo?');
-        if (confirmar) {
-          anexoFinal = null;
+      // Se há um anexo, fazer upload para o Supabase Storage
+      if (formData.anexo && formData.anexo.startsWith('data:')) {
+        try {
+          // Converter base64 para blob
+          const base64Data = formData.anexo.split(',')[1];
+          const mimeType = formData.anexo.split(';')[0].split(':')[1];
+          const byteCharacters = atob(base64Data);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: mimeType });
+          
+          // Gerar nome único para o arquivo
+          const fileExt = anexoNomeFinal.split('.').pop() || 'pdf';
+          const fileName = `${crypto.randomUUID()}.${fileExt}`;
+          const filePath = `transacoes/${fileName}`;
+          
+          // Upload para Supabase Storage
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('anexos')
+            .upload(filePath, blob, {
+              contentType: mimeType,
+              upsert: true
+            });
+          
+          if (uploadError) {
+            console.error('Erro no upload do anexo:', uploadError);
+            // Se o bucket não existir, continuar sem o anexo
+            if (uploadError.message?.includes('Bucket not found') || uploadError.statusCode === 404) {
+              console.warn('Bucket de anexos não encontrado. Salvando transação sem anexo no storage.');
+              // Manter o anexo em base64 no localStorage apenas
+              anexoUrl = formData.anexo;
+            } else {
+              throw uploadError;
+            }
+          } else {
+            // Obter URL pública do arquivo
+            const { data: urlData } = supabase.storage
+              .from('anexos')
+              .getPublicUrl(filePath);
+            anexoUrl = urlData?.publicUrl || null;
+          }
+        } catch (uploadErr) {
+          console.error('Erro ao processar anexo:', uploadErr);
+          // Continuar sem o anexo se houver erro
+          anexoUrl = null;
           anexoNomeFinal = '';
-        } else {
-          return;
         }
+      } else if (formData.anexo) {
+        // Já é uma URL ou mantém o anexo existente
+        anexoUrl = formData.anexo;
       }
 
       const novaTransacao = {
         ...formData,
-        anexo: anexoFinal,
+        anexo: anexoUrl,
         anexo_nome: anexoNomeFinal,
         valor: parseMoeda(formData.valor),
         id: modalMode === 'edit' ? selectedTransacao.id : crypto.randomUUID(),
