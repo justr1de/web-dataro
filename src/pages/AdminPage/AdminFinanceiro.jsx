@@ -3262,6 +3262,7 @@ const AdminFinanceiro = () => {
                       <option value="C6 Bank">C6 Bank</option>
                       <option value="Sicoob">Sicoob</option>
                       <option value="Sicredi">Sicredi</option>
+                      <option value="Pagbank">Pagbank</option>
                       <option value="Outro">Outro</option>
                     </select>
                   </div>
@@ -3288,7 +3289,11 @@ const AdminFinanceiro = () => {
                     <label>Banco</label>
                     <select 
                       value={formData.banco}
-                      onChange={(e) => setFormData({...formData, banco: e.target.value})}
+                      onChange={(e) => {
+                        const novoBanco = e.target.value;
+                        const novaConta = novoBanco === 'Pagbank' ? '74801418-0' : formData.conta;
+                        setFormData({...formData, banco: novoBanco, conta: novaConta});
+                      }}
                     >
                       <option value="">Selecione o banco...</option>
                       <option value="Banco do Brasil">Banco do Brasil</option>
@@ -3301,6 +3306,7 @@ const AdminFinanceiro = () => {
                       <option value="C6 Bank">C6 Bank</option>
                       <option value="Sicoob">Sicoob</option>
                       <option value="Sicredi">Sicredi</option>
+                      <option value="Pagbank">Pagbank</option>
                       <option value="Outro">Outro</option>
                     </select>
                   </div>
