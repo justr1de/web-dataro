@@ -598,20 +598,53 @@ const AdminFinanceiro = () => {
 
   // Salvar transações (localStorage + Supabase)
   const saveTransacoes = async (newTransacoes) => {
+    // Atualizar estado local imediatamente
     setTransacoes(newTransacoes);
-    localStorage.setItem('fin_transacoes', JSON.stringify(newTransacoes));
+    
+    // Tentar salvar no localStorage
+    try {
+      // Criar cópia sem anexos grandes para localStorage
+      const transacoesParaLocalStorage = newTransacoes.map(t => {
+        // Se o anexo for muito grande, não salvar no localStorage
+        if (t.anexo && t.anexo.length > 500000) {
+          return { ...t, anexo: null, anexo_nome: t.anexo_nome ? `[Arquivo grande - salvo apenas no servidor] ${t.anexo_nome}` : '' };
+        }
+        return t;
+      });
+      localStorage.setItem('fin_transacoes', JSON.stringify(transacoesParaLocalStorage));
+    } catch (localStorageError) {
+      console.error('Erro ao salvar no localStorage (possível limite de tamanho):', localStorageError);
+      // Tentar salvar sem anexos
+      try {
+        const transacoesSemAnexos = newTransacoes.map(t => ({ ...t, anexo: null }));
+        localStorage.setItem('fin_transacoes', JSON.stringify(transacoesSemAnexos));
+      } catch (e) {
+        console.error('Erro crítico ao salvar no localStorage:', e);
+      }
+    }
     
     // Sincronizar com Supabase
     try {
       // Identificar transações novas ou atualizadas
       for (const transacao of newTransacoes) {
+        // Para o Supabase, também limitar o tamanho do anexo
+        const transacaoParaSupabase = { ...transacao };
+        if (transacaoParaSupabase.anexo && transacaoParaSupabase.anexo.length > 1000000) {
+          transacaoParaSupabase.anexo = null;
+          transacaoParaSupabase.anexo_nome = transacao.anexo_nome ? `[Arquivo muito grande] ${transacao.anexo_nome}` : '';
+        }
+        
         const { error } = await supabase
           .from('fin_transacoes')
-          .upsert(transacao, { onConflict: 'id' });
-        if (error) console.error('Erro ao salvar transação no Supabase:', error);
+          .upsert(transacaoParaSupabase, { onConflict: 'id' });
+        if (error) {
+          console.error('Erro ao salvar transação no Supabase:', error);
+          throw error;
+        }
       }
     } catch (error) {
       console.error('Erro ao sincronizar transações com Supabase:', error);
+      throw error;
     }
   };
 
@@ -1064,27 +1097,49 @@ const AdminFinanceiro = () => {
     setShowModal(true);
   };
 
-  const handleSaveTransacao = () => {
+  const handleSaveTransacao = async () => {
     if (!formData.descricao || !formData.valor || !formData.data_vencimento) {
       alert('Preencha todos os campos obrigatórios');
       return;
     }
 
-    const novaTransacao = {
-      ...formData,
-      valor: parseMoeda(formData.valor),
-      id: modalMode === 'edit' ? selectedTransacao.id : Date.now().toString(),
-      created_at: modalMode === 'edit' ? selectedTransacao.created_at : new Date().toISOString().split('T')[0]
-    };
+    try {
+      // Verificar se o anexo é muito grande (mais de 1MB em base64)
+      let anexoFinal = formData.anexo;
+      let anexoNomeFinal = formData.anexo_nome;
+      
+      if (anexoFinal && anexoFinal.length > 1000000) {
+        // Anexo muito grande, comprimir ou remover
+        const confirmar = window.confirm('O arquivo anexado é muito grande e pode causar problemas de salvamento. Deseja continuar sem o anexo?');
+        if (confirmar) {
+          anexoFinal = null;
+          anexoNomeFinal = '';
+        } else {
+          return;
+        }
+      }
 
-    if (modalMode === 'edit') {
-      const updated = transacoes.map(t => t.id === selectedTransacao.id ? novaTransacao : t);
-      saveTransacoes(updated);
-    } else {
-      saveTransacoes([...transacoes, novaTransacao]);
+      const novaTransacao = {
+        ...formData,
+        anexo: anexoFinal,
+        anexo_nome: anexoNomeFinal,
+        valor: parseMoeda(formData.valor),
+        id: modalMode === 'edit' ? selectedTransacao.id : Date.now().toString(),
+        created_at: modalMode === 'edit' ? selectedTransacao.created_at : new Date().toISOString().split('T')[0]
+      };
+
+      if (modalMode === 'edit') {
+        const updated = transacoes.map(t => t.id === selectedTransacao.id ? novaTransacao : t);
+        await saveTransacoes(updated);
+      } else {
+        await saveTransacoes([...transacoes, novaTransacao]);
+      }
+
+      setShowModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar transação:', error);
+      alert('Erro ao salvar transação. Por favor, tente novamente. Se o problema persistir, tente remover o anexo.');
     }
-
-    setShowModal(false);
   };
 
   const handleDelete = (id) => {
