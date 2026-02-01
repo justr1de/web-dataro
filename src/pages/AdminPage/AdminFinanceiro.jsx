@@ -669,11 +669,10 @@ const AdminFinanceiro = () => {
       }
     }
     
-    // Sincronizar com Supabase - usar apenas campos que existem na tabela original
+    // Sincronizar com Supabase - usar todos os campos que existem na tabela
     try {
       for (const transacao of newTransacoes) {
-        // Usar apenas os campos que existem na tabela fin_transacoes do Supabase
-        // Campos extras (banco, final_cartao, conta, entidade_nome, anexo) ficam apenas no localStorage
+        // Usar todos os campos que existem na tabela fin_transacoes do Supabase
         const transacaoParaSupabase = {
           id: transacao.id,
           tipo: transacao.tipo,
@@ -682,18 +681,28 @@ const AdminFinanceiro = () => {
           data_vencimento: transacao.data_vencimento || null,
           data_pagamento: transacao.data_pagamento || null,
           status: transacao.status || 'pendente',
+          categoria: transacao.categoria || 'Outros', // Campo obrigatório
           forma_pagamento: transacao.forma_pagamento || null,
+          banco: transacao.banco || null,
+          conta: transacao.conta || null,
+          final_cartao: transacao.final_cartao || null,
           numero_documento: transacao.numero_documento || null,
           observacoes: transacao.observacoes || null,
-          created_at: transacao.created_at || new Date().toISOString()
+          entidade_nome: transacao.entidade_nome || transacao.entidade || null,
+          anexo_url: (transacao.anexo && transacao.anexo.startsWith('http')) ? transacao.anexo : null,
+          anexo_nome: transacao.anexo_nome || null,
+          created_at: transacao.created_at || new Date().toISOString(),
+          updated_at: new Date().toISOString()
         };
         
         const { error } = await supabase
           .from('fin_transacoes')
           .upsert(transacaoParaSupabase, { onConflict: 'id' });
         if (error) {
-          console.error('Erro ao salvar transação no Supabase:', error);
+          console.error('Erro ao salvar transação no Supabase:', error, transacaoParaSupabase);
           // Não lançar erro - dados já estão salvos localmente
+        } else {
+          console.log('Transação salva no Supabase com sucesso:', transacao.id);
         }
       }
     } catch (error) {
