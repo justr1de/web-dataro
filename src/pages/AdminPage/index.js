@@ -18,3 +18,4 @@ export { default as AdminDocumentos } from './AdminDocumentos';
 export { default as AdminLogs } from './AdminLogs';
 export { default as AdminArquivosExcluidos } from './AdminArquivosExcluidos';
 export { default as AdminConfiguracoes } from './AdminConfiguracoes';
+export { default as AdminDemandas } from './AdminDemandas';
