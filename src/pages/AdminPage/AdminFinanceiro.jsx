@@ -379,6 +379,9 @@ const AdminFinanceiro = () => {
     numero_documento: '',
     observacoes: '',
     entidade_nome: '',
+    entidade_id: null,
+    tipo_documento: 'cpf',
+    cpf_cnpj: '',
     anexo: null,
     anexo_nome: ''
   });
@@ -689,6 +692,9 @@ const AdminFinanceiro = () => {
           numero_documento: transacao.numero_documento || null,
           observacoes: transacao.observacoes || null,
           entidade_nome: transacao.entidade_nome || transacao.entidade || null,
+          entidade_id: transacao.entidade_id || null,
+          tipo_documento: transacao.tipo_documento || null,
+          cpf_cnpj: transacao.cpf_cnpj || null,
           anexo_url: (transacao.anexo && transacao.anexo.startsWith('http')) ? transacao.anexo : null,
           anexo_nome: transacao.anexo_nome || null,
           created_at: transacao.created_at || new Date().toISOString(),
@@ -3216,6 +3222,48 @@ const AdminFinanceiro = () => {
                   onChange={(e) => setFormData({...formData, entidade_nome: e.target.value})}
                   placeholder={formData.tipo === 'receita' ? 'Nome do cliente' : 'Nome do fornecedor'}
                 />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Tipo de Documento</label>
+                  <select 
+                    value={formData.tipo_documento}
+                    onChange={(e) => setFormData({...formData, tipo_documento: e.target.value, cpf_cnpj: ''})}
+                  >
+                    <option value="cpf">CPF</option>
+                    <option value="cnpj">CNPJ</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>{formData.tipo_documento === 'cpf' ? 'CPF' : 'CNPJ'}</label>
+                  <input 
+                    type="text"
+                    value={formData.cpf_cnpj}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\D/g, '');
+                      if (formData.tipo_documento === 'cpf') {
+                        // Máscara CPF: 000.000.000-00
+                        if (value.length <= 11) {
+                          value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                          value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                          value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                        }
+                      } else {
+                        // Máscara CNPJ: 00.000.000/0000-00
+                        if (value.length <= 14) {
+                          value = value.replace(/(\d{2})(\d)/, '$1.$2');
+                          value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                          value = value.replace(/(\d{3})(\d)/, '$1/$2');
+                          value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+                        }
+                      }
+                      setFormData({...formData, cpf_cnpj: value});
+                    }}
+                    placeholder={formData.tipo_documento === 'cpf' ? '000.000.000-00' : '00.000.000/0000-00'}
+                    maxLength={formData.tipo_documento === 'cpf' ? 14 : 18}
+                  />
+                </div>
               </div>
 
               <div className="form-row">
