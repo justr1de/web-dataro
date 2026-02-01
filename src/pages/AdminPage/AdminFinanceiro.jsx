@@ -1031,8 +1031,23 @@ const AdminFinanceiro = () => {
       return venc < hoje;
     }).length;
 
-    // Caixa = Receitas Realizadas - Despesas Realizadas (incluindo pagamentos)
+    // Caixa do mês = Receitas Realizadas - Despesas Realizadas (incluindo pagamentos)
     const caixaMes = receitasPagas - despesasPagas;
+
+    // Caixa Total = Todas as receitas realizadas - Todas as despesas realizadas - Todos os pagamentos
+    // Considera TODAS as transações de TODOS os meses e anos
+    const receitasTotais = transacoes
+      .filter(t => t.tipo === 'receita' && t.status === 'pago')
+      .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
+    
+    const despesasTotais = transacoes
+      .filter(t => t.tipo === 'despesa' && t.status === 'pago')
+      .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
+    
+    const pagamentosTotais = pagamentos
+      .reduce((acc, p) => acc + (parseFloat(p.valor) || 0), 0);
+    
+    const caixaTotal = receitasTotais - despesasTotais - pagamentosTotais;
 
     return {
       receitasMes,
@@ -1042,7 +1057,9 @@ const AdminFinanceiro = () => {
       saldoMes: receitasMes - despesasMes,
       saldoRealizado: receitasPagas - despesasPagas,
       caixaMes,
+      caixaTotal,
       pagamentosColaboradoresMes,
+      pagamentosTotais,
       totalPendentes,
       vencidos
     };
@@ -1552,14 +1569,14 @@ const AdminFinanceiro = () => {
                   </div>
                 </div>
 
-                <div className={`metrica-card caixa ${metricas.caixaMes >= 0 ? 'positivo' : 'negativo'}`}>
+                <div className={`metrica-card caixa ${metricas.caixaTotal >= 0 ? 'positivo' : 'negativo'}`}>
                   <div className="metrica-icon">
                     <Icons.Wallet />
                   </div>
                   <div className="metrica-info">
-                    <span className="metrica-label">Caixa</span>
-                    <span className="metrica-valor">{formatarMoeda(metricas.caixaMes)}</span>
-                    <span className="metrica-sub">Pagamentos: {formatarMoeda(metricas.pagamentosColaboradoresMes)}</span>
+                    <span className="metrica-label">Caixa Total</span>
+                    <span className="metrica-valor">{formatarMoeda(metricas.caixaTotal)}</span>
+                    <span className="metrica-sub">Pagamentos totais: {formatarMoeda(metricas.pagamentosTotais)}</span>
                   </div>
                 </div>
 
