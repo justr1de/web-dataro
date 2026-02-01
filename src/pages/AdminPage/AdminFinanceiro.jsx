@@ -1147,6 +1147,10 @@ const AdminFinanceiro = () => {
 
     if (filtros.periodo !== 'todos') {
       const hoje = new Date();
+      const mesesMap = {
+        'jan': 0, 'fev': 1, 'mar': 2, 'abr': 3, 'mai': 4, 'jun': 5,
+        'jul': 6, 'ago': 7, 'set': 8, 'out': 9, 'nov': 10, 'dez': 11
+      };
       resultado = resultado.filter(t => {
         const dataVenc = new Date(t.data_vencimento + 'T00:00:00');
         if (filtros.periodo === 'mes_atual') {
@@ -1154,6 +1158,9 @@ const AdminFinanceiro = () => {
         } else if (filtros.periodo === 'proximo_mes') {
           const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
           return dataVenc.getMonth() === proximoMes.getMonth() && dataVenc.getFullYear() === proximoMes.getFullYear();
+        } else if (mesesMap.hasOwnProperty(filtros.periodo)) {
+          const mesIndex = mesesMap[filtros.periodo];
+          return dataVenc.getMonth() === mesIndex;
         }
         return true;
       });
@@ -1834,6 +1841,18 @@ const AdminFinanceiro = () => {
                     <option value="todos">Todos</option>
                     <option value="mes_atual">Mês Atual</option>
                     <option value="proximo_mes">Próximo Mês</option>
+                    <option value="jan">Janeiro</option>
+                    <option value="fev">Fevereiro</option>
+                    <option value="mar">Março</option>
+                    <option value="abr">Abril</option>
+                    <option value="mai">Maio</option>
+                    <option value="jun">Junho</option>
+                    <option value="jul">Julho</option>
+                    <option value="ago">Agosto</option>
+                    <option value="set">Setembro</option>
+                    <option value="out">Outubro</option>
+                    <option value="nov">Novembro</option>
+                    <option value="dez">Dezembro</option>
                   </select>
                 </div>
                 <div className="filtro-group">
