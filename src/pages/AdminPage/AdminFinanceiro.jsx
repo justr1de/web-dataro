@@ -446,6 +446,9 @@ const AdminFinanceiro = () => {
   // Estado para o ano selecionado no fluxo de caixa
   const [anoFluxoCaixa, setAnoFluxoCaixa] = useState(new Date().getFullYear());
   
+  // Estado para filtro de período dos cards de métricas (mes, ano, total)
+  const [periodoMetricas, setPeriodoMetricas] = useState('mes');
+  
   const fileInputRef = useRef(null);
 
   // Carregar dados do Supabase (com fallback para localStorage)
@@ -978,93 +981,104 @@ const AdminFinanceiro = () => {
     return 'Pendente';
   };
 
-  // Calcular métricas
+  // Calcular métricas com base no período selecionado (mes, ano, total)
   const calcularMetricas = () => {
     const hoje = new Date();
     const mesAtual = hoje.getMonth();
     const anoAtual = hoje.getFullYear();
 
-    // Filtrar transações do mês atual
-    const transacoesMes = transacoes.filter(t => {
-      const dataVenc = new Date(t.data_vencimento + 'T00:00:00');
-      return dataVenc.getMonth() === mesAtual && dataVenc.getFullYear() === anoAtual;
-    });
+    // Filtrar transações com base no período selecionado
+    let transacoesFiltradas = transacoes.filter(t => t && t.id && t.descricao);
+    let pagamentosFiltrados = pagamentos;
 
-    // Filtrar pagamentos a colaboradores do mês atual
-    const pagamentosMes = pagamentos.filter(p => {
-      const dataPag = new Date(p.data_pagamento + 'T00:00:00');
-      return dataPag.getMonth() === mesAtual && dataPag.getFullYear() === anoAtual;
-    });
+    if (periodoMetricas === 'mes') {
+      transacoesFiltradas = transacoesFiltradas.filter(t => {
+        if (!t.data_vencimento) return false;
+        const dataVenc = new Date(t.data_vencimento + 'T00:00:00');
+        return dataVenc.getMonth() === mesAtual && dataVenc.getFullYear() === anoAtual;
+      });
+      pagamentosFiltrados = pagamentos.filter(p => {
+        if (!p.data_pagamento) return false;
+        const dataPag = new Date(p.data_pagamento + 'T00:00:00');
+        return dataPag.getMonth() === mesAtual && dataPag.getFullYear() === anoAtual;
+      });
+    } else if (periodoMetricas === 'ano') {
+      transacoesFiltradas = transacoesFiltradas.filter(t => {
+        if (!t.data_vencimento) return false;
+        const dataVenc = new Date(t.data_vencimento + 'T00:00:00');
+        return dataVenc.getFullYear() === anoAtual;
+      });
+      pagamentosFiltrados = pagamentos.filter(p => {
+        if (!p.data_pagamento) return false;
+        const dataPag = new Date(p.data_pagamento + 'T00:00:00');
+        return dataPag.getFullYear() === anoAtual;
+      });
+    }
+    // Se periodoMetricas === 'total', usa todas as transações e pagamentos
 
     // Calcular receitas (garantindo que valor seja número)
-    const receitasMes = transacoesMes
+    const receitas = transacoesFiltradas
       .filter(t => t.tipo === 'receita')
       .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
     
     // Calcular despesas de transações (garantindo que valor seja número)
-    const despesasTransacoesMes = transacoesMes
+    const despesasTransacoes = transacoesFiltradas
       .filter(t => t.tipo === 'despesa')
       .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
     
     // Calcular pagamentos a colaboradores (garantindo que valor seja número)
-    const pagamentosColaboradoresMes = pagamentosMes
+    const pagamentosColaboradores = pagamentosFiltrados
       .reduce((acc, p) => acc + (parseFloat(p.valor) || 0), 0);
     
     // Total de despesas = despesas de transações + pagamentos a colaboradores
-    const despesasMes = despesasTransacoesMes + pagamentosColaboradoresMes;
+    const despesas = despesasTransacoes + pagamentosColaboradores;
     
     // Receitas pagas/realizadas
-    const receitasPagas = transacoesMes
+    const receitasPagas = transacoesFiltradas
       .filter(t => t.tipo === 'receita' && t.status === 'pago')
       .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
     
     // Despesas pagas/realizadas (transações + pagamentos já são realizados)
-    const despesasTransacoesPagas = transacoesMes
+    const despesasTransacoesPagas = transacoesFiltradas
       .filter(t => t.tipo === 'despesa' && t.status === 'pago')
       .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
-    const despesasPagas = despesasTransacoesPagas + pagamentosColaboradoresMes;
+    const despesasPagas = despesasTransacoesPagas + pagamentosColaboradores;
     
-    // Pendentes e vencidos - filtrar apenas transações válidas (com id e descrição)
-    const transacoesValidas = transacoes.filter(t => t && t.id && t.descricao);
-    const totalPendentes = transacoesValidas.filter(t => t.status === 'pendente').length;
-    const vencidos = transacoesValidas.filter(t => {
+    // Pendentes e vencidos - filtrar apenas transações válidas do período
+    const totalPendentes = transacoesFiltradas.filter(t => t.status === 'pendente').length;
+    const vencidos = transacoesFiltradas.filter(t => {
       if (t.status !== 'pendente') return false;
       if (!t.data_vencimento) return false;
       const venc = new Date(t.data_vencimento + 'T00:00:00');
       return venc < hoje;
     }).length;
 
-    // Caixa do mês = Receitas Realizadas - Despesas Realizadas (incluindo pagamentos)
-    const caixaMes = receitasPagas - despesasPagas;
+    // Caixa = Receitas Realizadas - Despesas Realizadas (incluindo pagamentos)
+    const caixa = receitasPagas - despesasPagas;
 
-    // Caixa Total = Todas as receitas realizadas - Todas as despesas realizadas - Todos os pagamentos
-    // Considera TODAS as transações de TODOS os meses e anos
-    const receitasTotais = transacoes
-      .filter(t => t.tipo === 'receita' && t.status === 'pago')
-      .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
-    
-    const despesasTotais = transacoes
-      .filter(t => t.tipo === 'despesa' && t.status === 'pago')
-      .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
-    
-    const pagamentosTotais = pagamentos
-      .reduce((acc, p) => acc + (parseFloat(p.valor) || 0), 0);
-    
-    const caixaTotal = receitasTotais - despesasTotais - pagamentosTotais;
+    // Label do período para exibição
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    let periodoLabel = '';
+    if (periodoMetricas === 'mes') {
+      periodoLabel = `${meses[mesAtual]}/${anoAtual}`;
+    } else if (periodoMetricas === 'ano') {
+      periodoLabel = `${anoAtual}`;
+    } else {
+      periodoLabel = 'Total Acumulado';
+    }
 
     return {
-      receitasMes,
-      despesasMes,
+      receitas,
+      despesas,
       receitasPagas,
       despesasPagas,
-      saldoMes: receitasMes - despesasMes,
+      saldo: receitas - despesas,
       saldoRealizado: receitasPagas - despesasPagas,
-      caixaMes,
-      caixaTotal,
-      pagamentosColaboradoresMes,
-      pagamentosTotais,
+      caixa,
+      pagamentosColaboradores,
       totalPendentes,
-      vencidos
+      vencidos,
+      periodoLabel
     };
   };
 
@@ -1536,7 +1550,33 @@ const AdminFinanceiro = () => {
           {/* Dashboard */}
           {activeTab === 'dashboard' && (
             <div className="financeiro-dashboard">
-              <h2>Visão Geral</h2>
+              <div className="dashboard-header">
+                <h2>Visão Geral</h2>
+                <div className="periodo-filter">
+                  <span className="periodo-label">Período:</span>
+                  <div className="periodo-buttons">
+                    <button 
+                      className={`periodo-btn ${periodoMetricas === 'mes' ? 'active' : ''}`}
+                      onClick={() => setPeriodoMetricas('mes')}
+                    >
+                      Mês
+                    </button>
+                    <button 
+                      className={`periodo-btn ${periodoMetricas === 'ano' ? 'active' : ''}`}
+                      onClick={() => setPeriodoMetricas('ano')}
+                    >
+                      Ano
+                    </button>
+                    <button 
+                      className={`periodo-btn ${periodoMetricas === 'total' ? 'active' : ''}`}
+                      onClick={() => setPeriodoMetricas('total')}
+                    >
+                      Total
+                    </button>
+                  </div>
+                  <span className="periodo-atual">{metricas.periodoLabel}</span>
+                </div>
+              </div>
               
               {/* Cards de Métricas */}
               <div className="metricas-grid">
@@ -1545,8 +1585,8 @@ const AdminFinanceiro = () => {
                     <Icons.TrendingUp />
                   </div>
                   <div className="metrica-info">
-                    <span className="metrica-label">Receitas do Mês</span>
-                    <span className="metrica-valor">{formatarMoeda(metricas.receitasMes)}</span>
+                    <span className="metrica-label">Receitas</span>
+                    <span className="metrica-valor">{formatarMoeda(metricas.receitas)}</span>
                     <span className="metrica-sub">Realizado: {formatarMoeda(metricas.receitasPagas)}</span>
                   </div>
                 </div>
@@ -1556,31 +1596,31 @@ const AdminFinanceiro = () => {
                     <Icons.TrendingDown />
                   </div>
                   <div className="metrica-info">
-                    <span className="metrica-label">Despesas do Mês</span>
-                    <span className="metrica-valor">{formatarMoeda(metricas.despesasMes)}</span>
+                    <span className="metrica-label">Despesas</span>
+                    <span className="metrica-valor">{formatarMoeda(metricas.despesas)}</span>
                     <span className="metrica-sub">Realizado: {formatarMoeda(metricas.despesasPagas)}</span>
                   </div>
                 </div>
 
-                <div className={`metrica-card saldo ${metricas.saldoMes >= 0 ? 'positivo' : 'negativo'}`}>
+                <div className={`metrica-card saldo ${metricas.saldo >= 0 ? 'positivo' : 'negativo'}`}>
                   <div className="metrica-icon">
                     <Icons.DollarSign />
                   </div>
                   <div className="metrica-info">
                     <span className="metrica-label">Saldo Previsto</span>
-                    <span className="metrica-valor">{formatarMoeda(metricas.saldoMes)}</span>
+                    <span className="metrica-valor">{formatarMoeda(metricas.saldo)}</span>
                     <span className="metrica-sub">Realizado: {formatarMoeda(metricas.saldoRealizado)}</span>
                   </div>
                 </div>
 
-                <div className={`metrica-card caixa ${metricas.caixaTotal >= 0 ? 'positivo' : 'negativo'}`}>
+                <div className={`metrica-card caixa ${metricas.caixa >= 0 ? 'positivo' : 'negativo'}`}>
                   <div className="metrica-icon">
                     <Icons.Wallet />
                   </div>
                   <div className="metrica-info">
-                    <span className="metrica-label">Caixa Total</span>
-                    <span className="metrica-valor">{formatarMoeda(metricas.caixaTotal)}</span>
-                    <span className="metrica-sub">Pagamentos totais: {formatarMoeda(metricas.pagamentosTotais)}</span>
+                    <span className="metrica-label">Caixa</span>
+                    <span className="metrica-valor">{formatarMoeda(metricas.caixa)}</span>
+                    <span className="metrica-sub">Pagamentos: {formatarMoeda(metricas.pagamentosColaboradores)}</span>
                   </div>
                 </div>
 

@@ -3136,3 +3136,314 @@
 .dark-mode .metrica-card.caixa .metrica-sub {
   color: #9ca3af;
 }
+
+
+/* ===== Dashboard Header com Filtros de Período ===== */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.periodo-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.periodo-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.periodo-buttons {
+  display: flex;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.periodo-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: white;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.periodo-btn:not(:last-child) {
+  border-right: 1px solid #e2e8f0;
+}
+
+.periodo-btn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.periodo-btn.active {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.periodo-atual {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #10b981;
+  padding: 0.375rem 0.75rem;
+  background: #ecfdf5;
+  border-radius: 6px;
+}
+
+/* ===== Padronização dos Cards de Métricas ===== */
+.metrica-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 12px;
+  border-left: 4px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.metrica-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.metrica-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.metrica-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.metrica-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.metrica-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+}
+
+.metrica-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metrica-sub {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* Card Receitas */
+.metrica-card.receitas {
+  border-left-color: #10b981;
+}
+
+.metrica-card.receitas .metrica-icon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.metrica-card.receitas .metrica-valor {
+  color: #10b981;
+}
+
+/* Card Despesas */
+.metrica-card.despesas {
+  border-left-color: #ef4444;
+}
+
+.metrica-card.despesas .metrica-icon {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.metrica-card.despesas .metrica-valor {
+  color: #ef4444;
+}
+
+/* Card Saldo */
+.metrica-card.saldo {
+  border-left-color: #3b82f6;
+}
+
+.metrica-card.saldo .metrica-icon {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.metrica-card.saldo .metrica-valor {
+  color: #3b82f6;
+}
+
+.metrica-card.saldo.positivo {
+  border-left-color: #10b981;
+}
+
+.metrica-card.saldo.positivo .metrica-icon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.metrica-card.saldo.positivo .metrica-valor {
+  color: #10b981;
+}
+
+.metrica-card.saldo.negativo {
+  border-left-color: #ef4444;
+}
+
+.metrica-card.saldo.negativo .metrica-icon {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.metrica-card.saldo.negativo .metrica-valor {
+  color: #ef4444;
+}
+
+/* Card Pendentes */
+.metrica-card.pendentes {
+  border-left-color: #f59e0b;
+}
+
+.metrica-card.pendentes .metrica-icon {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+.metrica-card.pendentes .metrica-valor {
+  color: #f59e0b;
+}
+
+.metrica-card.pendentes .metrica-sub.vencidos {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* ===== Dark Mode para Filtros de Período ===== */
+.dark-mode .dashboard-header h2 {
+  color: #e5e7eb;
+}
+
+.dark-mode .periodo-label {
+  color: #9ca3af;
+}
+
+.dark-mode .periodo-buttons {
+  border-color: #374151;
+}
+
+.dark-mode .periodo-btn {
+  background: #1e3a3a;
+  color: #9ca3af;
+  border-color: #374151;
+}
+
+.dark-mode .periodo-btn:not(:last-child) {
+  border-right-color: #374151;
+}
+
+.dark-mode .periodo-btn:hover {
+  background: #0d2626;
+  color: #e5e7eb;
+}
+
+.dark-mode .periodo-btn.active {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.dark-mode .periodo-atual {
+  background: #0d2626;
+  color: #10b981;
+}
+
+/* ===== Dark Mode para Cards de Métricas ===== */
+.dark-mode .metrica-card {
+  background: #1e3a3a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .metrica-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .metrica-label {
+  color: #9ca3af;
+}
+
+.dark-mode .metrica-sub {
+  color: #6b7280;
+}
+
+/* ===== Responsividade para Filtros ===== */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .periodo-filter {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .periodo-buttons {
+    flex: 1;
+  }
+  
+  .periodo-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .periodo-filter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .periodo-buttons {
+    width: 100%;
+  }
+  
+  .periodo-atual {
+    width: 100%;
+    text-align: center;
+  }
+}
