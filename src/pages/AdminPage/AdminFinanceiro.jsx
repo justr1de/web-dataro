@@ -1146,7 +1146,7 @@ const AdminFinanceiro = () => {
         anexo: anexoFinal,
         anexo_nome: anexoNomeFinal,
         valor: parseMoeda(formData.valor),
-        id: modalMode === 'edit' ? selectedTransacao.id : Date.now().toString(),
+        id: modalMode === 'edit' ? selectedTransacao.id : crypto.randomUUID(),
         created_at: modalMode === 'edit' ? selectedTransacao.created_at : new Date().toISOString().split('T')[0]
       };
 
