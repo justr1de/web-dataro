@@ -37,7 +37,8 @@ import {
   AdminDocumentos,
   AdminLogs,
   AdminArquivosExcluidos,
-  AdminConfiguracoes
+  AdminConfiguracoes,
+  AdminDemandas
 } from './pages/AdminPage';
 
 // Contexto de autenticação
@@ -262,7 +263,7 @@ function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="clientes" element={<AdminClientes />} />
               <Route path="projetos" element={<AdminProjetos />} />
-              <Route path="demandas" element={<AdminDashboard />} />
+              <Route path="demandas" element={<AdminDemandas />} />
               <Route path="relatorios" element={<AdminRelatorios />} />
               <Route path="contatos" element={<AdminContatos />} />
               <Route path="perfil" element={<AdminPerfil />} />
