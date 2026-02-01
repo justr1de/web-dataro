@@ -627,8 +627,14 @@ const AdminFinanceiro = () => {
     try {
       // Identificar transações novas ou atualizadas
       for (const transacao of newTransacoes) {
-        // Criar objeto apenas com campos que existem na tabela fin_transacoes do Supabase
-        // Campos extras (banco, final_cartao, conta, entidade_nome, anexo, anexo_nome) são salvos apenas no localStorage
+        // Criar objeto com todos os campos da tabela fin_transacoes do Supabase
+        // Limitar tamanho do anexo para evitar erros de payload muito grande
+        let anexoParaSupabase = transacao.anexo || null;
+        if (anexoParaSupabase && anexoParaSupabase.length > 1000000) {
+          // Anexo maior que 1MB, não enviar para o Supabase
+          anexoParaSupabase = null;
+        }
+        
         const transacaoParaSupabase = {
           id: transacao.id,
           tipo: transacao.tipo,
@@ -637,9 +643,16 @@ const AdminFinanceiro = () => {
           data_vencimento: transacao.data_vencimento || null,
           data_pagamento: transacao.data_pagamento || null,
           status: transacao.status || 'pendente',
+          categoria: transacao.categoria || null,
           forma_pagamento: transacao.forma_pagamento || null,
           numero_documento: transacao.numero_documento || null,
           observacoes: transacao.observacoes || null,
+          banco: transacao.banco || null,
+          final_cartao: transacao.final_cartao || null,
+          conta: transacao.conta || null,
+          entidade_nome: transacao.entidade_nome || null,
+          anexo: anexoParaSupabase,
+          anexo_nome: transacao.anexo_nome || null,
           created_at: transacao.created_at || new Date().toISOString()
         };
         
