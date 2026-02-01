@@ -272,6 +272,7 @@ const categoriasPadrao = {
     { id: 'licenca_mensal', nome: 'Licença Mensal', cor: '#0ea5e9' },
     { id: 'licenca_anual', nome: 'Licença Anual', cor: '#6366f1' },
     { id: 'licenca_avulsa', nome: 'Licença Avulsa', cor: '#8b5cf6' },
+    { id: 'creditos_avulsos', nome: 'Créditos Avulsos', cor: '#f472b6' },
     { id: 'outros_pagamentos', nome: 'Outros Pagamentos', cor: '#6b7280' }
   ]
 };
@@ -568,9 +569,23 @@ const AdminFinanceiro = () => {
   const sincronizarTransacoesComSupabase = async (transacoesLocais) => {
     try {
       for (const transacao of transacoesLocais) {
+        // Usar apenas campos que existem na tabela fin_transacoes
+        const transacaoParaSupabase = {
+          id: transacao.id,
+          tipo: transacao.tipo,
+          descricao: transacao.descricao,
+          valor: parseFloat(transacao.valor) || 0,
+          data_vencimento: transacao.data_vencimento || null,
+          data_pagamento: transacao.data_pagamento || null,
+          status: transacao.status || 'pendente',
+          forma_pagamento: transacao.forma_pagamento || null,
+          numero_documento: transacao.numero_documento || null,
+          observacoes: transacao.observacoes || null,
+          created_at: transacao.created_at || new Date().toISOString()
+        };
         const { error } = await supabase
           .from('fin_transacoes')
-          .upsert(transacao, { onConflict: 'id' });
+          .upsert(transacaoParaSupabase, { onConflict: 'id' });
         if (error) console.error('Erro ao sincronizar transação:', error);
       }
     } catch (error) {
@@ -638,18 +653,11 @@ const AdminFinanceiro = () => {
       }
     }
     
-    // Sincronizar com Supabase
+    // Sincronizar com Supabase - usar apenas campos que existem na tabela original
     try {
-      // Identificar transações novas ou atualizadas
       for (const transacao of newTransacoes) {
-        // Criar objeto com todos os campos da tabela fin_transacoes do Supabase
-        // Limitar tamanho do anexo para evitar erros de payload muito grande
-        let anexoParaSupabase = transacao.anexo || null;
-        if (anexoParaSupabase && anexoParaSupabase.length > 1000000) {
-          // Anexo maior que 1MB, não enviar para o Supabase
-          anexoParaSupabase = null;
-        }
-        
+        // Usar apenas os campos que existem na tabela fin_transacoes do Supabase
+        // Campos extras (banco, final_cartao, conta, entidade_nome, anexo) ficam apenas no localStorage
         const transacaoParaSupabase = {
           id: transacao.id,
           tipo: transacao.tipo,
@@ -658,16 +666,9 @@ const AdminFinanceiro = () => {
           data_vencimento: transacao.data_vencimento || null,
           data_pagamento: transacao.data_pagamento || null,
           status: transacao.status || 'pendente',
-          categoria: transacao.categoria || null,
           forma_pagamento: transacao.forma_pagamento || null,
           numero_documento: transacao.numero_documento || null,
           observacoes: transacao.observacoes || null,
-          banco: transacao.banco || null,
-          final_cartao: transacao.final_cartao || null,
-          conta: transacao.conta || null,
-          entidade_nome: transacao.entidade_nome || null,
-          anexo: anexoParaSupabase,
-          anexo_nome: transacao.anexo_nome || null,
           created_at: transacao.created_at || new Date().toISOString()
         };
         
@@ -1023,10 +1024,12 @@ const AdminFinanceiro = () => {
       .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
     const despesasPagas = despesasTransacoesPagas + pagamentosColaboradoresMes;
     
-    // Pendentes e vencidos
-    const totalPendentes = transacoes.filter(t => t.status === 'pendente').length;
-    const vencidos = transacoes.filter(t => {
+    // Pendentes e vencidos - filtrar apenas transações válidas (com id e descrição)
+    const transacoesValidas = transacoes.filter(t => t && t.id && t.descricao);
+    const totalPendentes = transacoesValidas.filter(t => t.status === 'pendente').length;
+    const vencidos = transacoesValidas.filter(t => {
       if (t.status !== 'pendente') return false;
+      if (!t.data_vencimento) return false;
       const venc = new Date(t.data_vencimento + 'T00:00:00');
       return venc < hoje;
     }).length;
@@ -1069,7 +1072,8 @@ const AdminFinanceiro = () => {
 
   // Filtrar transações
   const filtrarTransacoes = () => {
-    let resultado = [...transacoes];
+    // Filtrar apenas transações válidas (com id e descrição)
+    let resultado = transacoes.filter(t => t && t.id && t.descricao);
 
     if (filtros.tipo !== 'todos') {
       resultado = resultado.filter(t => t.tipo === filtros.tipo);
