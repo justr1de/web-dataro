@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import { supabase } from '../../utils/supabaseClient';
 import './AdminDemandas.css';
@@ -147,6 +147,8 @@ const tiposDemanda = [
 const AdminDemandas = () => {
   const { adminUser } = useAdminAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const fileInputRef = useRef(null);
   
   // Verificar se o usuário é administrador
@@ -234,6 +236,29 @@ const AdminDemandas = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Verificar se deve abrir o modal de nova demanda via query param
+  useEffect(() => {
+    const action = searchParams.get('action');
+    if (action === 'nova' && isAdmin) {
+      setShowModal(true);
+      setEditingDemanda(null);
+      setFormData({
+        titulo: '',
+        descricao: '',
+        gabinete_id: '',
+        responsavel_id: '',
+        status: 'pendente',
+        urgencia: 'normal',
+        tipo: '',
+        data_prazo: '',
+        observacoes: '',
+        anexos: []
+      });
+      // Limpar o query param após abrir o modal
+      setSearchParams({});
+    }
+  }, [searchParams, isAdmin]);
 
   useEffect(() => {
     if (activeTab === 'dashboard') {
