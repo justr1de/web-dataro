@@ -2668,3 +2668,83 @@
 .dark-mode .pagamentos-table .valor-cell {
   color: #34d399;
 }
+
+
+/* ===== MODO ESCURO - TABELA DE TRANSAÇÕES ===== */
+
+.dark-mode .transacoes-header h2 {
+  color: #e5e7eb;
+}
+
+.dark-mode .transacoes-table-container {
+  background: #1e3a3a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .transacoes-table thead {
+  background: #0d2626;
+}
+
+.dark-mode .transacoes-table th {
+  background: #0d2626;
+  color: #e5e7eb;
+  border-bottom-color: #374151;
+}
+
+.dark-mode .transacoes-table td {
+  color: #e5e7eb;
+  border-bottom-color: #374151;
+}
+
+.dark-mode .transacoes-table tbody tr:hover {
+  background: #0d2626;
+}
+
+.dark-mode .transacoes-table .valor-receita {
+  color: #34d399;
+}
+
+.dark-mode .transacoes-table .valor-despesa {
+  color: #f87171;
+}
+
+/* Modo escuro - Filtros */
+.dark-mode .filtros-bar {
+  background: #1e3a3a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .filtros-bar label {
+  color: #9ca3af;
+}
+
+.dark-mode .filtros-bar select,
+.dark-mode .filtros-bar input {
+  background: #0d2626;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark-mode .filtros-bar select:focus,
+.dark-mode .filtros-bar input:focus {
+  border-color: #10b981;
+}
+
+/* Modo escuro - Botões */
+.dark-mode .btn-nova {
+  background: #10b981;
+  color: white;
+}
+
+.dark-mode .btn-nova:hover {
+  background: #059669;
+}
+
+/* Modo escuro - Empty state */
+.dark-mode .empty-state {
+  color: #9ca3af;
+}
+
+.dark-mode .empty-state svg {
+  color: #6b7280;
+}

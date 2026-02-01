@@ -1018,7 +1018,7 @@ const AdminFinanceiro = () => {
   const transacoesFiltradas = filtrarTransacoes();
 
   // Handlers de CRUD
-  const handleOpenModal = (mode, transacao = null) => {
+  const handleOpenModal = (mode, transacao = null, tipoForced = null) => {
     setModalMode(mode);
     if (mode === 'edit' && transacao) {
       setSelectedTransacao(transacao);
@@ -1043,7 +1043,7 @@ const AdminFinanceiro = () => {
     } else {
       setSelectedTransacao(null);
       setFormData({
-        tipo: activeTab === 'despesas' ? 'despesa' : 'receita',
+        tipo: tipoForced || (activeTab === 'despesas' ? 'despesa' : 'receita'),
         descricao: '',
         valor: '',
         data_vencimento: '',
@@ -1480,8 +1480,7 @@ const AdminFinanceiro = () => {
                 <button 
                   className="btn-nova"
                   onClick={() => {
-                    setFormData(prev => ({...prev, tipo: activeTab === 'receitas' ? 'receita' : 'despesa'}));
-                    handleOpenModal('create');
+                    handleOpenModal('create', null, activeTab === 'receitas' ? 'receita' : 'despesa');
                   }}
                 >
                   <Icons.Plus />
