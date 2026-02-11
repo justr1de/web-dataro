@@ -380,6 +380,7 @@ const AdminFinanceiro = () => {
     observacoes: '',
     entidade_nome: '',
     entidade_id: null,
+    tipo_entidade: 'fornecedor',
     tipo_documento: 'cpf',
     cpf_cnpj: '',
     cidade: '',
@@ -540,7 +541,7 @@ const AdminFinanceiro = () => {
         // Carregar colaboradores (admin_usuarios)
         const { data: supaColaboradores, error: errColaboradores } = await supabase
           .from('admin_usuarios')
-          .select('id, nome, email')
+          .select('id, nome, email, cpf')
           .eq('ativo', true)
           .order('nome', { ascending: true });
         
@@ -695,6 +696,7 @@ const AdminFinanceiro = () => {
           observacoes: transacao.observacoes || null,
           entidade_nome: transacao.entidade_nome || transacao.entidade || null,
           entidade_id: transacao.entidade_id || null,
+          tipo_entidade: transacao.tipo_entidade || 'fornecedor',
           tipo_documento: transacao.tipo_documento || null,
           cpf_cnpj: transacao.cpf_cnpj || null,
           cidade: transacao.cidade || null,
@@ -1259,6 +1261,7 @@ const AdminFinanceiro = () => {
         observacoes: transacao.observacoes || '',
         entidade_nome: transacao.entidade_nome || '',
         entidade_id: transacao.entidade_id || null,
+        tipo_entidade: transacao.tipo_entidade || 'fornecedor',
         tipo_documento: transacao.tipo_documento || 'cpf',
         cpf_cnpj: transacao.cpf_cnpj || '',
         cidade: transacao.cidade || '',
@@ -1284,6 +1287,7 @@ const AdminFinanceiro = () => {
         observacoes: '',
         entidade_nome: '',
         entidade_id: null,
+        tipo_entidade: 'fornecedor',
         tipo_documento: 'cpf',
         cpf_cnpj: '',
         cidade: '',
@@ -3228,26 +3232,155 @@ const AdminFinanceiro = () => {
                 </div>
               </div>
 
+              {/* Toggle Fornecedor / Colaborador */}
+              {formData.tipo === 'despesa' && (
+                <div className="form-group">
+                  <label>Tipo de Destinatário</label>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, tipo_entidade: 'fornecedor', entidade_nome: '', entidade_id: null, cpf_cnpj: '', tipo_documento: 'cpf'})}
+                      style={{
+                        flex: 1,
+                        padding: '10px 16px',
+                        borderRadius: '8px',
+                        border: formData.tipo_entidade === 'fornecedor' ? '2px solid #4fc3f7' : '2px solid rgba(255,255,255,0.15)',
+                        background: formData.tipo_entidade === 'fornecedor' ? 'rgba(79,195,247,0.15)' : 'rgba(255,255,255,0.05)',
+                        color: formData.tipo_entidade === 'fornecedor' ? '#4fc3f7' : '#aaa',
+                        cursor: 'pointer',
+                        fontWeight: formData.tipo_entidade === 'fornecedor' ? '600' : '400',
+                        fontSize: '0.95em',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      Fornecedor
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, tipo_entidade: 'colaborador', entidade_nome: '', entidade_id: null, cpf_cnpj: '', tipo_documento: 'cpf'})}
+                      style={{
+                        flex: 1,
+                        padding: '10px 16px',
+                        borderRadius: '8px',
+                        border: formData.tipo_entidade === 'colaborador' ? '2px solid #81c784' : '2px solid rgba(255,255,255,0.15)',
+                        background: formData.tipo_entidade === 'colaborador' ? 'rgba(129,199,132,0.15)' : 'rgba(255,255,255,0.05)',
+                        color: formData.tipo_entidade === 'colaborador' ? '#81c784' : '#aaa',
+                        cursor: 'pointer',
+                        fontWeight: formData.tipo_entidade === 'colaborador' ? '600' : '400',
+                        fontSize: '0.95em',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      Colaborador
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Campo Fornecedor (texto livre) ou Colaborador (select da lista de usuários) */}
               <div className="form-group">
-                <label>{formData.tipo === 'receita' ? 'Cliente' : 'Fornecedor'}</label>
-                <input 
-                  type="text"
-                  value={formData.entidade_nome}
-                  onChange={(e) => setFormData({...formData, entidade_nome: e.target.value})}
-                  placeholder={formData.tipo === 'receita' ? 'Nome do cliente' : 'Nome do fornecedor'}
-                />
+                <label>
+                  {formData.tipo === 'receita' ? 'Cliente' : (formData.tipo_entidade === 'colaborador' ? 'Colaborador' : 'Fornecedor')}
+                  {formData.tipo_entidade === 'colaborador' && formData.tipo === 'despesa' && (
+                    <span style={{ fontSize: '0.8em', color: '#81c784', marginLeft: '8px' }}>(Usuário do sistema)</span>
+                  )}
+                </label>
+                {formData.tipo === 'despesa' && formData.tipo_entidade === 'colaborador' ? (
+                  <select
+                    value={formData.entidade_id || ''}
+                    onChange={(e) => {
+                      const selectedId = e.target.value;
+                      const selectedColab = colaboradores.find(c => c.id === selectedId);
+                      if (selectedColab) {
+                        // Formatar CPF se existir
+                        let cpfFormatado = '';
+                        if (selectedColab.cpf) {
+                          let cpfRaw = selectedColab.cpf.replace(/\D/g, '');
+                          if (cpfRaw.length <= 11) {
+                            cpfFormatado = cpfRaw.replace(/(\d{3})(\d)/, '$1.$2')
+                              .replace(/(\d{3})(\d)/, '$1.$2')
+                              .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                          }
+                        }
+                        setFormData({
+                          ...formData,
+                          entidade_id: selectedColab.id,
+                          entidade_nome: selectedColab.nome,
+                          cpf_cnpj: cpfFormatado,
+                          tipo_documento: 'cpf'
+                        });
+                      } else {
+                        setFormData({...formData, entidade_id: null, entidade_nome: '', cpf_cnpj: '', tipo_documento: 'cpf'});
+                      }
+                    }}
+                    style={{ width: '100%' }}
+                  >
+                    <option value="">Selecione um colaborador...</option>
+                    {colaboradores.map(colab => (
+                      <option key={colab.id} value={colab.id}>
+                        {colab.nome} {colab.cpf ? `(CPF: ${colab.cpf})` : `(${colab.email})`}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input 
+                    type="text"
+                    value={formData.entidade_nome}
+                    onChange={(e) => setFormData({...formData, entidade_nome: e.target.value})}
+                    placeholder={formData.tipo === 'receita' ? 'Nome do cliente' : 'Nome do fornecedor'}
+                  />
+                )}
               </div>
 
+              {/* Toggle CPF/CNPJ - Para colaborador, mostra checkbox para alternar para CNPJ (PJ) */}
               <div className="form-row">
                 <div className="form-group">
                   <label>Tipo de Documento</label>
-                  <select 
-                    value={formData.tipo_documento}
-                    onChange={(e) => setFormData({...formData, tipo_documento: e.target.value, cpf_cnpj: ''})}
-                  >
-                    <option value="cpf">CPF</option>
-                    <option value="cnpj">CNPJ</option>
-                  </select>
+                  {formData.tipo === 'despesa' && formData.tipo_entidade === 'colaborador' ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                      <span style={{ 
+                        padding: '8px 16px', 
+                        borderRadius: '6px', 
+                        background: formData.tipo_documento === 'cpf' ? 'rgba(79,195,247,0.15)' : 'rgba(255,255,255,0.05)',
+                        color: formData.tipo_documento === 'cpf' ? '#4fc3f7' : '#aaa',
+                        fontSize: '0.9em',
+                        fontWeight: '500'
+                      }}>CPF</span>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '0.85em', color: '#aaa' }}>
+                        <input
+                          type="checkbox"
+                          checked={formData.tipo_documento === 'cnpj'}
+                          onChange={(e) => {
+                            const novoTipo = e.target.checked ? 'cnpj' : 'cpf';
+                            // Se voltou para CPF e tem colaborador selecionado, repreencher CPF
+                            let novoCpfCnpj = '';
+                            if (novoTipo === 'cpf' && formData.entidade_id) {
+                              const selectedColab = colaboradores.find(c => c.id === formData.entidade_id);
+                              if (selectedColab && selectedColab.cpf) {
+                                let cpfRaw = selectedColab.cpf.replace(/\D/g, '');
+                                novoCpfCnpj = cpfRaw.replace(/(\d{3})(\d)/, '$1.$2')
+                                  .replace(/(\d{3})(\d)/, '$1.$2')
+                                  .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                              }
+                            }
+                            setFormData({...formData, tipo_documento: novoTipo, cpf_cnpj: novoCpfCnpj});
+                          }}
+                          style={{ width: '16px', height: '16px', accentColor: '#ff9800', cursor: 'pointer' }}
+                        />
+                        <span style={{ color: formData.tipo_documento === 'cnpj' ? '#ff9800' : '#888' }}>
+                          Recebe por PJ (CNPJ)
+                        </span>
+                      </label>
+                    </div>
+                  ) : (
+                    <select 
+                      value={formData.tipo_documento}
+                      onChange={(e) => setFormData({...formData, tipo_documento: e.target.value, cpf_cnpj: ''})}
+                    >
+                      <option value="cpf">CPF</option>
+                      <option value="cnpj">CNPJ</option>
+                    </select>
+                  )}
                 </div>
                 <div className="form-group">
                   <label>{formData.tipo_documento === 'cpf' ? 'CPF' : 'CNPJ'}</label>
@@ -3276,6 +3409,11 @@ const AdminFinanceiro = () => {
                     }}
                     placeholder={formData.tipo_documento === 'cpf' ? '000.000.000-00' : '00.000.000/0000-00'}
                     maxLength={formData.tipo_documento === 'cpf' ? 14 : 18}
+                    readOnly={formData.tipo_entidade === 'colaborador' && formData.tipo_documento === 'cpf' && formData.cpf_cnpj !== ''}
+                    style={{
+                      opacity: (formData.tipo_entidade === 'colaborador' && formData.tipo_documento === 'cpf' && formData.cpf_cnpj !== '') ? 0.7 : 1,
+                      cursor: (formData.tipo_entidade === 'colaborador' && formData.tipo_documento === 'cpf' && formData.cpf_cnpj !== '') ? 'not-allowed' : 'text'
+                    }}
                   />
                 </div>
               </div>
