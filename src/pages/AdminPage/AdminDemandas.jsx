@@ -127,6 +127,7 @@ const Icons = {
 
 // Tipos de demanda baseados nas atividades da DATA-RO
 const tiposDemanda = [
+  { value: 'interna', label: 'Interna' },
   { value: 'desenvolvimento_plataforma', label: 'Desenvolvimento de Plataforma' },
   { value: 'desenvolvimento_painel_bi', label: 'Desenvolvimento de Painel de BI' },
   { value: 'suporte_tecnico', label: 'Suporte Técnico' },
@@ -1264,10 +1265,12 @@ const AdminDemandas = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Cliente</label>
+                  <label>Cliente {formData.tipo === 'interna' && <span style={{ fontSize: '0.8em', color: '#4fc3f7', fontWeight: 'normal' }}>(Demanda Interna - DATA-RO)</span>}</label>
                   <select
                     value={formData.gabinete_id}
                     onChange={(e) => setFormData({ ...formData, gabinete_id: e.target.value })}
+                    disabled={formData.tipo === 'interna'}
+                    style={formData.tipo === 'interna' ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
                   >
                     <option value="">Selecione um cliente</option>
                     {clientes.map(cliente => (
@@ -1295,7 +1298,22 @@ const AdminDemandas = () => {
                   <label>Tipo de Demanda</label>
                   <select
                     value={formData.tipo}
-                    onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
+                    onChange={(e) => {
+                      const novoTipo = e.target.value;
+                      if (novoTipo === 'interna') {
+                        // Buscar o cliente DATA-RO na lista de clientes
+                        const dataroCliente = clientes.find(c => 
+                          c.nome && c.nome.toUpperCase().includes('DATA-RO')
+                        );
+                        setFormData({ 
+                          ...formData, 
+                          tipo: novoTipo, 
+                          gabinete_id: dataroCliente ? dataroCliente.id : formData.gabinete_id 
+                        });
+                      } else {
+                        setFormData({ ...formData, tipo: novoTipo });
+                      }
+                    }}
                   >
                     <option value="">Selecione o tipo</option>
                     {tiposDemanda.map(tipo => (
