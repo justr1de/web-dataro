@@ -228,7 +228,9 @@ const AdminDemandas = () => {
     tipo: '',
     data_prazo: '',
     observacoes: '',
-    anexos: []
+    anexos: [],
+    valor: '',
+    valor_habilitado: false
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -254,7 +256,9 @@ const AdminDemandas = () => {
         tipo: '',
         data_prazo: '',
         observacoes: '',
-        anexos: []
+        anexos: [],
+        valor: '',
+        valor_habilitado: false
       });
       // Limpar o query param após abrir o modal
       setSearchParams({});
@@ -462,7 +466,9 @@ const AdminDemandas = () => {
         tipo: demanda.tipo || '',
         data_prazo: demanda.data_prazo || '',
         observacoes: demanda.observacoes || '',
-        anexos: demanda.anexos || []
+        anexos: demanda.anexos || [],
+        valor: demanda.valor || '',
+        valor_habilitado: demanda.valor ? true : false
       });
     } else {
       setEditingDemanda(null);
@@ -476,7 +482,9 @@ const AdminDemandas = () => {
         tipo: '',
         data_prazo: '',
         observacoes: '',
-        anexos: []
+        anexos: [],
+        valor: '',
+        valor_habilitado: false
       });
     }
     setError('');
@@ -589,6 +597,7 @@ const AdminDemandas = () => {
         data_prazo: formData.data_prazo || null,
         observacoes: formData.observacoes || null,
         anexos: formData.anexos || [],
+        valor: formData.valor_habilitado && formData.valor ? parseFloat(formData.valor) : null,
         updated_at: new Date().toISOString()
       };
 
@@ -694,7 +703,7 @@ const AdminDemandas = () => {
   const exportarRelatorio = () => {
     const reportDemandas = getReportDemandas();
     
-    const headers = ['Título', 'Cliente', 'Responsável', 'Status', 'Urgência', 'Tipo', 'Data Criação', 'Data Prazo', 'Data Conclusão'];
+    const headers = ['Título', 'Cliente', 'Responsável', 'Status', 'Urgência', 'Tipo', 'Valor (R$)', 'Data Criação', 'Data Prazo', 'Data Conclusão'];
     const rows = reportDemandas.map(d => [
       d.titulo,
       d.admin_gabinetes?.nome || '',
@@ -702,6 +711,7 @@ const AdminDemandas = () => {
       d.status,
       d.urgencia,
       formatTipoLabel(d.tipo),
+      d.valor ? Number(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
       new Date(d.created_at).toLocaleDateString('pt-BR'),
       d.data_prazo ? new Date(d.data_prazo).toLocaleDateString('pt-BR') : '',
       d.data_conclusao ? new Date(d.data_conclusao).toLocaleDateString('pt-BR') : ''
@@ -931,6 +941,11 @@ const AdminDemandas = () => {
                         <span className="demanda-data">
                           Criado em: {new Date(demanda.created_at).toLocaleDateString('pt-BR')}
                         </span>
+                        {demanda.valor && (
+                          <span className="demanda-valor" style={{ color: '#4fc3f7', fontWeight: '600' }}>
+                            R$ {Number(demanda.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </span>
+                        )}
                       </div>
                       {isAdmin && (
                         <div className="demanda-actions">
@@ -1029,8 +1044,9 @@ const AdminDemandas = () => {
                   <th>Status</th>
                   <th>Urgência</th>
                   <th>Tipo</th>
-                  <th>Data Criação</th>
-                  <th>Prazo</th>
+                   <th>Valor</th>
+                   <th>Data Criação</th>
+                   <th>Prazo</th>
                 </tr>
               </thead>
               <tbody>
@@ -1051,6 +1067,7 @@ const AdminDemandas = () => {
                       </span>
                     </td>
                     <td>{formatTipoLabel(demanda.tipo) || '-'}</td>
+                    <td>{demanda.valor ? `R$ ${Number(demanda.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}</td>
                     <td>{new Date(demanda.created_at).toLocaleDateString('pt-BR')}</td>
                     <td>{demanda.data_prazo ? new Date(demanda.data_prazo).toLocaleDateString('pt-BR') : '-'}</td>
                   </tr>
@@ -1357,6 +1374,41 @@ const AdminDemandas = () => {
                     <option value="urgente">Urgente</option>
                   </select>
                 </div>
+              </div>
+
+              <div className="form-group valor-section">
+                <div className="valor-toggle">
+                  <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '8px' }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.valor_habilitado}
+                      onChange={(e) => {
+                        const habilitado = e.target.checked;
+                        setFormData({ 
+                          ...formData, 
+                          valor_habilitado: habilitado,
+                          valor: habilitado ? formData.valor : ''
+                        });
+                      }}
+                      style={{ width: '16px', height: '16px', accentColor: '#4fc3f7', cursor: 'pointer' }}
+                    />
+                    <span>Incluir Valor (R$)</span>
+                  </label>
+                </div>
+                {formData.valor_habilitado && (
+                  <div className="valor-input-wrapper" style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#aaa', fontSize: '0.95em', pointerEvents: 'none' }}>R$</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={formData.valor}
+                      onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
+                      placeholder="0,00"
+                      style={{ paddingLeft: '36px' }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
